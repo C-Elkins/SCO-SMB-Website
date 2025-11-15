@@ -6,13 +6,23 @@ if (typeof WebSocket === 'undefined') {
   neonConfig.webSocketConstructor = ws;
 }
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+// Lazy pool initialization to allow env vars to load first
+let pool: Pool | null = null;
+
+function getPool() {
+  if (!pool) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    pool = new Pool({ connectionString });
+  }
+  return pool;
+}
 
 export async function query(text: string, params?: unknown[]) {
   const start = Date.now();
-  const res = await pool.query(text, params);
+  const res = await getPool().query(text, params);
   const duration = Date.now() - start;
   console.log('executed query', { text, duration, rows: res.rowCount });
   return res;
@@ -40,7 +50,6 @@ export interface DownloadLog {
   downloaded_at: Date;
 }
 
-// Initialize database tables
 export async function initDatabase() {
   try {
     // Create license_keys table
@@ -89,5 +98,5 @@ export async function initDatabase() {
   }
 }
 
-export default pool;
+export default getPool;
 

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Check, X, Loader2, ChevronDown, ChevronUp, Calendar, Package } from 'lucide-react';
+import { Download, Check, X, Loader2, ChevronDown, ChevronUp, Package } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -122,8 +122,8 @@ export default function DownloadPage() {
   const assets = getAssetsByPlatform();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 md:py-12">
-      <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container-custom section max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

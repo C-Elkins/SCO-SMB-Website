@@ -61,31 +61,31 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 md:py-28">
+      <section className="relative bg-primary-navy text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,168,181,0.25),transparent_70%)]" />
+        <div className="container-custom section-hero relative">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-                Enterprise Scanning Made Simple
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-balance">
+                Enterprise Scanning Infrastructure for Modern Offices
               </h1>
               <p className="text-base md:text-lg mb-6 text-gray-100 leading-relaxed">
-                Receive scans from Kyocera & Sharp printers directly to your computer. 
-                No walking to the printer. Just press scan and go.
+                Receive scans from Kyocera & Sharp printers directly to your computer—no manual IP setup, no walking to the device. Secure, organized, automatic.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              <div className="flex flex-col sm:flex-row gap-4 mt-10">
                 <Link
                   href="/download"
-                  className="inline-flex items-center justify-center px-8 py-4 text-base bg-white text-[#153B6B] font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-lg"
+                  className="btn btn-primary bg-white text-primary-navy hover:bg-neutral-light shadow-lg px-8 py-4 text-base"
                 >
                   Download Now
                 </Link>
                 <Link
                   href="/features"
-                  className="inline-flex items-center justify-center px-6 py-3 text-base bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-[#153B6B] transition-all duration-200"
+                  className="btn btn-outline border-white text-white hover:bg-white hover:text-primary-navy px-8 py-4 text-base"
                 >
                   See Features →
                 </Link>
@@ -113,8 +113,8 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-20 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="section bg-white">
+        <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -122,11 +122,11 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-[#153B6B] mb-3">
-              Professional Features for Modern Offices
+            <h2 className="text-3xl font-bold text-primary-navy mb-4 text-balance">
+              Professional Features Built for Enterprise Reliability
             </h2>
-            <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
-              Everything you need for enterprise-grade document scanning and management
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+              SCO SMB delivers secure, automated document ingestion with network discovery, multi-protocol flexibility, and deep auditability.
             </p>
           </motion.div>
 
@@ -138,12 +138,12 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="card hover:-translate-y-1 transition-transform"
               >
-                <div className="text-[#00A8B5] mb-3">
+                <div className="text-accent-teal mb-3">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-[#153B6B] mb-2">
+                <h3 className="text-lg font-semibold text-primary-navy mb-2">
                   {feature.title}
                 </h3>
                 <p className="text-gray-600">
@@ -156,23 +156,23 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-24 bg-[#153B6B] text-white">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+      <section className="section bg-primary-navy text-white">
+        <div className="container-custom max-w-5xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            <h2 className="text-3xl font-bold mb-6 text-balance">
               Ready to Transform Your Document Workflow?
             </h2>
-            <p className="text-base md:text-lg mb-8 text-gray-200">
-              Download SCO SMB today and experience professional scanning infrastructure
+            <p className="text-base md:text-lg mb-10 text-gray-200 max-w-2xl mx-auto">
+              Download SCO SMB today and experience secure, automated, enterprise-grade scanning infrastructure built for mixed Kyocera & Sharp fleets.
             </p>
             <Link
               href="/download"
-              className="inline-flex items-center justify-center px-8 py-4 bg-[#00A8B5] text-white font-semibold rounded-lg hover:bg-[#008c97] transition-all duration-200 shadow-lg"
+              className="btn btn-primary px-8 py-4 shadow-lg"
             >
               Get Started Free
             </Link>

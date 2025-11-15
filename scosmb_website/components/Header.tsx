@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,6 +18,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const pathname = usePathname();
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Features', href: '/features' },
@@ -32,10 +34,10 @@ export default function Header() {
         isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md' : 'bg-white shadow-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="container-custom">
         <div className="flex justify-between items-center py-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center flex-shrink-0">
+          <Link href="/" className="flex items-center shrink-0">
             <Image
               src="/logos/sco-smb-logo-primary.svg"
               alt="SCO SMB"
@@ -48,17 +50,20 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8 ml-auto">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-base text-gray-700 hover:text-[#00A8B5] font-medium transition-colors duration-200 relative group"
-              >
-                {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#00A8B5] transition-all duration-200 group-hover:w-full"></span>
-              </Link>
-            ))}
+          <nav className="hidden md:flex items-center space-x-6 ml-auto">
+            {navLinks.map((link) => {
+              const active = pathname === link.href;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors duration-200 relative py-1 ${active ? 'text-primary-navy' : 'text-gray-700 hover:text-accent-teal'}`}
+                >
+                  {link.name}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${active ? 'w-full bg-primary-navy' : 'w-0 group-hover:w-full bg-accent-teal'}`}></span>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -74,18 +79,21 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
-          <nav className="px-4 py-4 space-y-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-2 text-gray-700 hover:bg-[#E9ECEF] hover:text-[#00A8B5] rounded-lg transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
+        <div className="md:hidden bg-white border-t border-neutral-light shadow-lg">
+          <nav className="px-4 py-4 space-y-1">
+            {navLinks.map((link) => {
+              const active = pathname === link.href;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${active ? 'bg-neutral-light text-primary-navy' : 'text-gray-700 hover:bg-neutral-light hover:text-accent-teal'}`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       )}

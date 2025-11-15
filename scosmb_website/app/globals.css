@@ -1,65 +1,56 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  /* Brand Colors */
-  --primary-navy: #153B6B;
-  --accent-teal: #00A8B5;
-  --neutral-light: #E9ECEF;
-  --neutral-dark: #2E2E2E;
-  
-  --background: #ffffff;
-  --foreground: #2E2E2E;
+@layer base {
+  :root {
+    --primary-navy: #153B6B;
+    --accent-teal: #00A8B5;
+    --neutral-light: #E9ECEF;
+    --neutral-dark: #2E2E2E;
+    --success-green: #28a745;
+    --warning-orange: #fd7e14;
+    --danger-red: #dc3545;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  main {
+    padding-top: 5rem;
+    min-height: 100vh;
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-}
+@layer components {
+  .container-custom {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  @media (min-width: 640px) {
+    .container-custom {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
 
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 90px;
-  font-size: 16px;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-main {
-  padding-top: 96px;
-  min-height: calc(100vh - 96px);
-}
-
-/* Smooth scrolling offset for fixed header */
-:target {
-  scroll-margin-top: 90px;
-}
-
-/* Better button and link focus states */
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--accent-teal);
-  outline-offset: 2px;
-}
-
-/* Ensure images are responsive */
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+  @media (min-width: 1024px) {
+    .container-custom {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
 }
