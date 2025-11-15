@@ -62,7 +62,7 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white overflow-hidden">
-        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24 py-32 md:py-40 lg:py-48" style={{ maxWidth: '1600px' }}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 md:py-28">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -112,8 +112,8 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-32 md:py-40 bg-gray-50">
-        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24" style={{ maxWidth: '1600px' }}>
+      <section className="py-20 md:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

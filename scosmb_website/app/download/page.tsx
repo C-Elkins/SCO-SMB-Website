@@ -120,8 +120,8 @@ export default function DownloadPage() {
   const assets = getAssetsByPlatform();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-24 md:py-32">
-      <div className="w-full mx-auto px-8 lg:px-16 xl:px-24" style={{ maxWidth: '1400px' }}>
+    <div className="min-h-screen bg-gray-50 py-16 md:py-20">
+      <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
