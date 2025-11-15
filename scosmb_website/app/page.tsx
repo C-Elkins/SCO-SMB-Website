@@ -61,8 +61,8 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white overflow-hidden min-h-[600px] md:min-h-[700px] flex items-center">
-        <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24 md:py-32">
+      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white overflow-hidden">
+        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24 py-32 md:py-40 lg:py-48" style={{ maxWidth: '1600px' }}>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -112,8 +112,8 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 md:py-32 bg-gray-50">
-        <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="py-32 md:py-40 bg-gray-50">
+        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24" style={{ maxWidth: '1600px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -155,8 +155,8 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 md:py-32 bg-[#153B6B] text-white">
-        <div className="w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+      <section className="py-32 md:py-40 bg-[#153B6B] text-white">
+        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24 text-center" style={{ maxWidth: '1400px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

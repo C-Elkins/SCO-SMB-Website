@@ -8,8 +8,8 @@ export default function SupportPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-24 md:py-32">
-        <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-32 md:py-40">
+        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24" style={{ maxWidth: '1600px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -27,8 +27,8 @@ export default function SupportPage() {
       </section>
 
       {/* Support Options */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-32 md:py-40 bg-gray-50">
+        <div className="w-full mx-auto px-8 lg:px-16 xl:px-24" style={{ maxWidth: '1600px' }}>
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
