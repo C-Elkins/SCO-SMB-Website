@@ -5,8 +5,8 @@ export async function POST(request: NextRequest) {
   try {
     const { licenseKey, platform } = await request.json();
     
-    // Validate format
-    if (!licenseKey || !/^SCO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(licenseKey)) {
+    // Validate format (flexible to allow TEST keys and standard keys)
+    if (!licenseKey || !/^SCO-.+-.+-.+$/.test(licenseKey)) {
       return NextResponse.json({ 
         valid: false, 
         error: 'Invalid license key format. Expected format: SCO-XXXX-XXXX-XXXX' 
