@@ -28,11 +28,11 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md' : 'bg-white shadow-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex justify-between items-center py-6">
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0">

@@ -108,7 +108,9 @@ export default function DownloadPage() {
   };
 
   const getAssetsByPlatform = () => {
-    if (!release) return { macSilicon: null, macIntel: null, windows: null };
+    if (!release || !release.assets || !Array.isArray(release.assets)) {
+      return { macSilicon: null, macIntel: null, windows: null };
+    }
 
     return {
       macSilicon: release.assets.find(a => /arm64\.(pkg|dmg)$/i.test(a.name)),

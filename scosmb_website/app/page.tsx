@@ -156,8 +156,8 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-24 bg-[#153B6B] text-white">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+      <section className="py-20 md:py-24 bg-[#153B6B] text-white w-full">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 w-full text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

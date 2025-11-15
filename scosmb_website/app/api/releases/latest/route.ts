@@ -20,9 +20,15 @@ export async function GET() {
     const repo = process.env.GITHUB_REPO_NAME || 'SCO-SMB';
     
     if (!token) {
-      return NextResponse.json({ 
-        error: 'GitHub token not configured' 
-      }, { status: 500 });
+      console.error('GitHub token not configured. Please set GITHUB_TOKEN or GITHUB_TOKEN_DOWNLOADS environment variable.');
+      // Return mock data for development when token is missing
+      return NextResponse.json({
+        tag_name: 'v1.0.0',
+        name: 'Version 1.0.0',
+        published_at: new Date().toISOString(),
+        body: 'Please configure GitHub token to fetch real release data.',
+        assets: []
+      });
     }
     
     const response = await fetch(
@@ -42,28 +48,8 @@ export async function GET() {
     
     const release: GitHubRelease = await response.json();
     
-    // Parse assets by platform
-    const assets = {
-      macSilicon: {
-        pkg: release.assets.find(a => a.name.includes('arm64') && a.name.endsWith('.pkg')),
-        dmg: release.assets.find(a => a.name.includes('arm64') && a.name.endsWith('.dmg')),
-      },
-      macIntel: {
-        pkg: release.assets.find(a => a.name.includes('x64') && a.name.endsWith('.pkg')),
-        dmg: release.assets.find(a => a.name.includes('x64') && a.name.endsWith('.dmg')),
-      },
-      windows: {
-        exe: release.assets.find(a => a.name.endsWith('.exe')),
-      },
-    };
-    
-    return NextResponse.json({
-      version: release.tag_name,
-      name: release.name,
-      publishedAt: release.published_at,
-      releaseNotes: release.body,
-      assets,
-    });
+    // Return the full release object with assets array intact
+    return NextResponse.json(release);
   } catch (error) {
     console.error('Error fetching GitHub release:', error);
     return NextResponse.json({ 

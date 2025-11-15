@@ -97,8 +97,8 @@ SENDGRID_API_KEY=your_sendgrid_key
 CONTACT_EMAIL=support@southcoastoffice.com
 
 # Admin
-ADMIN_DEFAULT_USERNAME=admin
-ADMIN_DEFAULT_PASSWORD=ChangeMe123!
+ADMIN_DEFAULT_USERNAME=Admin
+ADMIN_DEFAULT_PASSWORD=Scos5114!
 ```
 
 ### 6. Start Building

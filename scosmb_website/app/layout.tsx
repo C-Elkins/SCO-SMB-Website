@@ -29,14 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} antialiased overflow-x-hidden`}>
-        <div className="w-full max-w-[100vw]">
-          <Header />
-          <main className="w-full">
-            {children}
-          </main>
-          <Footer />
-        </div>
+      <body className={`${inter.variable} antialiased`}>
+        <Header />
+        <main>
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
