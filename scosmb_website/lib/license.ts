@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { query } from './db';
 
 export interface LicenseKey {
   id: string;
@@ -25,37 +26,6 @@ export interface DownloadLog {
   ip_address?: string;
   user_agent?: string;
   success: boolean;
-}
-
-// In-memory storage for development (replace with actual database in production)
-let licenseKeys: LicenseKey[] = [];
-let downloadLogs: DownloadLog[] = [];
-
-// Initialize with some demo keys
-if (licenseKeys.length === 0) {
-  licenseKeys = [
-    {
-      id: crypto.randomUUID(),
-      key_code: 'SCO-A1B2-C3D4-E5F6',
-      status: 'unused',
-      created_at: new Date(),
-      created_by: 'admin',
-      download_count: 0,
-      max_downloads: 3,
-    },
-    {
-      id: crypto.randomUUID(),
-      key_code: 'SCO-X9Y8-Z7W6-V5U4',
-      status: 'active',
-      created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      created_by: 'admin',
-      activated_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
-      download_count: 2,
-      max_downloads: 5,
-      customer_name: 'John Doe',
-      customer_email: 'john@example.com',
-    },
-  ];
 }
 
 export function generateLicenseKey(): string {
@@ -107,45 +77,75 @@ export function createLicenseKey(data: {
     notes: data.notes,
   };
 
-  licenseKeys.push(key);
+  // Insert into database
+  query(
+    `INSERT INTO license_keys (id, key_code, status, created_by, max_downloads, expires_at, customer_name, customer_email, customer_company, notes)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+    [key.id, key.key_code, key.status, key.created_by, key.max_downloads, key.expires_at, key.customer_name, key.customer_email, key.customer_company, key.notes]
+  ).catch(err => console.error('Error creating license key:', err));
+
   return key;
 }
 
-export function findLicenseKeyByCode(code: string): LicenseKey | undefined {
-  return licenseKeys.find((k) => k.key_code === code);
+export async function findLicenseKeyByCode(code: string): Promise<LicenseKey | undefined> {
+  try {
+    const result = await query('SELECT * FROM license_keys WHERE key_code = $1', [code]);
+    return result.rows[0] as LicenseKey | undefined;
+  } catch (error) {
+    console.error('Error finding license key:', error);
+    return undefined;
+  }
 }
 
-export function getAllLicenseKeys(): LicenseKey[] {
-  return licenseKeys.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
+export async function getAllLicenseKeys(): Promise<LicenseKey[]> {
+  try {
+    const result = await query('SELECT * FROM license_keys ORDER BY created_at DESC');
+    return result.rows as LicenseKey[];
+  } catch (error) {
+    console.error('Error getting all license keys:', error);
+    return [];
+  }
 }
 
-export function updateLicenseKey(id: string, updates: Partial<LicenseKey>): LicenseKey | null {
-  const index = licenseKeys.findIndex((k) => k.id === id);
-  if (index === -1) return null;
-
-  licenseKeys[index] = { ...licenseKeys[index], ...updates };
-  return licenseKeys[index];
+export async function updateLicenseKey(id: string, updates: Partial<LicenseKey>): Promise<LicenseKey | null> {
+  try {
+    const fields = Object.keys(updates).filter(k => k !== 'id');
+    const values = fields.map(k => updates[k as keyof LicenseKey]);
+    const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ');
+    
+    const result = await query(
+      `UPDATE license_keys SET ${setClause} WHERE id = $1 RETURNING *`,
+      [id, ...values]
+    );
+    
+    return result.rows[0] as LicenseKey || null;
+  } catch (error) {
+    console.error('Error updating license key:', error);
+    return null;
+  }
 }
 
-export function deleteLicenseKey(id: string): boolean {
-  const index = licenseKeys.findIndex((k) => k.id === id);
-  if (index === -1) return false;
-
-  licenseKeys.splice(index, 1);
-  return true;
+export async function deleteLicenseKey(id: string): Promise<boolean> {
+  try {
+    await query('DELETE FROM license_keys WHERE id = $1', [id]);
+    return true;
+  } catch (error) {
+    console.error('Error deleting license key:', error);
+    return false;
+  }
 }
 
-export function validateLicenseKey(code: string): {
+export async function validateLicenseKey(code: string): Promise<{
   valid: boolean;
   error?: string;
   key?: LicenseKey;
-} {
+}> {
   // Check format
   if (!/^SCO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
     return { valid: false, error: 'Invalid license key format' };
   }
 
-  const key = findLicenseKeyByCode(code);
+  const key = await findLicenseKeyByCode(code);
 
   if (!key) {
     return { valid: false, error: 'License key not found' };
@@ -160,7 +160,7 @@ export function validateLicenseKey(code: string): {
   }
 
   if (key.expires_at && new Date(key.expires_at) < new Date()) {
-    updateLicenseKey(key.id, { status: 'expired' });
+    await updateLicenseKey(key.id, { status: 'expired' });
     return { valid: false, error: 'This license key has expired' };
   }
 
@@ -171,51 +171,93 @@ export function validateLicenseKey(code: string): {
   return { valid: true, key };
 }
 
-export function recordDownload(
+export async function recordDownload(
   keyId: string,
   platform: string,
   version: string,
   ipAddress?: string,
   userAgent?: string
-): void {
-  const log: DownloadLog = {
-    id: crypto.randomUUID(),
-    license_key_id: keyId,
-    download_date: new Date(),
-    platform,
-    version,
-    ip_address: ipAddress,
-    user_agent: userAgent,
-    success: true,
-  };
+): Promise<void> {
+  try {
+    // Insert download log
+    await query(
+      `INSERT INTO download_logs (license_key_id, platform, version, ip_address, user_agent)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [keyId, platform, version || 'unknown', ipAddress, userAgent]
+    );
 
-  downloadLogs.push(log);
+    // Update license key
+    const result = await query('SELECT status FROM license_keys WHERE id = $1', [keyId]);
+    const currentStatus = result.rows[0]?.status;
 
-  // Update download count
-  const key = licenseKeys.find((k) => k.id === keyId);
-  if (key) {
-    key.download_count += 1;
-    if (key.status === 'unused') {
-      key.status = 'active';
-      key.activated_at = new Date();
+    if (currentStatus === 'unused') {
+      await query(
+        `UPDATE license_keys 
+         SET download_count = download_count + 1, status = 'active', activated_at = NOW()
+         WHERE id = $1`,
+        [keyId]
+      );
+    } else {
+      await query(
+        `UPDATE license_keys SET download_count = download_count + 1 WHERE id = $1`,
+        [keyId]
+      );
     }
+  } catch (error) {
+    console.error('Error recording download:', error);
   }
 }
 
-export function getDownloadLogs(keyId?: string): DownloadLog[] {
-  if (keyId) {
-    return downloadLogs.filter((log) => log.license_key_id === keyId);
+export async function getDownloadLogs(keyId?: string): Promise<DownloadLog[]> {
+  try {
+    if (keyId) {
+      const result = await query(
+        'SELECT * FROM download_logs WHERE license_key_id = $1 ORDER BY download_date DESC',
+        [keyId]
+      );
+      return result.rows as DownloadLog[];
+    }
+    const result = await query('SELECT * FROM download_logs ORDER BY download_date DESC');
+    return result.rows as DownloadLog[];
+  } catch (error) {
+    console.error('Error getting download logs:', error);
+    return [];
   }
-  return downloadLogs.sort((a, b) => b.download_date.getTime() - a.download_date.getTime());
 }
 
-export function getDownloadStats() {
-  return {
-    totalDownloads: downloadLogs.length,
-    totalKeys: licenseKeys.length,
-    activeKeys: licenseKeys.filter((k) => k.status === 'active').length,
-    unusedKeys: licenseKeys.filter((k) => k.status === 'unused').length,
-    expiredKeys: licenseKeys.filter((k) => k.status === 'expired').length,
-    revokedKeys: licenseKeys.filter((k) => k.status === 'revoked').length,
-  };
+export async function getDownloadStats() {
+  try {
+    const keysResult = await query('SELECT COUNT(*) as count, status FROM license_keys GROUP BY status');
+    const logsResult = await query('SELECT COUNT(*) as count FROM download_logs');
+
+    const stats = {
+      totalDownloads: parseInt(logsResult.rows[0]?.count || '0'),
+      totalKeys: 0,
+      activeKeys: 0,
+      unusedKeys: 0,
+      expiredKeys: 0,
+      revokedKeys: 0,
+    };
+
+    keysResult.rows.forEach((row: { status: string; count: string }) => {
+      const count = parseInt(row.count);
+      stats.totalKeys += count;
+      if (row.status === 'active') stats.activeKeys = count;
+      if (row.status === 'unused') stats.unusedKeys = count;
+      if (row.status === 'expired') stats.expiredKeys = count;
+      if (row.status === 'revoked') stats.revokedKeys = count;
+    });
+
+    return stats;
+  } catch (error) {
+    console.error('Error getting download stats:', error);
+    return {
+      totalDownloads: 0,
+      totalKeys: 0,
+      activeKeys: 0,
+      unusedKeys: 0,
+      expiredKeys: 0,
+      revokedKeys: 0,
+    };
+  }
 }

@@ -47,15 +47,18 @@ export async function initDatabase() {
     await query(`
       CREATE TABLE IF NOT EXISTS license_keys (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        key VARCHAR(19) UNIQUE NOT NULL,
-        customer_name VARCHAR(255),
-        customer_email VARCHAR(255),
-        status VARCHAR(20) DEFAULT 'active',
-        max_downloads INTEGER DEFAULT 5,
-        download_count INTEGER DEFAULT 0,
-        expires_at TIMESTAMP,
+        key_code VARCHAR(19) UNIQUE NOT NULL,
+        status VARCHAR(20) DEFAULT 'unused',
+        created_by VARCHAR(255) DEFAULT 'admin',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        activated_at TIMESTAMP,
+        expires_at TIMESTAMP,
+        download_count INTEGER DEFAULT 0,
+        max_downloads INTEGER DEFAULT 3,
+        notes TEXT,
+        customer_email VARCHAR(255),
+        customer_name VARCHAR(255),
+        customer_company VARCHAR(255)
       );
     `);
 
@@ -64,15 +67,18 @@ export async function initDatabase() {
       CREATE TABLE IF NOT EXISTS download_logs (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         license_key_id UUID REFERENCES license_keys(id) ON DELETE CASCADE,
+        download_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         platform VARCHAR(50),
         version VARCHAR(50),
         ip_address VARCHAR(45),
-        downloaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        user_agent TEXT,
+        success BOOLEAN DEFAULT true
       );
     `);
 
     // Create indexes
-    await query(`CREATE INDEX IF NOT EXISTS idx_license_keys_key ON license_keys(key);`);
+    await query(`CREATE INDEX IF NOT EXISTS idx_license_keys_key_code ON license_keys(key_code);`);
+    await query(`CREATE INDEX IF NOT EXISTS idx_license_keys_status ON license_keys(status);`);
     await query(`CREATE INDEX IF NOT EXISTS idx_download_logs_license_key_id ON download_logs(license_key_id);`);
 
     console.log('✅ Database tables initialized');

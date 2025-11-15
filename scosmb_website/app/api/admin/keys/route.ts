@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const keys = getAllLicenseKeys();
-    const stats = getDownloadStats();
+    const keys = await getAllLicenseKeys();
+    const stats = await getDownloadStats();
 
     return NextResponse.json({ keys, stats });
   } catch (error) {
@@ -84,7 +84,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Key ID is required' }, { status: 400 });
     }
 
-    const updatedKey = updateLicenseKey(id, updates);
+    const updatedKey = await updateLicenseKey(id, updates);
 
     if (!updatedKey) {
       return NextResponse.json({ error: 'Key not found' }, { status: 404 });
@@ -110,7 +110,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Key ID is required' }, { status: 400 });
     }
 
-    const success = deleteLicenseKey(id);
+    const success = await deleteLicenseKey(id);
 
     if (!success) {
       return NextResponse.json({ error: 'Key not found' }, { status: 404 });

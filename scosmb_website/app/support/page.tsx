@@ -8,7 +8,7 @@ export default function SupportPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-20">
+      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -27,7 +27,7 @@ export default function SupportPage() {
       </section>
 
       {/* Support Options */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-10 md:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <motion.div

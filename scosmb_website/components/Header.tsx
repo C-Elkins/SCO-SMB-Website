@@ -33,26 +33,26 @@ export default function Header() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
               src="/logos/sco-smb-logo-primary.svg"
               alt="SCO SMB"
-              width={150}
-              height={41}
+              width={120}
+              height={33}
               priority
-              className="h-10 w-auto"
+              className="h-8 w-auto"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-gray-700 hover:text-[#00A8B5] font-medium transition-colors duration-200 relative group"
+                className="text-sm text-gray-700 hover:text-[#00A8B5] font-medium transition-colors duration-200 relative group"
               >
                 {link.name}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#00A8B5] transition-all duration-200 group-hover:w-full"></span>

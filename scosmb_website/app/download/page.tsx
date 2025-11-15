@@ -120,17 +120,17 @@ export default function DownloadPage() {
   const assets = getAssetsByPlatform();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-16 md:py-20">
-      <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+    <div className="min-h-screen bg-gray-50 py-8 md:py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#153B6B] mb-6 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#153B6B] mb-4 text-center">
             Download SCO SMB
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 text-center mb-16">
+          <p className="text-lg md:text-xl text-gray-600 text-center mb-12">
             {isLoadingRelease ? 'Loading latest release...' : `Version ${release?.tag_name || 'N/A'} • ${release ? formatDate(release.published_at) : ''}`}
           </p>
 

@@ -3,9 +3,9 @@ import { query } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
-    const { licenseKey, platform } = await request.json();
+    const { licenseKey, platform, version } = await request.json();
     
-    // Validate format (flexible to allow TEST keys and standard keys)
+    // Validate format
     if (!licenseKey || !/^SCO-.+-.+-.+$/.test(licenseKey)) {
       return NextResponse.json({ 
         valid: false, 
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     
     // Check database
     const result = await query(
-      'SELECT * FROM license_keys WHERE key = $1',
+      'SELECT * FROM license_keys WHERE key_code = $1',
       [licenseKey]
     );
     
@@ -83,9 +83,9 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || 'unknown';
     
     await query(
-      `INSERT INTO download_logs (license_key_id, platform, ip_address, user_agent) 
-       VALUES ($1, $2, $3, $4)`,
-      [key.id, platform || 'unknown', ip, userAgent]
+      `INSERT INTO download_logs (license_key_id, platform, version, ip_address, user_agent) 
+       VALUES ($1, $2, $3, $4, $5)`,
+      [key.id, platform || 'unknown', version || 'unknown', ip, userAgent]
     );
     
     return NextResponse.json({ 
