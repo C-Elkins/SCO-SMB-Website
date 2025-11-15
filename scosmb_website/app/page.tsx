@@ -59,10 +59,10 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white w-full">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 md:py-28 w-full">
+      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 md:py-28">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -114,7 +114,7 @@ export default function Home() {
 
       {/* Features Grid */}
       <section className="py-20 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -156,8 +156,8 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-24 bg-[#153B6B] text-white w-full">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 w-full text-center">
+      <section className="py-20 md:py-24 bg-[#153B6B] text-white">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
