@@ -36,8 +36,11 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
   min-height: 100vh;
+}
+
+main {
+  padding-top: 70px;
 }
 
 /* Smooth scrolling offset for fixed header */
