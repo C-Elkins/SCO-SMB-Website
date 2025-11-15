@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     
     // Check database
     const result = await query(
-      'SELECT * FROM license_keys WHERE key_code = $1',
+      'SELECT * FROM license_keys WHERE key = $1',
       [licenseKey]
     );
     
