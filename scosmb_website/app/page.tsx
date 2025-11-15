@@ -103,7 +103,8 @@ export default function Home() {
                 alt="SCO SMB Dashboard"
                 width={600}
                 height={400}
-                className="rounded-lg shadow-2xl"
+                className="rounded-lg shadow-2xl w-full"
+                style={{ height: 'auto' }}
                 priority
               />
             </motion.div>
