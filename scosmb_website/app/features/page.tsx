@@ -73,7 +73,7 @@ export default function FeaturesPage() {
         "HTTP POST endpoint",
         "Protocol auto-detection"
       ],
-      image: "/screenshots/co-smb-ftp-server..png"
+      image: "/screenshots/sco-smb-ftp-server.png"
     },
     {
       icon: <History className="w-12 h-12" />,

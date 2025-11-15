@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   title: "SCO SMB - Enterprise Scanning Solution | South Coast Office",
   description: "Professional document scanning for Kyocera & Sharp printers. Receive scans directly to your computer with automatic organization, security, and enterprise features.",
   keywords: ["document scanning", "Kyocera scanner", "Sharp MFP", "FTP server", "SMB scanning", "enterprise scanning", "network scanner"],
+  openGraph: {
+    title: "SCO SMB - Enterprise Scanning Solution",
+    description: "Professional document scanning for network printers",
+    type: "website",
+    url: "https://sco-smb-website.vercel.app",
+  },
 };
 
 export default function RootLayout({
