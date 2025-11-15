@@ -127,7 +127,7 @@ export default function DownloadPage() {
                     value={licenseKey}
                     onChange={handleKeyChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent text-lg font-mono"
-                    maxLength={19}
+                    maxLength={25}
                   />
                 </div>
 
