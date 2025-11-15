@@ -59,11 +59,11 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section className="relative bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white w-full">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 md:py-28 w-full">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -76,10 +76,10 @@ export default function Home() {
                 Receive scans from Kyocera & Sharp printers directly to your computer. 
                 No walking to the printer. Just press scan and go.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <Link
                   href="/download"
-                  className="inline-flex items-center justify-center px-6 py-3 text-base bg-white text-[#153B6B] font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-lg"
+                  className="inline-flex items-center justify-center px-8 py-4 text-base bg-white text-[#153B6B] font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 shadow-lg"
                 >
                   Download Now
                 </Link>
@@ -113,14 +113,14 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-10"
+            className="text-center mb-16"
           >
             <h2 className="text-2xl md:text-3xl font-bold text-[#153B6B] mb-3">
               Professional Features for Modern Offices
@@ -130,7 +130,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -138,7 +138,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="text-[#00A8B5] mb-3">
                   {feature.icon}
@@ -156,8 +156,8 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 md:py-16 bg-[#153B6B] text-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-20 md:py-24 bg-[#153B6B] text-white">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -167,12 +167,12 @@ export default function Home() {
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
               Ready to Transform Your Document Workflow?
             </h2>
-            <p className="text-base md:text-lg mb-6 text-gray-200">
+            <p className="text-base md:text-lg mb-8 text-gray-200">
               Download SCO SMB today and experience professional scanning infrastructure
             </p>
             <Link
               href="/download"
-              className="inline-flex items-center justify-center px-6 py-3 bg-[#00A8B5] text-white font-semibold rounded-lg hover:bg-[#008c97] transition-all duration-200 shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-[#00A8B5] text-white font-semibold rounded-lg hover:bg-[#008c97] transition-all duration-200 shadow-lg"
             >
               Get Started Free
             </Link>

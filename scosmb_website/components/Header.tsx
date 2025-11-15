@@ -28,32 +28,32 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full ${
         isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md' : 'bg-white shadow-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-3">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        <div className="flex justify-between items-center py-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center flex-shrink-0">
             <Image
               src="/logos/sco-smb-logo-primary.svg"
               alt="SCO SMB"
-              width={120}
-              height={33}
+              width={200}
+              height={55}
               priority
-              className="h-8"
-              style={{ width: 'auto', height: '32px' }}
+              className="h-14 w-auto"
+              style={{ width: 'auto', height: '56px' }}
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-8 ml-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm text-gray-700 hover:text-[#00A8B5] font-medium transition-colors duration-200 relative group"
+                className="text-base text-gray-700 hover:text-[#00A8B5] font-medium transition-colors duration-200 relative group"
               >
                 {link.name}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#00A8B5] transition-all duration-200 group-hover:w-full"></span>
