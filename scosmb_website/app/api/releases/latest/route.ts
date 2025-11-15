@@ -15,7 +15,7 @@ interface GitHubRelease {
 
 export async function GET() {
   try {
-    const token = process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_TOKEN_DOWNLOADS || process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_REPO_OWNER || 'C-Elkins';
     const repo = process.env.GITHUB_REPO_NAME || 'SCO-SMB';
     
