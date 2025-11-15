@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} antialiased`}>
         <Header />
-        <main className="pt-[70px]">
+        <main className="pt-[80px]">
           {children}
         </main>
         <Footer />

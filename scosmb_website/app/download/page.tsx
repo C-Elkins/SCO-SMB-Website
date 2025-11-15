@@ -93,17 +93,17 @@ export default function DownloadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-16 md:py-24">
+      <div className="w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-[#153B6B] mb-4 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#153B6B] mb-6 text-center">
             Download SCO SMB
           </h1>
-          <p className="text-xl text-gray-600 text-center mb-12">
+          <p className="text-xl md:text-2xl text-gray-600 text-center mb-16">
             Enter your license key to download the latest version
           </p>
 
