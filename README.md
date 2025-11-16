@@ -1,204 +1,118 @@
-# SCO SMB Website
+# SCO SMB - Enterprise Printer Connectivity
 
-**🌐 Official website for SCO SMB - Enterprise printer connectivity solution**
+**🌐 Professional network printer management solution for businesses**
 
-**Live Site:** [https://sco-smb-website.vercel.app](https://sco-smb-website.vercel.app) | **Company:** [South Coast Office Supply](https://southcoastoffice.com)
-
----
-
-## 🎯 About This Project
-
-This is the **public marketing website** for SCO SMB software, featuring:
-
-- 🔐 **Secure License System** - Validated downloads with GitHub integration
-- 👨‍💻 **Technician Portal** - Unrestricted access for IT professionals  
-- 🛡️ **Admin Dashboard** - License key management and analytics
-- 📱 **Responsive Design** - Professional enterprise UI/UX
-- ⚡ **Next.js 15** - Production-ready with TypeScript
-
-**Note:** This repository contains only the **website code**. The actual SCO SMB software is stored in a separate private repository.
+[![Live Website](https://img.shields.io/badge/Live%20Site-sco--smb--website.vercel.app-blue?style=for-the-badge&logo=vercel)](https://sco-smb-website.vercel.app)
+[![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js%2015-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 
 ---
 
-## 📁 Project Structure
+## 🚀 About SCO SMB
 
-```
-SCOSMB-Website/
-├── WEBSITE_MASTER_PROMPT.md      # Complete implementation guide
-├── README.md                      # This file
-├── assets/                        # Assets ready to use
-│   ├── logos/
-│   │   ├── sco-smb-logo-primary.svg   ✅ Main logo
-│   │   └── sco-smb-logo-dark.png      ✅ Dark version
-│   └── screenshots/               # Save 8 screenshots here
-│       └── screenshot-naming-guide.md  # Naming instructions
-└── (Next.js project will be created here)
-```
+**SCO SMB** is a powerful enterprise-grade solution designed to simplify network printer connectivity and management for businesses of all sizes. Our software provides seamless integration between workstations and network printers, ensuring reliable printing across your entire organization.
 
----
+### ✨ Key Features
 
-## 🚀 Architecture Overview
+- 🖨️ **Universal Printer Support** - Works with all major printer manufacturers
+- 🔐 **Enterprise Security** - Secure connections and authentication
+- 📊 **Centralized Management** - Monitor and manage all network printers
+- ⚡ **Easy Installation** - Quick setup with minimal configuration
+- 🛠️ **Professional Support** - Dedicated technical assistance
+- 🔄 **Automatic Updates** - Stay current with latest features
 
-### Tech Stack
-- **Framework:** Next.js 15 with App Router
-- **Database:** PostgreSQL (Neon/Vercel Postgres)
-- **Styling:** Tailwind CSS with custom design system
-- **Authentication:** JWT-based admin system
-- **Deployment:** Vercel with automatic deployments
-- **APIs:** GitHub integration for software releases
+### 🏢 Perfect For
 
-### Key Components
-- **License Validation System** - Secure key verification before downloads
-- **GitHub Integration** - Pulls latest releases from private SCO-SMB repository
-- **Admin Panel** - Complete license key management with analytics
-- **Technician Portal** - Password-protected unrestricted access
-- **Email System** - Contact forms with Resend integration
-
-## 🔧 Configuration Required
-
-### Environment Variables (Vercel)
-
-**Critical for GitHub Integration:**
-```bash
-GITHUB_TOKEN_DOWNLOADS=ghp_xxxxx  # Personal Access Token with repo access
-GITHUB_REPO_OWNER=C-Elkins
-GITHUB_REPO_NAME=SCO-SMB
-```
-
-**Database & Authentication:**
-```bash
-DATABASE_URL=postgresql://...     # Neon/Vercel Postgres URL
-JWT_SECRET=your_jwt_secret_key    # Min 32 chars
-ADMIN_USERNAME=admin_user
-ADMIN_PASSWORD=secure_password
-```
-
-**Optional Services:**
-```bash
-RESEND_API_KEY=re_xxxxx          # Email service
-PORTAL_PASSWORD=TechPortal2025!   # Technician portal
-```
-
-### GitHub Token Setup
-
-1. Go to GitHub → Settings → Developer settings → Personal access tokens
-2. Create new token with `repo` access to `C-Elkins/SCO-SMB` repository
-3. Add as `GITHUB_TOKEN_DOWNLOADS` in Vercel environment variables
-4. Redeploy application
-
-**Without this token, the download page will show mock data instead of real releases.**
+- **Small to Medium Businesses** looking to streamline printer management
+- **IT Departments** needing centralized printer control
+- **Remote Teams** requiring reliable printer connectivity
+- **Growing Companies** scaling their printing infrastructure
 
 ---
 
-## 🔑 Key Features
+## 🌐 Website Features
 
-### For End Users
-- ✅ License key validation required for downloads
-- ✅ Platform auto-detection (Mac Intel/Silicon, Windows)
-- ✅ Latest release from GitHub (dynamic)
-- ✅ Professional marketing pages
+Our professional website provides multiple access levels for different user types:
 
-### For Technicians (`/portal`)
-- ✅ Password-protected (no license key needed)
-- ✅ Unrestricted downloads (all versions)
-- ✅ Complete documentation access
-- ✅ Beta builds & tools
+### 🔐 **For Customers**
+- **Secure Downloads** - License key validation ensures authentic software access
+- **Latest Releases** - Always get the most current version
+- **Multi-Platform** - Support for Windows and macOS
+- **Documentation** - Comprehensive setup guides and tutorials
+- **Professional Support** - Direct contact with our technical team
 
-### For Admins (`/admin`)
-- ✅ Generate license keys (single or batch)
-- ✅ View/manage all keys
-- ✅ Download analytics
-- ✅ Revoke/expire keys
-- ✅ Usage tracking
+### 👨‍💻 **For IT Professionals**
+- **Technician Portal** - Unrestricted access for IT departments
+- **Beta Access** - Early access to new features and updates
+- **Technical Resources** - Advanced configuration guides
+- **Bulk Licensing** - Enterprise license management
 
----
-
-## 📋 Pages
-
-1. **Home** - Hero, features, CTA
-2. **Features** - Detailed feature showcase
-3. **Download** - License key validation + downloads 🔐
-4. **Documentation** - Guides, FAQ, tutorials
-5. **Security** - Enterprise security features
-6. **Support** - Contact form, FAQ
-7. **About** - Company info
-8. **Contact** - Contact form, location, map
-9. **Technician Portal** - No license key required 👨‍💻
-10. **Admin Dashboard** - Key management 🔑
+### 🛡️ **Enterprise Grade**
+- **Secure Infrastructure** - Built with modern security practices
+- **Scalable Architecture** - Handles high traffic and concurrent users
+- **Real-time Analytics** - Track software usage and downloads
+- **Professional Design** - Clean, accessible interface
 
 ---
 
-## 🎨 Design System
+## 🛠️ Getting Started
 
-**Colors:**
-- Primary Navy: `#153B6B`
-- Accent Teal: `#00A8B5`
-- Neutral Light: `#E9ECEF`
-- Neutral Dark: `#2E2E2E`
+### 📥 **Download SCO SMB**
 
-**Typography:**
-- Font: Inter (Google Fonts)
-- Weights: 400, 500, 600, 700
+1. **Visit** → [https://sco-smb-website.vercel.app](https://sco-smb-website.vercel.app)
+2. **Go to Download** → Enter your license key
+3. **Select Platform** → Choose Windows or macOS
+4. **Install** → Follow the setup wizard
+5. **Configure** → Connect to your network printers
 
-**Components:**
-- Smooth scrolling
-- Lazy loading images
-- Framer Motion animations
-- Mobile-first responsive
-- Accessibility (WCAG 2.1 AA)
+### 🔑 **Need a License Key?**
 
----
+- **New Customers** → [Contact Sales](https://sco-smb-website.vercel.app/contact?subject=license)
+- **Existing Customers** → Check your email or contact support
+- **IT Professionals** → Use the [Technician Portal](https://sco-smb-website.vercel.app/portal)
 
-## 📊 Database Schema
+### 📚 **Resources**
 
-### Tables
-1. **license_keys** - Generated keys, status, usage
-2. **download_logs** - Track all downloads
-3. **admin_users** - Admin authentication
-
-See full schema in `WEBSITE_MASTER_PROMPT.md` section "🔐 License Key System Implementation"
+- **📖 Documentation** → [Setup Guides & Tutorials](https://sco-smb-website.vercel.app/docs)
+- **🔒 Security** → [Enterprise Security Features](https://sco-smb-website.vercel.app/security)
+- **💡 Features** → [Complete Feature Overview](https://sco-smb-website.vercel.app/features)
+- **🆘 Support** → [Technical Support](https://sco-smb-website.vercel.app/support)
 
 ---
 
-## 🚀 Deployment Status
+## 💬 Support & Contact
 
-✅ **Successfully deployed to Vercel**  
-✅ **Database connected and operational**  
-✅ **Admin panel with 8 license keys generated**  
-✅ **TypeScript compilation resolved**  
-⚠️ **GitHub integration requires token configuration**
+### 🏢 **South Coast Office Supply**
 
-### Current Status
-- Website is live and fully functional
-- License key system operational with real database
-- Admin dashboard working with enterprise features
-- Download page shows placeholder data until GitHub token is configured
+**📍 Location**  
+199 N Broadway  
+Coos Bay, OR 97420
 
-### Next Actions Needed
-1. **Configure GitHub Token** in Vercel environment variables
-2. **Test download functionality** with real private repo data
-3. **Add production content** (screenshots, final copy)
-4. **Set up monitoring** and analytics
+**📞 Contact**  
+Phone: [(541) 267-5114](tel:+15412675114)  
+Email: [support@southcoastoffice.com](mailto:support@southcoastoffice.com)
 
----
+**🕒 Business Hours**  
+Monday - Friday: 9:00 AM - 5:00 PM PST  
+Saturday - Sunday: Closed
 
-## 📞 Company Information
+### 🆘 **Get Help**
 
-**South Coast Office Supply**  
-📧 support@southcoastoffice.com  
-📞 (541) 267-5114  
-📍 199 N Broadway, Coos Bay, OR 97420
+- **💬 General Questions** → [Contact Form](https://sco-smb-website.vercel.app/contact)
+- **🔧 Technical Support** → [Support Portal](https://sco-smb-website.vercel.app/support)
+- **💼 Sales Inquiries** → [Request License](https://sco-smb-website.vercel.app/contact?subject=license)
+- **👨‍💻 IT Professionals** → [Technician Portal](https://sco-smb-website.vercel.app/portal)
 
 ---
 
-## 📋 Development Notes
+## 📜 License & Legal
 
-This website was built with enterprise-grade features including:
-- Comprehensive admin dashboard with real-time metrics
-- System maintenance and monitoring panels
-- Functional edit/eye buttons with database operations
-- Password management with bcrypt hashing
-- Real data persistence using PostgreSQL
-- Professional UI matching enterprise standards
+© 2024 South Coast Office Supply. All rights reserved.
 
-**For development questions or GitHub token configuration, contact the development team.**
+**SCO SMB** is proprietary software. Unauthorized distribution or use is prohibited. 
+
+For licensing terms and conditions, please contact our sales team.
+
+---
+
+*Built with ❤️ in Coos Bay, Oregon*
