@@ -21,7 +21,13 @@ export async function PUT(
     const { username, email, role, password, isActive } = body;
 
     // Build the update object
-    const updateData: any = {
+    const updateData: Partial<{
+      username: string;
+      email: string;
+      role: string;
+      is_active: boolean;
+      password_hash: string;
+    }> = {
       username,
       email,
       role,
@@ -63,9 +69,10 @@ export async function PUT(
       message: 'Admin user updated successfully',
       user: updatedUser
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Update admin user error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -94,8 +101,9 @@ export async function DELETE(
     await db.delete(admin_users).where(eq(admin_users.id, userId));
 
     return NextResponse.json({ message: 'Admin user deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Delete admin user error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

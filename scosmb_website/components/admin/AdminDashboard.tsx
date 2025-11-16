@@ -10,7 +10,7 @@ import {
   Settings, 
   Plus, 
   Search,
-  Filter,
+
   RefreshCw,
   Calendar,
   Clock,
@@ -24,9 +24,9 @@ import {
   Shield,
   Save,
   Trash2,
-  MoreHorizontal,
-  Globe,
-  Monitor
+
+
+
 } from 'lucide-react';
 import { AdminAnalytics } from './AdminAnalytics';
 import { EnterpriseSettingsPanel } from './EnterpriseSettingsPanel';
@@ -227,7 +227,7 @@ export function AdminDashboard() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         setSelectedAdmin(null);
         fetchDashboardData();
         alert('Admin user updated successfully!');
@@ -1075,7 +1075,7 @@ export function AdminDashboard() {
               </div>
             </div>
             
-            <form onSubmit={(e) => handleAdminUserSave(e, selectedAdmin.id)}>
+            <form onSubmit={(e) => handleAdminUserSave(e, parseInt(selectedAdmin.id))}>
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>

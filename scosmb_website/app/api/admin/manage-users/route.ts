@@ -51,7 +51,7 @@ export async function DELETE(request: NextRequest) {
     
     // Delete by ID or username
     const whereClause = userId ? eq(admin_users.id, userId) : eq(admin_users.username, username!);
-    const result = await db.delete(admin_users).where(whereClause);
+    await db.delete(admin_users).where(whereClause);
     
     return NextResponse.json({ 
       success: true, 
@@ -78,7 +78,7 @@ export async function PATCH(request: NextRequest) {
     const db = getDb();
     const whereClause = userId ? eq(admin_users.id, userId) : eq(admin_users.username, username!);
     
-    const updateData: any = {};
+    const updateData: Partial<{ password_hash: string; email: string }> = {};
     
     if (newPassword) {
       updateData.password_hash = await bcrypt.hash(newPassword, 12);

@@ -1,11 +1,11 @@
-import { NextRequest } from 'next/server';
+
 import { getDb } from '@/lib/db';
 import { license_keys, admin_users } from '@/lib/schema';
 import { eq, count, sum, gte } from 'drizzle-orm';
 
 export const runtime = 'nodejs';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const db = getDb();
     

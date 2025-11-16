@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import { license_keys, download_logs, admin_users } from '@/lib/schema';
+import { license_keys, download_logs } from '@/lib/schema';
 import { getAdminSession } from '@/lib/auth';
 import { eq, count, sum, gte, sql, desc } from 'drizzle-orm';
 
@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
 
     // Calculate date ranges
     const now = new Date();
-    let startDate = new Date();
-    let lastPeriodStart = new Date();
+    const startDate = new Date();
+    const lastPeriodStart = new Date();
     
     switch (range) {
       case '7d':

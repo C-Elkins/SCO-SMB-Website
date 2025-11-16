@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send email using Resend
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'SCO SMB Website <noreply@southcoastoffice.com>',
       to: ['support@southcoastoffice.com'],
       replyTo: email,

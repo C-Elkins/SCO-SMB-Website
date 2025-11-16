@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Search, Filter, Download, Eye, Trash2, Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import { Search, Eye, Trash2, Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
 interface LicenseRow {
   id: string;
@@ -53,7 +53,7 @@ export function AdminLicenseTable() {
 
   // Filter and sort rows
   useEffect(() => {
-    let filtered = rows.filter(row => {
+    const filtered = rows.filter(row => {
       const matchesSearch = 
         row.key_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         row.customer_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||

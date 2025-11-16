@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import getPool from '@/lib/db';
-import { generateLicenseKey } from '@/lib/generateLicenseKey';
+
 
 export async function POST() {
   try {

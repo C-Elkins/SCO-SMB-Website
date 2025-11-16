@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { license_keys, admin_users, download_logs } from '@/lib/schema';
-import { count, sql, desc, eq } from 'drizzle-orm';
+import { count, sql, eq } from 'drizzle-orm';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const session = await getAdminSession();
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

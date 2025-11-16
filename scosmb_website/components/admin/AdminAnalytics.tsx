@@ -57,11 +57,7 @@ export function AdminAnalytics() {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('30d');
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [timeRange]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/admin/analytics?range=${timeRange}`, { credentials: 'include' });
@@ -111,7 +107,11 @@ export function AdminAnalytics() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange]);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   if (loading) {
     return (
@@ -287,7 +287,7 @@ export function AdminAnalytics() {
           </h3>
           
           <div className="space-y-2">
-            {(data?.monthlyTrends || []).map((month, index) => (
+            {(data?.monthlyTrends || []).map((month) => (
               <div key={month.month} className="flex items-center justify-between py-2">
                 <span className="text-sm font-medium text-gray-600 w-8">
                   {month.month}
