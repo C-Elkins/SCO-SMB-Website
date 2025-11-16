@@ -45,7 +45,7 @@ export async function PUT(
     const [updatedUser] = await db
       .update(admin_users)
       .set(updateData)
-      .where(eq(admin_users.id, parseInt(userId)))
+      .where(eq(admin_users.id, userId))
       .returning({
         id: admin_users.id,
         username: admin_users.username,
@@ -85,7 +85,7 @@ export async function DELETE(
     const { userId } = await params;
 
     // Don't allow deleting yourself
-    if (parseInt(userId) === session.userId) {
+    if (userId === session.userId) {
       return NextResponse.json(
         { error: 'Cannot delete your own account' },
         { status: 400 }
@@ -93,7 +93,7 @@ export async function DELETE(
     }
 
     // Delete the admin user
-    await db.delete(admin_users).where(eq(admin_users.id, parseInt(userId)));
+    await db.delete(admin_users).where(eq(admin_users.id, userId));
 
     return NextResponse.json({ message: 'Admin user deleted successfully' });
   } catch (error: any) {
