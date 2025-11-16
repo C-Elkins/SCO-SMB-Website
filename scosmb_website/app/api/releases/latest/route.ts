@@ -13,27 +13,38 @@ interface GitHubRelease {
   }>;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const token = process.env.GITHUB_TOKEN_DOWNLOADS || process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_REPO_OWNER || 'C-Elkins';
     const repo = process.env.GITHUB_REPO_NAME || 'SCO-SMB';
     
-    console.log('GitHub API Request:', {
+    // Add timestamp for debugging deployment and caching issues
+    const deploymentTime = new Date().toISOString();
+    
+    console.log('GitHub API Request - Full Debug:', {
+      timestamp: deploymentTime,
       hasToken: !!token,
-      tokenPrefix: token ? token.substring(0, 8) + '...' : 'none',
+      tokenPrefix: token ? token.substring(0, 12) + '...' : 'MISSING',
+      tokenSuffix: token ? '...' + token.substring(token.length - 4) : 'MISSING',
       owner,
       repo,
-      url: `https://api.github.com/repos/${owner}/${repo}/releases/latest`
+      url: `https://api.github.com/repos/${owner}/${repo}/releases/latest`,
+      allEnvVars: {
+        GITHUB_TOKEN_DOWNLOADS: !!process.env.GITHUB_TOKEN_DOWNLOADS,
+        GITHUB_TOKEN: !!process.env.GITHUB_TOKEN,
+        GITHUB_REPO_OWNER: process.env.GITHUB_REPO_OWNER,
+        GITHUB_REPO_NAME: process.env.GITHUB_REPO_NAME
+      }
     });
     
     if (!token) {
       console.error('GitHub token not configured. Please set GITHUB_TOKEN_DOWNLOADS environment variable in Vercel.');
       return NextResponse.json({
         tag_name: 'v1.0.0',
-        name: 'Version 1.0.0 - Configuration Required',
+        name: `Version 1.0.0 - No Token Found (${deploymentTime.substring(11, 19)})`,
         published_at: new Date().toISOString(),
-        body: '⚠️ **GitHub Integration Not Configured**\n\nToken not found in environment variables.\n\nPlease check:\n1. GITHUB_TOKEN_DOWNLOADS is set in Vercel\n2. Token has repo access to C-Elkins/SCO-SMB\n3. Application has been redeployed after adding the token',
+        body: `⚠️ **GitHub Integration Not Configured** (${deploymentTime})\n\nToken not found in environment variables.\n\nDebugging info:\n- GITHUB_TOKEN_DOWNLOADS: ${!!process.env.GITHUB_TOKEN_DOWNLOADS}\n- GITHUB_TOKEN: ${!!process.env.GITHUB_TOKEN}\n- Expected repo: C-Elkins/SCO-SMB\n\nPlease:\n1. Verify GITHUB_TOKEN_DOWNLOADS is set in Vercel\n2. Redeploy the application\n3. Check this error shows updated timestamp`,
         assets: []
       });
     }
@@ -43,9 +54,12 @@ export async function GET() {
       {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github.v3+json'
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'SCO-SMB-Website'
         },
-        next: { revalidate: 300 } // Cache for 5 minutes
+        // Reduce cache time for debugging and add cache busting
+        next: { revalidate: 60 },
+        cache: 'no-store' // Temporarily disable caching for debugging
       }
     );
     
@@ -66,9 +80,9 @@ export async function GET() {
       // Return helpful error info instead of generic error
       return NextResponse.json({
         tag_name: 'v1.0.0',
-        name: `Version 1.0.0 - API Error ${response.status}`,
+        name: `Version 1.0.0 - API Error ${response.status} (${deploymentTime.substring(11, 19)})`,
         published_at: new Date().toISOString(),
-        body: `⚠️ **GitHub API Error ${response.status}**\n\n${response.statusText}\n\nPossible issues:\n- Token doesn't have access to private repo C-Elkins/SCO-SMB\n- Token has expired or is invalid\n- Repository name/owner is incorrect\n- Rate limit exceeded\n\nCheck Vercel Function logs for more details.`,
+        body: `⚠️ **GitHub API Error ${response.status}** (${deploymentTime})\n\n${response.statusText}\n\n**Debug Info:**\n- Token: ${token.substring(0, 12)}...${token.substring(token.length - 4)}\n- Repo: ${owner}/${repo}\n- Error: ${errorText}\n\n**Possible issues:**\n- Token doesn't have access to private repo C-Elkins/SCO-SMB\n- Token has expired or is invalid\n- Repository name/owner is incorrect\n- Rate limit exceeded`,
         assets: []
       });
     }
