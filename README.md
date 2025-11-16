@@ -1,6 +1,22 @@
-# SCO SMB Website Project
+# SCO SMB Website
 
-**Enterprise-grade marketing website with license key management system**
+**🌐 Official website for SCO SMB - Enterprise printer connectivity solution**
+
+**Live Site:** [https://sco-smb-website.vercel.app](https://sco-smb-website.vercel.app) | **Company:** [South Coast Office Supply](https://southcoastoffice.com)
+
+---
+
+## 🎯 About This Project
+
+This is the **public marketing website** for SCO SMB software, featuring:
+
+- 🔐 **Secure License System** - Validated downloads with GitHub integration
+- 👨‍💻 **Technician Portal** - Unrestricted access for IT professionals  
+- 🛡️ **Admin Dashboard** - License key management and analytics
+- 📱 **Responsive Design** - Professional enterprise UI/UX
+- ⚡ **Next.js 15** - Production-ready with TypeScript
+
+**Note:** This repository contains only the **website code**. The actual SCO SMB software is stored in a separate private repository.
 
 ---
 
@@ -21,94 +37,56 @@ SCOSMB-Website/
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Architecture Overview
 
-### 1. Review the Master Prompt
+### Tech Stack
+- **Framework:** Next.js 15 with App Router
+- **Database:** PostgreSQL (Neon/Vercel Postgres)
+- **Styling:** Tailwind CSS with custom design system
+- **Authentication:** JWT-based admin system
+- **Deployment:** Vercel with automatic deployments
+- **APIs:** GitHub integration for software releases
 
-Open `WEBSITE_MASTER_PROMPT.md` - this contains EVERYTHING you need:
-- Complete page structure (10 pages)
-- License key system implementation
-- Technician portal (password-protected)
-- Admin dashboard (key generation & analytics)
-- GitHub API integration
-- Database schema
-- UI/UX designs
-- Code examples
+### Key Components
+- **License Validation System** - Secure key verification before downloads
+- **GitHub Integration** - Pulls latest releases from private SCO-SMB repository
+- **Admin Panel** - Complete license key management with analytics
+- **Technician Portal** - Password-protected unrestricted access
+- **Email System** - Contact forms with Resend integration
 
-### 2. Save Your Screenshots
+## 🔧 Configuration Required
 
-Place 8 screenshots in `assets/screenshots/` with these exact names:
-- `sco-smb-hero-dashboard.png`
-- `sco-smb-dashboard-detail.png`
-- `sco-smb-security-settings.png`
-- `sco-smb-scan-history.png`
-- `sco-smb-ftp-server.png`
-- `sco-smb-general-settings.png`
-- `sco-smb-splash-screen.png`
-- `sco-smb-logo-illustration.png`
+### Environment Variables (Vercel)
 
-See: `assets/screenshot-naming-guide.md`
-
-### 3. Create Next.js Project
-
+**Critical for GitHub Integration:**
 ```bash
-npx create-next-app@latest .
-# Choose: Yes to TypeScript, Yes to Tailwind, Yes to App Router
-
-# Install dependencies
-npm install framer-motion lucide-react react-hook-form zod @hookform/resolvers
-npm install pg bcryptjs jsonwebtoken
-npm install -D @types/bcryptjs @types/jsonwebtoken
-```
-
-### 4. Set Up Database
-
-```bash
-# Install PostgreSQL (Mac)
-brew install postgresql
-brew services start postgresql
-
-# Create database
-createdb scosmb_website
-
-# Add to .env.local
-DATABASE_URL=postgresql://localhost:5432/scosmb_website
-```
-
-### 5. Configure Environment Variables
-
-Create `.env.local`:
-
-```bash
-# GitHub API
-GITHUB_TOKEN=ghp_your_token_here
+GITHUB_TOKEN_DOWNLOADS=ghp_xxxxx  # Personal Access Token with repo access
 GITHUB_REPO_OWNER=C-Elkins
 GITHUB_REPO_NAME=SCO-SMB
-
-# Database
-DATABASE_URL=postgresql://localhost:5432/scosmb_website
-
-# License Key System
-JWT_SECRET=your_super_secret_key_min_32_chars
-PORTAL_PASSWORD=TechPortal2025!
-
-# Email
-SENDGRID_API_KEY=your_sendgrid_key
-CONTACT_EMAIL=support@southcoastoffice.com
-
-# Admin
-ADMIN_DEFAULT_USERNAME=Admin
-ADMIN_DEFAULT_PASSWORD=Scos5114!
 ```
 
-### 6. Start Building
+**Database & Authentication:**
+```bash
+DATABASE_URL=postgresql://...     # Neon/Vercel Postgres URL
+JWT_SECRET=your_jwt_secret_key    # Min 32 chars
+ADMIN_USERNAME=admin_user
+ADMIN_PASSWORD=secure_password
+```
 
-Follow the implementation steps in `WEBSITE_MASTER_PROMPT.md`:
-- Phase 1: Setup & database (Day 1)
-- Phase 2: License key system (Days 2-3)
-- Phase 3: Core pages (Days 4-5)
-- Phase 4: Technician portal & admin (Days 6-7)
-- Phase 5: Polish & deploy (Day 8)
+**Optional Services:**
+```bash
+RESEND_API_KEY=re_xxxxx          # Email service
+PORTAL_PASSWORD=TechPortal2025!   # Technician portal
+```
+
+### GitHub Token Setup
+
+1. Go to GitHub → Settings → Developer settings → Personal access tokens
+2. Create new token with `repo` access to `C-Elkins/SCO-SMB` repository
+3. Add as `GITHUB_TOKEN_DOWNLOADS` in Vercel environment variables
+4. Redeploy application
+
+**Without this token, the download page will show mock data instead of real releases.**
 
 ---
 
@@ -182,40 +160,45 @@ See full schema in `WEBSITE_MASTER_PROMPT.md` section "🔐 License Key System I
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment Status
 
-**Recommended:** Vercel
+✅ **Successfully deployed to Vercel**  
+✅ **Database connected and operational**  
+✅ **Admin panel with 8 license keys generated**  
+✅ **TypeScript compilation resolved**  
+⚠️ **GitHub integration requires token configuration**
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+### Current Status
+- Website is live and fully functional
+- License key system operational with real database
+- Admin dashboard working with enterprise features
+- Download page shows placeholder data until GitHub token is configured
 
-# Deploy
-vercel
-
-# Add environment variables in Vercel dashboard
-# Connect PostgreSQL database (Vercel Postgres or external)
-```
-
----
-
-## 📞 Support
-
-**Company:** South Coast Office Supply  
-**Email:** support@southcoastoffice.com  
-**Phone:** (541) 267-5114  
-**Address:** 199 N Broadway, Coos Bay, OR 97420
+### Next Actions Needed
+1. **Configure GitHub Token** in Vercel environment variables
+2. **Test download functionality** with real private repo data
+3. **Add production content** (screenshots, final copy)
+4. **Set up monitoring** and analytics
 
 ---
 
-## 📝 Next Steps
+## 📞 Company Information
 
-1. ✅ Assets ready (logos copied)
-2. ⏳ Save screenshots (8 total)
-3. ⏳ Create Next.js project
-4. ⏳ Set up database
-5. ⏳ Implement license key system
-6. ⏳ Build pages
-7. ⏳ Deploy
+**South Coast Office Supply**  
+📧 support@southcoastoffice.com  
+📞 (541) 267-5114  
+📍 199 N Broadway, Coos Bay, OR 97420
 
-**Ready to start? Open `WEBSITE_MASTER_PROMPT.md` and begin!**
+---
+
+## 📋 Development Notes
+
+This website was built with enterprise-grade features including:
+- Comprehensive admin dashboard with real-time metrics
+- System maintenance and monitoring panels
+- Functional edit/eye buttons with database operations
+- Password management with bcrypt hashing
+- Real data persistence using PostgreSQL
+- Professional UI matching enterprise standards
+
+**For development questions or GitHub token configuration, contact the development team.**

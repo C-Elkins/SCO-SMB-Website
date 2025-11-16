@@ -20,13 +20,13 @@ export async function GET() {
     const repo = process.env.GITHUB_REPO_NAME || 'SCO-SMB';
     
     if (!token) {
-      console.error('GitHub token not configured. Please set GITHUB_TOKEN or GITHUB_TOKEN_DOWNLOADS environment variable.');
-      // Return mock data for development when token is missing
+      console.error('GitHub token not configured. Please set GITHUB_TOKEN_DOWNLOADS environment variable in Vercel.');
+      // Return mock data when token is missing - shows need for configuration
       return NextResponse.json({
         tag_name: 'v1.0.0',
-        name: 'Version 1.0.0',
+        name: 'Version 1.0.0 - Configuration Required',
         published_at: new Date().toISOString(),
-        body: 'Please configure GitHub token to fetch real release data.',
+        body: '⚠️ **GitHub Integration Not Configured**\n\nTo display real release data from your private SCO-SMB repository:\n\n1. Go to Vercel Dashboard → Settings → Environment Variables\n2. Add `GITHUB_TOKEN_DOWNLOADS` with a GitHub Personal Access Token\n3. Ensure the token has access to the private `C-Elkins/SCO-SMB` repository\n4. Redeploy the application\n\nContact the development team if you need assistance setting this up.',
         assets: []
       });
     }
