@@ -25,8 +25,7 @@ export async function PUT(
       username,
       email,
       role,
-      is_active: isActive,
-      updated_at: new Date()
+      is_active: isActive
     };
 
     // If password is provided, hash it
@@ -53,7 +52,6 @@ export async function PUT(
         role: admin_users.role,
         is_active: admin_users.is_active,
         created_at: admin_users.created_at,
-        updated_at: admin_users.updated_at,
         last_login: admin_users.last_login
       });
 
