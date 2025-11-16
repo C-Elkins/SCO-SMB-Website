@@ -48,20 +48,23 @@ export async function GET(request: NextRequest) {
       whereConditions.push(eq(license_keys.status, status));
     }
 
+    // Build the complete query
+    let finalQuery = query;
+    
     // Apply where conditions
     if (whereConditions.length > 0) {
-      query = query.where(and(...whereConditions));
+      finalQuery = finalQuery.where(and(...whereConditions));
     }
 
     // Apply sorting
     const orderBy = sortOrder === 'desc' ? desc : asc;
     const sortField = license_keys[sortBy as keyof typeof license_keys] || license_keys.created_at;
-    query = query.orderBy(orderBy(sortField));
+    finalQuery = finalQuery.orderBy(orderBy(sortField));
 
     // Apply pagination
-    query = query.limit(limit).offset(offset);
+    finalQuery = finalQuery.limit(limit).offset(offset);
 
-    const keys = await query;
+    const keys = await finalQuery;
 
     return NextResponse.json({ 
       keys,
