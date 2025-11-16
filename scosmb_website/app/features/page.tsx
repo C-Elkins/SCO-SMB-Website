@@ -12,6 +12,7 @@ import {
   Settings,
   Lock
 } from 'lucide-react';
+import { FeatureCard } from '@/components/FeatureCard';
 
 export default function FeaturesPage() {
   const features = [
@@ -89,30 +90,117 @@ export default function FeaturesPage() {
     }
   ];
 
+  const additionalFeatures = [
+    {
+      icon: Settings,
+      title: 'Easy Configuration',
+      description: 'Intuitive settings panel for all configuration options. No command line required.'
+    },
+    {
+      icon: Lock,
+      title: 'Secure by Default',
+      description: 'All security features enabled by default with audit logging for every critical action.'
+    },
+    {
+      icon: RefreshCw,
+      title: 'Always Current',
+      description: 'Automatic update notifications sourced from GitHub Releases with checksum verification.'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-20 md:py-28">
-        <div className="container-custom">
+      <section className="relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse" />
+          <div className="absolute top-40 right-20 w-48 h-48 bg-[#00A8B5]/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute bottom-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '4s' }} />
+          <div style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.03\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }} className="absolute inset-0 opacity-40" />
+        </div>
+        
+        {/* Floating Geometric Elements */}
+        <div className="absolute inset-0 pointer-events-none">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            animate={{ y: [-20, 20, -20], rotate: [0, 180, 360] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-20 right-10 w-6 h-6 border-2 border-white/20 rotate-45"
+          />
+          <motion.div
+            animate={{ y: [20, -20, 20], rotate: [360, 180, 0] }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-32 left-16 w-4 h-4 bg-white/10 rounded-full"
+          />
+          <motion.div
+            animate={{ x: [-10, 10, -10], y: [10, -10, 10] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/2 right-1/4 w-8 h-8 border border-[#00A8B5]/30 rounded-full"
+          />
+        </div>
+
+        <div className="container-wide relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Powerful Features for Professional Scanning
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 shadow-2xl"
+            >
+              <Settings className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-white to-gray-200 bg-clip-text text-transparent leading-tight"
+            >
+              Powerful Features for
+              <br />
+              <span className="text-[#00A8B5]">Professional Scanning</span>
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light"
+            >
               Everything you need for enterprise-grade document scanning and management
-            </p>
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="mt-10 flex flex-wrap justify-center gap-4"
+            >
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                Enterprise Ready
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+                Cross-Platform
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                Secure by Design
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Features Detail */}
       <section className="py-20 md:py-28">
-        <div className="container-custom">
+        <div className="container-wide">
           <div className="space-y-24">
             {features.map((feature, index) => (
               <motion.div
@@ -153,6 +241,7 @@ export default function FeaturesPage() {
                     width={600}
                     height={400}
                     className="rounded-lg shadow-xl"
+                    style={{ width: 'auto', height: 'auto' }}
                   />
                 </div>
               </motion.div>
@@ -177,35 +266,15 @@ export default function FeaturesPage() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-lg border border-gray-200">
-              <Settings className="w-10 h-10 text-[#00A8B5] mb-4" />
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
-                Easy Configuration
-              </h3>
-              <p className="text-gray-600">
-                Intuitive settings panel for all configuration options. No command line required.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-lg border border-gray-200">
-              <Lock className="w-10 h-10 text-[#00A8B5] mb-4" />
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
-                Secure by Default
-              </h3>
-              <p className="text-gray-600">
-                All security features enabled out of the box. No configuration needed for basic security.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-lg border border-gray-200">
-              <RefreshCw className="w-10 h-10 text-[#00A8B5] mb-4" />
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
-                Always Current
-              </h3>
-              <p className="text-gray-600">
-                Automatic update notifications keep you on the latest version with new features and fixes.
-              </p>
-            </div>
+            {additionalFeatures.map((feature, index) => (
+              <FeatureCard
+                key={feature.title}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                delay={index * 0.05}
+              />
+            ))}
           </div>
         </div>
       </section>

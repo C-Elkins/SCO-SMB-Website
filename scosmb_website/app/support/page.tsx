@@ -8,27 +8,94 @@ export default function SupportPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-12 md:py-16">
-        <div className="container-custom">
+      <section className="relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-12 left-12 w-28 h-28 bg-white/5 rounded-full blur-xl animate-pulse" />
+          <div className="absolute top-36 right-16 w-44 h-44 bg-[#00A8B5]/18 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute bottom-16 left-24 w-36 h-36 bg-white/8 rounded-full blur-xl animate-pulse" style={{ animationDelay: '3.5s' }} />
+          <div style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"50\" height=\"50\" viewBox=\"0 0 50 50\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.03\"%3E%3Cpath d=\"M25 0L50 25L25 50L0 25z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }} className="absolute inset-0 opacity-35" />
+        </div>
+        
+        {/* Support-themed Floating Elements */}
+        <div className="absolute inset-0 pointer-events-none">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            animate={{ y: [-16, 16, -16], rotate: [0, 120, 240] }}
+            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-24 right-12 w-5 h-5 border-2 border-white/25 rotate-45"
+          />
+          <motion.div
+            animate={{ y: [20, -20, 20], x: [-8, 8, -8] }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-32 right-28 w-3 h-3 bg-white/15 rounded-full"
+          />
+          <motion.div
+            animate={{ x: [-14, 14, -14], y: [6, -6, 6] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/2 left-1/4 w-6 h-6 border border-[#00A8B5]/30 rounded-full"
+          />
+        </div>
+
+        <div className="container-custom relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Support & Help Center
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 shadow-2xl"
+            >
+              <Users className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-white to-gray-200 bg-clip-text text-transparent leading-tight"
+            >
+              <span className="text-[#00A8B5]">Support</span> & Help Center
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light"
+            >
               We&apos;re here to help you get the most out of SCO SMB
-            </p>
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="mt-10 flex flex-wrap justify-center gap-4"
+            >
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                24/7 Documentation
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+                Expert Phone Support
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                Fast Response Times
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Support Options */}
       <section className="py-10 md:py-12 bg-gray-50">
-        <div className="container-custom">
+        <div className="container-wide">
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

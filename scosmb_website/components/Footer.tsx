@@ -5,19 +5,23 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#2E2E2E] text-[#E9ECEF] pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+    <footer className="bg-gray-900 text-gray-200 pt-16 pb-8">
+      <div className="container-wide">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
           {/* Company Info */}
           <div>
-            <Image
-              src="/logos/sco-smb-logo-primary.svg"
-              alt="SCO SMB"
-              width={120}
-              height={30}
-              className="mb-4 brightness-0 invert"
-            />
-            <p className="text-sm leading-relaxed">
+            <div className="mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-teal-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">S</span>
+                </div>
+                <div>
+                  <div className="text-white font-bold text-xl">SCO SMB</div>
+                  <div className="text-gray-400 text-sm">Enterprise Document Scanning</div>
+                </div>
+              </div>
+            </div>
+            <p className="text-sm leading-relaxed text-gray-300">
               Enterprise scanning solution for modern offices. Professional document management for Kyocera and Sharp network printers.
             </p>
           </div>

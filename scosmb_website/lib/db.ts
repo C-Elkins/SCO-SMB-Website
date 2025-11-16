@@ -1,4 +1,7 @@
 import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from './schema';
 
 // For local development with WebSocket
 if (typeof WebSocket === 'undefined') {
@@ -8,16 +11,24 @@ if (typeof WebSocket === 'undefined') {
 
 // Lazy pool initialization to allow env vars to load first
 let pool: Pool | null = null;
+let db: NodePgDatabase<typeof schema> | null = null;
 
 function getPool() {
   if (!pool) {
-    const connectionString = process.env.DATABASE_URL;
+    const connectionString = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL;
     if (!connectionString) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
     pool = new Pool({ connectionString });
   }
   return pool;
+}
+
+export function getDb() {
+  if (!db) {
+    db = drizzle(getPool(), { schema });
+  }
+  return db;
 }
 
 export async function query(text: string, params?: unknown[]) {
@@ -85,10 +96,63 @@ export async function initDatabase() {
       );
     `);
 
+    // Create admin_users table
+    await query(`
+      CREATE TABLE IF NOT EXISTS admin_users (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        username VARCHAR(100) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        email VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP,
+        is_active BOOLEAN DEFAULT true
+      );
+    `);
+
+    // Create portal_settings table
+    await query(`
+      CREATE TABLE IF NOT EXISTS portal_settings (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        tech_portal_password_hash VARCHAR(255),
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Create indexes
     await query(`CREATE INDEX IF NOT EXISTS idx_license_keys_key_code ON license_keys(key_code);`);
     await query(`CREATE INDEX IF NOT EXISTS idx_license_keys_status ON license_keys(status);`);
     await query(`CREATE INDEX IF NOT EXISTS idx_download_logs_license_key_id ON download_logs(license_key_id);`);
+    await query(`CREATE INDEX IF NOT EXISTS idx_admin_users_username ON admin_users(username);`);
+
+    // Check if default admin user exists, if not create one
+    const adminCheck = await query(`SELECT COUNT(*) FROM admin_users WHERE username = 'admin'`);
+    if (parseInt(adminCheck.rows[0].count) === 0) {
+      const bcrypt = require('bcryptjs');
+      const defaultPassword = 'admin123'; // Change this in production!
+      const passwordHash = await bcrypt.hash(defaultPassword, 12);
+      
+      await query(`
+        INSERT INTO admin_users (username, password_hash, email, is_active)
+        VALUES ('admin', $1, 'admin@southcoastoffice.com', true)
+      `, [passwordHash]);
+      
+      console.log('✅ Default admin user created: admin/admin123');
+    }
+
+    // Set default tech portal password if not exists
+    const portalCheck = await query(`SELECT COUNT(*) FROM portal_settings`);
+    if (parseInt(portalCheck.rows[0].count) === 0) {
+      const bcrypt = require('bcryptjs');
+      const techPassword = 'tech2024'; // Default tech portal password
+      const techPasswordHash = await bcrypt.hash(techPassword, 12);
+      
+      await query(`
+        INSERT INTO portal_settings (tech_portal_password_hash)
+        VALUES ($1)
+      `, [techPasswordHash]);
+      
+      console.log('✅ Default tech portal password set: tech2024');
+    }
 
     console.log('✅ Database tables initialized');
     return true;

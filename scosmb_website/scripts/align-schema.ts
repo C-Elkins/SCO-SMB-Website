@@ -23,7 +23,7 @@ async function align() {
       WHERE table_name = 'license_keys';
     `);
     
-    const colNames = licenseKeysCols.rows.map((r: any) => r.column_name);
+    const colNames = licenseKeysCols.rows.map((r: { column_name: string }) => r.column_name);
     
     if (!colNames.includes('key_code')) {
       console.log('\n⚠️  license_keys uses old schema (key instead of key_code)');
@@ -57,7 +57,7 @@ async function align() {
       SELECT column_name FROM information_schema.columns 
       WHERE table_name = 'download_logs';
     `);
-    const dlColNames = dlCols.rows.map((r: any) => r.column_name);
+    const dlColNames = dlCols.rows.map((r: { column_name: string }) => r.column_name);
     
     if (dlColNames.includes('license_key') && !dlColNames.includes('license_key_id')) {
       console.log('Renaming license_key → license_key_id...');

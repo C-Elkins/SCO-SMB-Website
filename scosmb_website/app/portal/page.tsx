@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Download, Book, Wrench, GitBranch, Shield, LogIn } from 'lucide-react';
+import { Download, Book, Wrench, GitBranch, Shield, LogIn, Globe, Check, ExternalLink } from 'lucide-react';
 
 export default function PortalPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,7 +39,7 @@ export default function PortalPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#153B6B] to-[#00A8B5] flex items-center justify-center px-6 py-24">
+      <div className="min-h-screen bg-linear-to-br from-[#153B6B] to-[#00A8B5] flex items-center justify-center px-6 py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ export default function PortalPage() {
           <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10">
             {/* Logo/Icon */}
             <div className="flex justify-center mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl flex items-center justify-center">
+              <div className="w-20 h-20 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl flex items-center justify-center">
                 <Wrench className="w-10 h-10 text-white" />
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function PortalPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white font-semibold py-4 rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-linear-to-r from-[#153B6B] to-[#00A8B5] text-white font-semibold py-4 rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -122,42 +122,91 @@ export default function PortalPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white py-20">
-        <div className="container-custom">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5]">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[url('/patterns/grid.svg')] opacity-10"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
+        
+        <div className="relative container-wide section max-w-5xl py-24 md:py-32">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
           >
-            <Wrench className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Technician Portal
+            {/* Status Badges */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                Authorized Access Portal
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                Technician Tools & Resources
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                No License Required
+              </div>
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-linear-to-r from-white to-gray-200 bg-clip-text text-transparent leading-tight">
+              <span className="text-[#00A8B5]">Technician</span> Portal
             </h1>
-            <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto">
-              Unrestricted access for authorized service technicians
+            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Unrestricted access to downloads, documentation, and service tools for authorized technicians
             </p>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                <Wrench className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">Service Tools</div>
+                <div className="text-white/70 text-sm">Diagnostic & Installation</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                <Download className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">All Versions</div>
+                <div className="text-white/70 text-sm">Current & Previous</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+                <Book className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">Documentation</div>
+                <div className="text-white/70 text-sm">Complete Tech Docs</div>
+              </div>
+            </div>
           </motion.div>
         </div>
-      </section>
+      </div>
 
       {/* Portal Features */}
       <section className="py-20">
-        <div className="container-custom">
+        <div className="container-wide">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#153B6B] mb-4">
+              Technician Resources
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Everything you need for efficient installations and service calls
+            </p>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:border-[#00A8B5] transition-all duration-300"
             >
-              <Download className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
-                Unrestricted Downloads
+              <div className="w-16 h-16 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl flex items-center justify-center mb-6">
+                <Download className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-[#153B6B] mb-3">
+                Instant Downloads
               </h3>
-              <p className="text-gray-600">
-                Access all versions including latest releases, beta builds, and development versions. No license key required.
+              <p className="text-gray-600 leading-relaxed">
+                Access current and previous releases instantly. No license validation required for technician installations.
               </p>
             </motion.div>
 
@@ -165,15 +214,17 @@ export default function PortalPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              transition={{ delay: 0.4 }}
+              className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:border-[#00A8B5] transition-all duration-300"
             >
-              <Book className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
-                Complete Documentation
+              <div className="w-16 h-16 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl flex items-center justify-center mb-6">
+                <Globe className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-[#153B6B] mb-3">
+                Technical Documentation
               </h3>
-              <p className="text-gray-600">
-                Full technical documentation, troubleshooting guides, and internal knowledge base articles.
+              <p className="text-gray-600 leading-relaxed">
+                Complete installation guides, troubleshooting procedures, and technical specifications for field service.
               </p>
             </motion.div>
 
@@ -182,14 +233,16 @@ export default function PortalPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:border-[#00A8B5] transition-all duration-300"
             >
-              <GitBranch className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
-                Development Builds
+              <div className="w-16 h-16 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl flex items-center justify-center mb-6">
+                <Wrench className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-[#153B6B] mb-3">
+                Service Tools
               </h3>
-              <p className="text-gray-600">
-                Early access to beta versions and experimental features for testing and evaluation.
+              <p className="text-gray-600 leading-relaxed">
+                Diagnostic scripts, configuration templates, and automation tools for faster client deployments.
               </p>
             </motion.div>
           </div>
@@ -199,123 +252,158 @@ export default function PortalPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-lg shadow-lg p-8 mb-12"
+            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-12"
           >
-            <h2 className="text-2xl font-bold text-[#153B6B] mb-6">
-              Download SCO SMB (All Versions)
-            </h2>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-xl flex items-center justify-center">
+                <Download className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-[#153B6B]">
+                  SCO SMB Downloads
+                </h2>
+                <p className="text-gray-600">No license key required for technicians</p>
+              </div>
+            </div>
             
             <div className="space-y-4 mb-8">
-              <div className="border border-gray-200 rounded-lg p-6">
+              <div className="border-2 border-[#00A8B5] bg-linear-to-br from-teal-50 to-blue-50 rounded-xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-[#153B6B]">Latest Release (v1.1.1)</h3>
-                    <p className="text-sm text-gray-600">Production stable version</p>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-lg font-semibold text-[#153B6B]">Latest Release (v1.1.1)</h3>
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">RECOMMENDED</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">Production stable version • Released November 15, 2025</p>
+                    <div className="text-xs text-gray-500">All platforms • Direct GitHub download</div>
                   </div>
-                  <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors">
+                  <div className="flex flex-col gap-2">
+                    <a 
+                      href="https://github.com/C-Elkins/SCO-SMB/releases/download/v1.1.1/SCO.SMB-1.1.1-arm64.dmg"
+                      className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors text-sm font-medium text-center"
+                    >
+                      Mac (Apple Silicon)
+                    </a>
+                    <a 
+                      href="https://github.com/C-Elkins/SCO-SMB/releases/download/v1.1.1/SCO.SMB-1.1.1-x64.dmg"
+                      className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors text-sm font-medium text-center"
+                    >
                       Mac (Intel)
-                    </button>
-                    <button className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors">
-                      Mac (Silicon)
-                    </button>
-                    <button className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors">
+                    </a>
+                    <a 
+                      href="https://github.com/C-Elkins/SCO-SMB/releases/download/v1.1.1/SCO.SMB-Setup-1.1.1.exe"
+                      className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors text-sm font-medium text-center"
+                    >
                       Windows
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <div className="border border-gray-200 rounded-lg p-6">
+              <div className="border border-gray-200 rounded-xl p-6 bg-white">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-[#153B6B]">Previous Versions</h3>
-                    <p className="text-sm text-gray-600">Archive of past releases (v1.0.0 - v1.1.0)</p>
+                    <h3 className="text-lg font-semibold text-[#153B6B] mb-1">Previous Versions</h3>
+                    <p className="text-sm text-gray-600">Legacy releases for compatibility testing</p>
                   </div>
-                  <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    View Archive
-                  </button>
-                </div>
-              </div>
-
-              <div className="border border-gray-200 rounded-lg p-6 bg-yellow-50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-[#153B6B]">Beta Builds</h3>
-                    <p className="text-sm text-gray-600">Experimental features - for testing only</p>
-                  </div>
-                  <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
-                    Download Beta
-                  </button>
+                  <a 
+                    href="https://github.com/C-Elkins/SCO-SMB/releases"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    View All Releases
+                  </a>
                 </div>
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
-              <Shield className="w-6 h-6 text-blue-600 shrink-0 mt-0.5" />
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+              <Shield className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-blue-900 mb-1">Technician Note</h4>
-                <p className="text-sm text-blue-800">
-                  All downloads bypass license validation. Use responsibly and only for authorized service calls.
+                <h4 className="font-semibold text-red-900 mb-1">⚠️ Technician Access Warning</h4>
+                <p className="text-sm text-red-800">
+                  <strong>IMPORTANT:</strong> Downloads bypass license validation. For authorized service calls only. Customer installations require valid license keys.
                 </p>
               </div>
             </div>
           </motion.div>
 
-          {/* Resources */}
+          {/* Quick Reference Guides */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-lg shadow-lg p-8"
+            className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100"
           >
-            <h2 className="text-2xl font-bold text-[#153B6B] mb-6">
-              Technician Resources
-            </h2>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-12 h-12 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-xl flex items-center justify-center">
+                <Book className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-[#153B6B]">
+                  Quick Reference Guides
+                </h2>
+                <p className="text-gray-600">Essential resources for field service</p>
+              </div>
+            </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="p-6 border border-gray-200 rounded-lg hover:border-[#00A8B5] transition-colors">
+              <div className="p-6 border border-gray-200 rounded-xl hover:border-[#00A8B5] hover:shadow-lg transition-all duration-300 bg-linear-to-br from-white to-gray-50">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <Wrench className="w-5 h-5 text-blue-600" />
+                </div>
                 <h3 className="font-semibold text-[#153B6B] mb-2">Installation Best Practices</h3>
-                <p className="text-gray-600 mb-3">
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
                   Step-by-step guides for clean installations, upgrades, and troubleshooting common deployment issues.
                 </p>
-                <Link href="/docs" className="text-[#00A8B5] font-medium hover:underline">
-                  View Guide →
+                <Link href="/docs" className="text-[#00A8B5] font-medium hover:underline text-sm flex items-center gap-1">
+                  View Installation Guide <ExternalLink className="w-3 h-3" />
                 </Link>
               </div>
 
-              <div className="p-6 border border-gray-200 rounded-lg hover:border-[#00A8B5] transition-colors">
+              <div className="p-6 border border-gray-200 rounded-xl hover:border-[#00A8B5] hover:shadow-lg transition-all duration-300 bg-linear-to-br from-white to-gray-50">
+                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                  <Shield className="w-5 h-5 text-red-600" />
+                </div>
                 <h3 className="font-semibold text-[#153B6B] mb-2">Common Issues Database</h3>
-                <p className="text-gray-600 mb-3">
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
                   Known issues, solutions, and workarounds for frequently encountered problems in the field.
                 </p>
-                <Link href="/support" className="text-[#00A8B5] font-medium hover:underline">
-                  View Issues →
+                <Link href="/support" className="text-[#00A8B5] font-medium hover:underline text-sm flex items-center gap-1">
+                  View Support Database <ExternalLink className="w-3 h-3" />
                 </Link>
               </div>
 
-              <div className="p-6 border border-gray-200 rounded-lg hover:border-[#00A8B5] transition-colors">
-                <h3 className="font-semibold text-[#153B6B] mb-2">Customer Setup Checklist</h3>
-                <p className="text-gray-600 mb-3">
-                  Comprehensive checklist to ensure proper setup and configuration for end customers.
+              <div className="p-6 border border-gray-200 rounded-xl hover:border-[#00A8B5] hover:shadow-lg transition-all duration-300 bg-linear-to-br from-white to-gray-50">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                  <Check className="w-5 h-5 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-[#153B6B] mb-2">Service Checklist</h3>
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                  Comprehensive checklist to ensure proper setup and configuration for customer deployments.
                 </p>
-                <a href="#" className="text-[#00A8B5] font-medium hover:underline">
-                  Download PDF →
+                <a href="#" className="text-[#00A8B5] font-medium hover:underline text-sm flex items-center gap-1">
+                  Download Checklist <Download className="w-3 h-3" />
                 </a>
               </div>
 
-              <div className="p-6 border border-gray-200 rounded-lg hover:border-[#00A8B5] transition-colors">
-                <h3 className="font-semibold text-[#153B6B] mb-2">Support Scripts & Tools</h3>
-                <p className="text-gray-600 mb-3">
+              <div className="p-6 border border-gray-200 rounded-xl hover:border-[#00A8B5] hover:shadow-lg transition-all duration-300 bg-linear-to-br from-white to-gray-50">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                  <GitBranch className="w-5 h-5 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-[#153B6B] mb-2">Diagnostic Tools</h3>
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
                   Diagnostic scripts, configuration templates, and automation tools for faster deployments.
                 </p>
                 <a 
                   href="https://github.com/C-Elkins/SCO-SMB"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#00A8B5] font-medium hover:underline"
+                  className="text-[#00A8B5] font-medium hover:underline text-sm flex items-center gap-1"
                 >
-                  View on GitHub →
+                  View on GitHub <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
             </div>
@@ -324,37 +412,54 @@ export default function PortalPage() {
       </section>
 
       {/* Quick Links */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="py-20 bg-linear-to-br from-gray-50 to-white">
+        <div className="container-wide max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center"
           >
-            <h2 className="text-3xl font-bold text-[#153B6B] mb-8">
-              Quick Links
+            <h2 className="text-3xl font-bold text-[#153B6B] mb-4">
+              Additional Resources
             </h2>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <p className="text-gray-600 mb-12 max-w-2xl mx-auto">
+              Access the source code, admin dashboard, and return to the main website
+            </p>
+            <div className="grid md:grid-cols-3 gap-6">
               <a
                 href="https://github.com/C-Elkins/SCO-SMB"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-8 py-4 bg-[#153B6B] text-white font-semibold rounded-lg hover:bg-[#0f2a4d] transition-all duration-200"
+                className="group p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:border-[#153B6B] hover:shadow-xl transition-all duration-300"
               >
-                GitHub Repository
+                <div className="w-12 h-12 bg-gray-100 group-hover:bg-[#153B6B] rounded-xl flex items-center justify-center mb-4 transition-colors">
+                  <GitBranch className="w-6 h-6 text-gray-600 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="font-semibold text-[#153B6B] mb-2">GitHub Repository</h3>
+                <p className="text-gray-600 text-sm">Access source code and contribute to development</p>
               </a>
+              
               <Link
                 href="/admin"
-                className="inline-flex items-center justify-center px-8 py-4 bg-[#00A8B5] text-white font-semibold rounded-lg hover:bg-[#008c97] transition-all duration-200"
+                className="group p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:border-[#00A8B5] hover:shadow-xl transition-all duration-300"
               >
-                Admin Dashboard
+                <div className="w-12 h-12 bg-gray-100 group-hover:bg-[#00A8B5] rounded-xl flex items-center justify-center mb-4 transition-colors">
+                  <Shield className="w-6 h-6 text-gray-600 group-hover:text-white transition-colors" />
+                </div>
+                <h3 className="font-semibold text-[#153B6B] mb-2">Admin Dashboard</h3>
+                <p className="text-gray-600 text-sm">Manage licenses, users, and system settings</p>
               </Link>
+
               <Link
                 href="/"
-                className="inline-flex items-center justify-center px-8 py-4 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all duration-200"
+                className="group p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:border-gray-300 hover:shadow-xl transition-all duration-300"
               >
-                Main Website
+                <div className="w-12 h-12 bg-gray-100 group-hover:bg-gray-300 rounded-xl flex items-center justify-center mb-4 transition-colors">
+                  <ExternalLink className="w-6 h-6 text-gray-600 group-hover:text-gray-700 transition-colors" />
+                </div>
+                <h3 className="font-semibold text-[#153B6B] mb-2">Main Website</h3>
+                <p className="text-gray-600 text-sm">Return to the customer-facing website</p>
               </Link>
             </div>
           </motion.div>

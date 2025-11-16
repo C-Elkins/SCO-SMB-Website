@@ -32,13 +32,16 @@ Enterprise-grade web platform for SCO-SMB software distribution, licensing, and 
 ### Local Development
 
 1. **Clone and install dependencies**:
+
    ```bash
    cd scosmb_website
    npm install
    ```
 
 2. **Configure environment variables**:
+
    Copy `.env.example` to `.env.local` and fill in your credentials:
+
    ```bash
    cp .env.example .env.local
    ```
@@ -50,11 +53,13 @@ Enterprise-grade web platform for SCO-SMB software distribution, licensing, and 
    - `GITHUB_TOKEN_DOWNLOADS` – GitHub token with `repo:read` scope for private releases
 
 3. **Run database migrations**:
+
    ```bash
    npm run db:migrate
    ```
 
 4. **Start development server**:
+
    ```bash
    npm run dev
    ```
@@ -66,9 +71,14 @@ Enterprise-grade web platform for SCO-SMB software distribution, licensing, and 
 1. Create a Neon project at [neon.tech](https://neon.tech)
 2. Copy the connection string from your Neon dashboard
 3. Add it to your `.env.local` as `DATABASE_URL`
-4. Run migrations: `npm run db:migrate`
+4. Run migrations:
+
+   ```bash
+   npm run db:migrate
+   ```
 
 The migration creates three tables:
+
 - `license_keys` – License key records with usage tracking
 - `download_logs` – Audit trail of all downloads
 - `admin_users` – Admin credentials (bcrypt hashed passwords)
@@ -76,6 +86,7 @@ The migration creates three tables:
 ### Creating an Admin User
 
 Run this SQL in your Neon SQL Editor (replace values):
+
 ```sql
 INSERT INTO admin_users (username, password_hash, email, is_active)
 VALUES (
@@ -87,6 +98,7 @@ VALUES (
 ```
 
 To generate a bcrypt hash for your password, use:
+
 ```bash
 node -e "console.log(require('bcryptjs').hashSync('YourPassword', 10))"
 ```
@@ -96,6 +108,7 @@ node -e "console.log(require('bcryptjs').hashSync('YourPassword', 10))"
 ### Initial Setup
 
 1. **Link to Vercel project**:
+
    ```bash
    npx vercel link --project-id=prj_wpSc88Nj0N3ACesX5R0AHWrOjbFQ
    ```
@@ -106,6 +119,7 @@ node -e "console.log(require('bcryptjs').hashSync('YourPassword', 10))"
    - Apply to **Production** and **Preview** environments
 
 3. **Deploy**:
+
    ```bash
    git add .
    git commit -m "Deploy to production"
@@ -123,6 +137,7 @@ npx vercel --prod
 ### Post-Deployment Verification
 
 After deployment, test these endpoints:
+
 - `https://your-domain.vercel.app/api/releases/latest` – Should return latest release or fallback
 - `https://your-domain.vercel.app/download` – License validation form
 - `https://your-domain.vercel.app/portal` – Technician login
@@ -132,7 +147,7 @@ Check Vercel Function Logs for any runtime errors.
 
 ## Project Structure
 
-```
+```text
 scosmb_website/
 ├── app/                  # Next.js App Router pages
 │   ├── api/             # API routes (auth, releases, validation)

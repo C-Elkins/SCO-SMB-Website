@@ -21,7 +21,7 @@ CREATE INDEX IF NOT EXISTS idx_status ON license_keys(status);
 -- Download Logs Table
 CREATE TABLE IF NOT EXISTS download_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  license_key_id UUID REFERENCES license_keys(id),
+  license_key_id INTEGER REFERENCES license_keys(id),
   download_date TIMESTAMP DEFAULT NOW(),
   platform VARCHAR(50),
   version VARCHAR(20),
@@ -41,5 +41,25 @@ CREATE TABLE IF NOT EXISTS admin_users (
   email VARCHAR(255),
   created_at TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP,
-  is_active BOOLEAN DEFAULT true
+  is_active BOOLEAN DEFAULT true,
+  role VARCHAR(50) DEFAULT 'admin'
 );
+
+-- Portal Settings Table
+CREATE TABLE IF NOT EXISTS portal_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tech_portal_password_hash VARCHAR(255),
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- System Settings Table
+CREATE TABLE IF NOT EXISTS system_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key VARCHAR(100) UNIQUE NOT NULL,
+  value TEXT NOT NULL,
+  updated_by UUID REFERENCES admin_users(id),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_settings_key ON system_settings(key);
