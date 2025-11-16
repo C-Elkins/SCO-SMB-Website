@@ -92,19 +92,32 @@ export default function PrivacyPage() {
                 <li><strong>Support Communications:</strong> Messages, attachments, and correspondence through our support channels</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-[#153B6B] mt-6 mb-3">Technical Information</h3>
+              <h3 className="text-lg font-semibold text-[#153B6B] mt-6 mb-3">SCO SMB Software Data Collection</h3>
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-green-800 font-semibold mb-2">Zero Data Collection Promise</p>
+                    <p className="text-green-700 text-sm">
+                      <strong>The SCO SMB Software does NOT collect or transmit any personal information or usage data.</strong> 
+                      All scanned documents are stored locally on your computer, ensuring complete privacy and data security.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold text-[#153B6B] mt-6 mb-3">Website & Web Portal Data</h3>
               <ul className="space-y-2 text-gray-700">
-                <li><strong>Device Information:</strong> Operating system, hardware specifications, device identifiers</li>
-                <li><strong>Usage Data:</strong> License key usage, software version, feature utilization</li>
-                <li><strong>Network Information:</strong> IP address, printer connections, scan operations</li>
-                <li><strong>Performance Data:</strong> Error logs, crash reports, performance metrics (anonymized)</li>
+                <li><strong>License Validation:</strong> License key verification for downloads (not stored)</li>
+                <li><strong>Download Analytics:</strong> Platform and version statistics (anonymized)</li>
+                <li><strong>Support Communications:</strong> Messages and correspondence through our support channels</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-[#153B6B] mt-6 mb-3">Automatically Collected Information</h3>
+              <h3 className="text-lg font-semibold text-[#153B6B] mt-6 mb-3">Web Portal Information</h3>
               <ul className="space-y-2 text-gray-700">
-                <li><strong>Log Data:</strong> Access times, pages viewed, browser type, referring URLs</li>
-                <li><strong>Cookies:</strong> Session management, preferences, analytics (web portal only)</li>
-                <li><strong>Analytics:</strong> Download statistics, feature usage patterns (aggregated and anonymized)</li>
+                <li><strong>Session Data:</strong> Temporary cookies for login sessions (web portal only)</li>
+                <li><strong>Access Logs:</strong> Basic server logs for security and performance (IP addresses, access times)</li>
+                <li><strong>Browser Information:</strong> User agent, browser type for compatibility purposes</li>
               </ul>
             </section>
 
