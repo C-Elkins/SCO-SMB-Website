@@ -19,10 +19,10 @@ export async function GET(request: Request) {
     const owner = process.env.GITHUB_REPO_OWNER || 'C-Elkins';
     const repo = process.env.GITHUB_REPO_NAME || 'SCO-SMB';
     
-    // Add timestamp for debugging deployment and caching issues
+    // Add timestamp for debugging deployment and caching issues (Force Deploy: Nov 16, 2025)
     const deploymentTime = new Date().toISOString();
     
-    console.log('GitHub API Request - Full Debug:', {
+    console.log('GitHub API Request - FULL DEBUG (v1.1.1 Expected):', {
       timestamp: deploymentTime,
       hasToken: !!token,
       tokenPrefix: token ? token.substring(0, 12) + '...' : 'MISSING',
@@ -30,6 +30,8 @@ export async function GET(request: Request) {
       owner,
       repo,
       url: `https://api.github.com/repos/${owner}/${repo}/releases/latest`,
+      expectedVersion: 'v1.1.1',
+      expectedAssets: 6,
       allEnvVars: {
         GITHUB_TOKEN_DOWNLOADS: !!process.env.GITHUB_TOKEN_DOWNLOADS,
         GITHUB_TOKEN: !!process.env.GITHUB_TOKEN,
@@ -39,12 +41,12 @@ export async function GET(request: Request) {
     });
     
     if (!token) {
-      console.error('GitHub token not configured. Please set GITHUB_TOKEN_DOWNLOADS environment variable in Vercel.');
+      console.error('❌ GitHub token NOT CONFIGURED! Please set GITHUB_TOKEN_DOWNLOADS environment variable in Vercel.');
       return NextResponse.json({
         tag_name: 'v1.0.0',
-        name: `Version 1.0.0 - No Token Found (${deploymentTime.substring(11, 19)})`,
+        name: `Version 1.0.0 - NO TOKEN (${deploymentTime.substring(11, 19)})`,
         published_at: new Date().toISOString(),
-        body: `⚠️ **GitHub Integration Not Configured** (${deploymentTime})\n\nToken not found in environment variables.\n\nDebugging info:\n- GITHUB_TOKEN_DOWNLOADS: ${!!process.env.GITHUB_TOKEN_DOWNLOADS}\n- GITHUB_TOKEN: ${!!process.env.GITHUB_TOKEN}\n- Expected repo: C-Elkins/SCO-SMB\n\nPlease:\n1. Verify GITHUB_TOKEN_DOWNLOADS is set in Vercel\n2. Redeploy the application\n3. Check this error shows updated timestamp`,
+        body: `⚠️ **GitHub Integration NOT CONFIGURED** (Forced Deploy: ${deploymentTime})\n\n🔍 **Token Status:**\n- GITHUB_TOKEN_DOWNLOADS: ${!!process.env.GITHUB_TOKEN_DOWNLOADS ? '✅ SET' : '❌ MISSING'}\n- GITHUB_TOKEN: ${!!process.env.GITHUB_TOKEN ? '✅ SET' : '❌ MISSING'}\n- Expected repo: C-Elkins/SCO-SMB\n\n🛠️ **Actions Required:**\n1. ✅ Verify token is set in Vercel dashboard\n2. 🔄 Force redeploy the application\n3. 📋 Confirm this message shows NEW timestamp\n4. 🔐 Verify token has private repo access`,
         assets: []
       });
     }
@@ -89,14 +91,25 @@ export async function GET(request: Request) {
     
     const release: GitHubRelease = await response.json();
     
-    console.log('GitHub Release Data:', {
+    console.log('✅ GitHub Release Data SUCCESSFULLY FETCHED:', {
       tag_name: release.tag_name,
       name: release.name,
       assetsCount: release.assets?.length || 0,
-      published_at: release.published_at
+      published_at: release.published_at,
+      success: release.tag_name === 'v1.1.1' && release.assets?.length === 6,
+      deployTime: deploymentTime
     });
     
-    return NextResponse.json(release);
+    // Add deploy timestamp to response for verification
+    const responseWithTimestamp = {
+      ...release,
+      _debug: {
+        fetchedAt: deploymentTime,
+        deployNote: 'Force Deploy Nov 16 2025 - Expecting v1.1.1 with 6 assets'
+      }
+    };
+    
+    return NextResponse.json(responseWithTimestamp);
   } catch (error) {
     console.error('Error fetching GitHub release:', error);
     return NextResponse.json({
