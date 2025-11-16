@@ -24,13 +24,13 @@ export async function GET(request: NextRequest) {
         responseTime: Date.now() - dbStart,
         details: 'PostgreSQL connection successful'
       });
-    } catch (error) {
+    } catch (error: any) {
       healthChecks.push({
         service: 'Database Connection',
         status: 'unhealthy',
         responseTime: Date.now() - dbStart,
-        details: `Database error: ${error.message}`,
-        error: error.message
+        details: `Database error: ${error?.message || 'Unknown error'}`,
+        error: error?.message || 'Unknown error'
       });
     }
 
@@ -48,13 +48,13 @@ export async function GET(request: NextRequest) {
         responseTime: Date.now() - apiStart,
         details: `Stats API returned ${testResponse.status}`
       });
-    } catch (error) {
+    } catch (error: any) {
       healthChecks.push({
         service: 'API Endpoints',
         status: 'unhealthy',
         responseTime: Date.now() - apiStart,
         details: 'API endpoint test failed',
-        error: error.message
+        error: error?.message || 'Unknown error'
       });
     }
 
@@ -119,13 +119,13 @@ export async function GET(request: NextRequest) {
         details: `${keyStats.total} total keys, ${keyStats.active} active`,
         metrics: keyStats
       });
-    } catch (error) {
+    } catch (error: any) {
       healthChecks.push({
         service: 'License Key System',
         status: 'unhealthy',
         responseTime: 0,
         details: 'Failed to query license keys',
-        error: error.message
+        error: error?.message || 'Unknown error'
       });
     }
 
