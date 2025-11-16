@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await getAdminSession();
   if (!session) {
@@ -16,7 +16,7 @@ export async function PUT(
 
   try {
     const db = getDb();
-    const { userId } = params;
+    const { userId } = await params;
     const body = await request.json();
     const { username, email, role, password, isActive } = body;
 
@@ -73,7 +73,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await getAdminSession();
   if (!session) {
@@ -82,7 +82,7 @@ export async function DELETE(
 
   try {
     const db = getDb();
-    const { userId } = params;
+    const { userId } = await params;
 
     // Don't allow deleting yourself
     if (parseInt(userId) === session.userId) {
