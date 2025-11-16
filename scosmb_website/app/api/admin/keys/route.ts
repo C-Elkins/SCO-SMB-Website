@@ -25,10 +25,7 @@ export async function GET(request: NextRequest) {
 
     const db = getDb();
     
-    // Build the base query
-    let query = db.select().from(license_keys);
-
-    // Apply filters
+    // Build where conditions
     let whereConditions = [];
 
     // Search filter
@@ -48,23 +45,18 @@ export async function GET(request: NextRequest) {
       whereConditions.push(eq(license_keys.status, status));
     }
 
-    // Build the complete query
-    let finalQuery = query;
-    
-    // Apply where conditions
-    if (whereConditions.length > 0) {
-      finalQuery = finalQuery.where(and(...whereConditions));
-    }
-
-    // Apply sorting
+    // Build sorting
     const orderBy = sortOrder === 'desc' ? desc : asc;
     const sortField = license_keys[sortBy as keyof typeof license_keys] || license_keys.created_at;
-    finalQuery = finalQuery.orderBy(orderBy(sortField));
 
-    // Apply pagination
-    finalQuery = finalQuery.limit(limit).offset(offset);
-
-    const keys = await finalQuery;
+    // Execute query with all conditions
+    const keys = await db
+      .select()
+      .from(license_keys)
+      .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+      .orderBy(orderBy(sortField))
+      .limit(limit)
+      .offset(offset);
 
     return NextResponse.json({ 
       keys,
