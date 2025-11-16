@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Search, Eye, Trash2, Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
 interface LicenseRow {
