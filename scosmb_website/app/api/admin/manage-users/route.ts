@@ -50,7 +50,7 @@ export async function DELETE(request: NextRequest) {
     }
     
     // Delete by ID or username
-    const whereClause = userId ? eq(admin_users.id, userId) : eq(admin_users.username, username);
+    const whereClause = userId ? eq(admin_users.id, userId) : eq(admin_users.username, username!);
     const result = await db.delete(admin_users).where(whereClause);
     
     return NextResponse.json({ 
@@ -76,7 +76,7 @@ export async function PATCH(request: NextRequest) {
     }
     
     const db = getDb();
-    const whereClause = userId ? eq(admin_users.id, userId) : eq(admin_users.username, username);
+    const whereClause = userId ? eq(admin_users.id, userId) : eq(admin_users.username, username!);
     
     const updateData: any = {};
     
