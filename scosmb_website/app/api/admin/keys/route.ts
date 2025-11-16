@@ -45,16 +45,36 @@ export async function GET(request: NextRequest) {
       whereConditions.push(eq(license_keys.status, status));
     }
 
-    // Build sorting
-    const orderBy = sortOrder === 'desc' ? desc : asc;
-    const sortField = license_keys[sortBy as keyof typeof license_keys] || license_keys.created_at;
+    // Build sorting - explicitly handle sort fields
+    const orderByFn = sortOrder === 'desc' ? desc : asc;
+    let orderByField;
+    
+    switch (sortBy) {
+      case 'key_code':
+        orderByField = orderByFn(license_keys.key_code);
+        break;
+      case 'status':
+        orderByField = orderByFn(license_keys.status);
+        break;
+      case 'customer_name':
+        orderByField = orderByFn(license_keys.customer_name);
+        break;
+      case 'customer_email':
+        orderByField = orderByFn(license_keys.customer_email);
+        break;
+      case 'expires_at':
+        orderByField = orderByFn(license_keys.expires_at);
+        break;
+      default:
+        orderByField = orderByFn(license_keys.created_at);
+    }
 
     // Execute query with all conditions
     const keys = await db
       .select()
       .from(license_keys)
       .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-      .orderBy(orderBy(sortField))
+      .orderBy(orderByField)
       .limit(limit)
       .offset(offset);
 
