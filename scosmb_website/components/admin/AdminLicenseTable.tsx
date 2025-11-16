@@ -17,7 +17,7 @@ interface LicenseRow {
 
 export function AdminLicenseTable() {
   const [rows, setRows] = useState<LicenseRow[]>([]);
-  const [filteredRows, setFilteredRows] = useState<LicenseRow[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -51,8 +51,8 @@ export function AdminLicenseTable() {
     };
   }, []);
 
-  // Filter and sort rows
-  useEffect(() => {
+  // Filter and sort rows using useMemo to avoid cascading renders
+  const filteredRows = useMemo(() => {
     const filtered = rows.filter(row => {
       const matchesSearch = 
         row.key_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -66,7 +66,7 @@ export function AdminLicenseTable() {
     });
 
     // Sort the filtered results
-    filtered.sort((a, b) => {
+    return filtered.sort((a, b) => {
       const aValue = a[sortBy as keyof LicenseRow] || '';
       const bValue = b[sortBy as keyof LicenseRow] || '';
       
@@ -76,8 +76,6 @@ export function AdminLicenseTable() {
         return aValue < bValue ? 1 : -1;
       }
     });
-
-    setFilteredRows(filtered);
   }, [rows, searchTerm, statusFilter, sortBy, sortOrder]);
 
   async function revoke(key: string) {

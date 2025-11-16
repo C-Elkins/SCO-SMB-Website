@@ -13,11 +13,11 @@ import {
   Clock,
   Server,
   Activity,
-  Lock,
+
   AlertTriangle,
   CheckCircle,
-  Wifi,
-  HardDrive,
+
+
   Cpu,
   BarChart3,
   Download,
