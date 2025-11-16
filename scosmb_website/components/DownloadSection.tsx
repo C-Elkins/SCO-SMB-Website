@@ -105,9 +105,14 @@ export function DownloadSection({ release: releaseProp = null, className, showNo
 
   const isPlatformRecommended = (filename: string) => {
     const lower = filename.toLowerCase();
-    if (platform === 'mac-arm' && (lower.includes('arm64') || (lower.includes('arm') && lower.includes('.dmg')))) return true;
-    if (platform === 'mac-intel' && (lower.includes('x64') || (lower.includes('.dmg') && !lower.includes('arm')))) return true;
-    if (platform === 'windows' && (lower.includes('.exe') || lower.includes('win'))) return true;
+    // Prefer .pkg files for Mac (both ARM64 and Intel), then .dmg as fallback
+    if (platform === 'mac-arm' && lower.includes('arm64') && lower.includes('.pkg')) return true;
+    if (platform === 'mac-intel' && lower.includes('x64') && lower.includes('.pkg')) return true;
+    // Fallback to .dmg if no .pkg available
+    if (platform === 'mac-arm' && lower.includes('arm64') && lower.includes('.dmg')) return true;
+    if (platform === 'mac-intel' && lower.includes('x64') && lower.includes('.dmg')) return true;
+    // Prefer .exe files for Windows
+    if (platform === 'windows' && lower.includes('.exe')) return true;
     return false;
   };
 
