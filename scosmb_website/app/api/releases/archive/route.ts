@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 const OWNER = 'C-Elkins';
 const REPO = 'SCO-SMB';
