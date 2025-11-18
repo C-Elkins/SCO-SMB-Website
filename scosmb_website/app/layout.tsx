@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CriticalStyles from "@/components/CriticalStyles";
+import ClientInitializer from "@/components/ClientInitializer";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -83,13 +85,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
+        {/* Critical CSS inlined */}
+        <CriticalStyles />
         {/* PWA Meta Tags */}
         <meta name="theme-color" content="#153B6B" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="SCO SMB" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         
         {/* Apple Touch Icons */}
         <link rel="apple-touch-icon" sizes="180x180" href="/logos/sco-smb-logo-180.png" />
@@ -101,11 +105,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//vercel.com" />
         
-        {/* Security Headers */}
-        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
-        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        {/* Security headers are now set in next.config.js HTTP headers */}
       </head>
       <body className={`${inter.variable} antialiased bg-white text-neutral-dark`}>        
         {/* Structured Data */}
@@ -166,6 +166,21 @@ export default function RootLayout({
         `}</Script>
         <Analytics />
         <SpeedInsights />
+        <ClientInitializer />
+        {/* Service Worker Registration */}
+        <Script id="sw-registration" strategy="afterInteractive">{`
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                  console.log('SW registered: ', registration);
+                })
+                .catch((registrationError) => {
+                  console.log('SW registration failed: ', registrationError);
+                });
+            });
+          }
+        `}</Script>
       </body>
     </html>
   );

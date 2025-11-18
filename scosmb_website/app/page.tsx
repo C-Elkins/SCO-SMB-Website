@@ -61,7 +61,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-20">
       {/* Shared Hero */}
       <div className="bg-primary-navy/5 dark:bg-neutral-950">
         <Hero />
@@ -78,7 +78,7 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               className="space-y-8"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 text-sm font-medium text-gray-700 shadow-sm">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 text-sm font-medium text-gray-700 mb-8 shadow-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 Purpose-Built for Enterprise
               </div>
@@ -290,7 +290,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <Link
-                href="/download"
+                href="/trial"
                 className="btn btn-primary btn-lg group shadow-2xl shadow-blue-500/25"
               >
                 <span>Start Free Trial</span>

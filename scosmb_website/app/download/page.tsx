@@ -51,12 +51,12 @@ export default function DownloadPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5]">
+      <section className="relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[url('/patterns/grid.svg')] opacity-10"></div>
         <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
         
-        <div className="relative container-wide section max-w-5xl py-24 md:py-32">
+        <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +108,7 @@ export default function DownloadPage() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Main Content */}
       <div className="container-wide section max-w-6xl py-16">

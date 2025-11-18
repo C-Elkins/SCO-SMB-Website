@@ -31,6 +31,7 @@ export default function Header() {
   const navLinks = [
     { name: 'Features', href: '/features' },
     { name: 'Docs', href: '/docs' },
+    { name: 'Pricing', href: '/pricing' },
     { name: 'Security', href: '/security' },
     { name: 'Support', href: '/support' },
   ];
@@ -67,8 +68,11 @@ export default function Header() {
                     isScrolled ? 'h-12 w-auto' : 'h-14 w-auto'
                   }`}
                   style={{ width: 'auto' }}
+                  onError={(e) => {
+                    console.log('SVG failed, falling back to PNG');
+                    e.currentTarget.src = '/logos/sco-smb-logo.png';
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 rounded-lg transition-opacity duration-300" />
               </div>
               <div className="hidden sm:block">
                 <div className="text-sm font-semibold text-gray-900 group-hover:text-blue-900 transition-colors">Enterprise</div>

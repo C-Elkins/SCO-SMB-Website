@@ -41,13 +41,28 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/pricing" className="hover:text-[#00A8B5] transition-colors">
+                  Pricing
+                </Link>
+              </li>
+              <li>
                 <Link href="/download" className="hover:text-[#00A8B5] transition-colors">
                   Download
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="hover:text-[#00A8B5] transition-colors">
-                  Support
+                <Link href="/trial" className="hover:text-[#00A8B5] transition-colors">
+                  Free Trial
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-[#00A8B5] transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-[#00A8B5] transition-colors">
+                  About
                 </Link>
               </li>
             </ul>
@@ -65,6 +80,11 @@ export default function Footer() {
               <li>
                 <Link href="/security" className="hover:text-[#00A8B5] transition-colors">
                   Security
+                </Link>
+              </li>
+              <li>
+                <Link href="/support" className="hover:text-[#00A8B5] transition-colors">
+                  Support
                 </Link>
               </li>
               <li>
