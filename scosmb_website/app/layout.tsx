@@ -8,6 +8,7 @@ import ClientInitializer from "@/components/ClientInitializer";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import PerformanceMonitor from "@/components/PerformanceMonitor";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -105,6 +106,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//vercel.com" />
         
+        {/* Critical Resource Preloading */}
+        <link rel="preload" href="/screenshots/sco-smb-hero-dashboard.png" as="image" fetchPriority="high" />
+        <link rel="preload" href="/logos/sco-smb-logo.png" as="image" />
+        
         {/* Security headers are now set in next.config.js HTTP headers */}
       </head>
       <body className={`${inter.variable} antialiased bg-white text-neutral-dark`}>        
@@ -166,6 +171,7 @@ export default function RootLayout({
         `}</Script>
         <Analytics />
         <SpeedInsights />
+        <PerformanceMonitor />
         <ClientInitializer />
         {/* Service Worker Registration */}
         <Script id="sw-registration" strategy="afterInteractive">{`

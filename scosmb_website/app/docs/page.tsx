@@ -3,10 +3,54 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { 
   Download, Settings, Network, HelpCircle, ChevronDown, ChevronUp,
   Shield, FileText, Zap, MonitorSpeaker, Users, Database, AlertTriangle
 } from 'lucide-react';
+import { FAQSkeleton } from '@/components/LoadingSkeletons';
+
+// Progressive loading for FAQ section
+const FAQSection = dynamic(() => Promise.resolve(({ faqs, openFaq, setOpenFaq }: any) => (
+  <div className="faq-accordion space-y-6">
+    {faqs.map((faq: any, index: number) => (
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+        className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+      >
+        <button
+          onClick={() => setOpenFaq(openFaq === index ? null : index)}
+          className="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset rounded-xl"
+        >
+          <span className="font-semibold text-gray-900">{faq.question}</span>
+          {openFaq === index ? (
+            <ChevronUp className="w-5 h-5 text-gray-500" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-gray-500" />
+          )}
+        </button>
+        {openFaq === index && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="px-6 pb-4"
+          >
+            <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+          </motion.div>
+        )}
+      </motion.div>
+    ))}
+  </div>
+)), {
+  loading: () => <FAQSkeleton />,
+  ssr: true
+});
 
 export default function DocsPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);

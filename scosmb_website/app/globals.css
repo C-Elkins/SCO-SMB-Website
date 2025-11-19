@@ -256,3 +256,217 @@
     text-wrap: balance;
   }
 }
+
+/* Browser Compatibility Fixes */
+* {
+  -webkit-text-size-adjust: 100%; /* Fix Chrome/Safari compatibility */
+  text-size-adjust: 100%;
+}
+
+/* Backdrop Filter Fallbacks */
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-2xl {
+  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
+}
+
+/* Safari backdrop-filter fallback */
+@supports not (backdrop-filter: blur(1px)) {
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-2xl {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .bg-slate-800\/40.backdrop-blur-2xl {
+    background-color: rgba(30, 41, 59, 0.9);
+  }
+}
+
+/* Fix Firefox meta theme-color support */
+@-moz-document url-prefix() {
+  html {
+    scrollbar-width: thin;
+  }
+}
+
+/* Performance optimizations for animations */
+.will-change-transform {
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+/* Hardware acceleration for hero animations */
+.hero-optimized * {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ULTRA-PERFORMANCE dot grid optimizations */
+.hero-dots {
+  transform: translateZ(0);
+  will-change: contents;
+  /* Use CSS Grid for better layout performance */
+  contain: layout style paint;
+}
+
+.hero-dots > div {
+  /* Individual GPU layers for each dot */
+  transform: translateZ(0);
+  contain: strict; /* Strict containment for maximum performance */
+  /* Reduce repaints and reflows */
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* Optimize compositing */
+  isolation: isolate;
+}
+
+/* Micro-optimizations for different dot types */
+.hero-dots .static-dot {
+  will-change: auto; /* No expensive transforms expected */
+}
+
+.hero-dots .interactive-dot {
+  will-change: transform, opacity, box-shadow;
+}
+
+/* Responsive hero optimizations */
+@media (max-width: 640px) {
+  .hero-optimized {
+    min-height: calc(100vh - 60px); /* Smaller header on mobile */
+  }
+  
+  .hero-dots {
+    /* Reduce dot count on mobile for better performance */
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-dots .interactive-dot {
+    /* Simplify effects on very small screens */
+    box-shadow: none !important;
+  }
+}
+
+@media (max-height: 600px) {
+  .hero-optimized {
+    /* Handle landscape mobile and small screens */
+    min-height: 100vh;
+    padding: 1rem 0;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero-optimized {
+    /* Special handling for landscape mobile */
+    min-height: 100vh;
+  }
+  
+  .hero-optimized .container-wide {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .hero-dots {
+    display: none;
+  }
+}
+
+/* 3D Flip Card Effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* RES Optimization - CSS Containment */
+.docs-container {
+  contain: layout style;
+  min-height: 100vh;
+}
+
+.pricing-card {
+  contain: layout style;
+  min-height: 400px;
+  transform: translateZ(0);
+}
+
+.download-section {
+  contain: layout;
+  min-height: 600px;
+}
+
+.faq-accordion {
+  contain: layout;
+}
+
+.release-notes {
+  contain: layout;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.form-container {
+  contain: layout style;
+  min-height: 300px;
+}
+
+/* Floating Card Effects */
+.floating-card-blur {
+  filter: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-card-sharp {
+  filter: none;
+}
+
+.floating-card-glass {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(59, 130, 246, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(2px);
+  transition: all 0.3s ease;
+}
+
+.floating-card-glass:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(59, 130, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(1px);
+}

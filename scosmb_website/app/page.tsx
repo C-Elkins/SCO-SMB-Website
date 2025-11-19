@@ -13,62 +13,77 @@ import {
   Laptop,
   Zap
 } from 'lucide-react';
-import { Hero } from '@/components/Hero';
-import { FeatureCard } from '@/components/FeatureCard';
+import { DynamicHero, DynamicFeatureCard } from '@/components/DynamicComponents';
 
 export default function Home() {
   const features = [
     {
       icon: Network,
       title: 'Network Scanner Discovery',
-      description: 'Automatically find Kyocera & Sharp printers with real connection testing. No manual IP configuration needed.'
+      description: 'Automatically find Kyocera & Sharp printers with real connection testing. No manual IP configuration needed.',
+      benefits: ['Ping-based connection validation', 'SNMP device identification', 'Automatic protocol detection', 'Network topology mapping'],
+      technicalDetails: 'Advanced discovery engine scans network ranges and validates printer connections using ICMP, SNMP, and custom protocols to ensure reliable device identification.'
     },
     {
       icon: Shield,
       title: 'Enterprise Security',
-      description: 'IP whitelisting, file validation, audit logging, and EXIF metadata stripping for complete protection.'
+      description: 'IP whitelisting, file validation, audit logging, and EXIF metadata stripping for complete protection.',
+      benefits: ['EXIF metadata removal', 'File type validation', 'Comprehensive audit trails', 'IP-based access control'],
+      technicalDetails: 'Military-grade security with SHA-512 verification, complete audit logging, and metadata sanitization to meet enterprise compliance requirements.'
     },
     {
       icon: FolderTree,
       title: 'Automatic Organization',
-      description: 'Files sorted by date with custom naming patterns. Quick search and filter through scan history.'
+      description: 'Files sorted by date with custom naming patterns. Quick search and filter through scan history.',
+      benefits: ['Date-based folder structure', 'Custom naming templates', 'Full-text search capability', 'Advanced filtering options'],
+      technicalDetails: 'Intelligent file organization system with customizable templates, OCR integration for searchability, and automated categorization based on content analysis.'
     },
     {
       icon: RefreshCw,
       title: 'Auto-Update System',
-      description: 'Secure updates via GitHub with SHA512 verification. You stay in control of installation.'
+      description: 'Secure updates via GitHub with SHA512 verification. You stay in control of installation.',
+      benefits: ['GitHub-backed distribution', 'Cryptographic verification', 'Rollback capabilities', 'Update scheduling control'],
+      technicalDetails: 'Secure update pipeline with code signing, hash verification, and staged deployment to ensure system integrity and minimize downtime.'
     },
     {
       icon: Server,
       title: 'Multi-Protocol Support',
-      description: 'FTP server, SMB folder watching, HTTP POST uploads. Choose the best protocol for your printers.'
+      description: 'FTP server, SMB folder watching, HTTP POST uploads. Choose the best protocol for your printers.',
+      benefits: ['FTP/FTPS server built-in', 'SMB folder monitoring', 'HTTP/HTTPS endpoints', 'Email integration support'],
+      technicalDetails: 'Comprehensive protocol stack supporting FTP, FTPS, SMB, HTTP/HTTPS, and email protocols with configurable security parameters for each transport method.'
     },
     {
       icon: History,
       title: 'Scan History',
-      description: 'Visual thumbnail grid with search and filter. Track all received documents with ease.'
+      description: 'Visual thumbnail grid with search and filter. Track all received documents with ease.',
+      benefits: ['Visual thumbnail previews', 'Advanced search filters', 'Batch operations support', 'Export capabilities'],
+      technicalDetails: 'Sophisticated document management system with thumbnail generation, metadata indexing, and powerful search capabilities for efficient document retrieval.'
     },
     {
       icon: Laptop,
       title: 'Cross-Platform',
-      description: 'macOS (Intel & Apple Silicon) and Windows 10/11 with professional installers.'
+      description: 'macOS (Intel & Apple Silicon) and Windows 10/11 with professional installers.',
+      benefits: ['Universal macOS binaries', 'Windows MSI installers', 'System service integration', 'Auto-start capabilities'],
+      technicalDetails: 'Native platform integration with system services, startup automation, and optimized performance for both Intel and ARM architectures.'
     },
     {
       icon: Zap,
       title: 'Production Ready',
-      description: 'Built with Electron 28, React 18, and enterprise-grade logging for reliable performance.'
+      description: 'Built with Electron 28, React 18, and enterprise-grade logging for reliable performance.',
+      benefits: ['Enterprise logging system', 'Performance monitoring', 'Error tracking & recovery', 'Scalable architecture'],
+      technicalDetails: 'Production-hardened architecture with comprehensive telemetry, automatic error recovery, and enterprise-grade monitoring for 24/7 operation reliability.'
     }
   ];
 
   return (
-    <div className="min-h-screen pt-20">
-      {/* Shared Hero */}
+    <div className="min-h-screen">
+      {/* Shared Hero - Full viewport with proper spacing */}
       <div className="bg-primary-navy/5 dark:bg-neutral-950">
-        <Hero />
+        <DynamicHero />
       </div>
 
       {/* Product Preview */}
-      <section className="section-padding bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white">
         <div className="container-wide">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -78,15 +93,15 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               className="space-y-8"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 text-sm font-medium text-gray-700 mb-8 shadow-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                Purpose-Built for Enterprise
-              </div>
-              
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                 Secure scanning infrastructure for{' '}
                 <span className="text-gradient-primary">mixed printer fleets</span>
               </h2>
+              
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 text-sm font-medium text-gray-700 shadow-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                Purpose-Built for Enterprise
+              </div>
               
               <p className="text-xl text-gray-600 leading-relaxed">
                 Receive scans directly to secure desktop queues, automatically organize files, and enforce security policy without touching the printer. SCO SMB keeps technicians in control with audit logging, key-based downloads, and GitHub-backed updates.
@@ -211,11 +226,13 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {features.slice(0, 4).map((feature, index) => (
-              <FeatureCard
+              <DynamicFeatureCard
                 key={feature.title}
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}
+                benefits={feature.benefits}
+                technicalDetails={feature.technicalDetails}
                 delay={index * 0.1}
                 variant='default'
               />
@@ -224,11 +241,13 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mt-12">
             {features.slice(4).map((feature, index) => (
-              <FeatureCard
+              <DynamicFeatureCard
                 key={feature.title}
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}
+                benefits={feature.benefits}
+                technicalDetails={feature.technicalDetails}
                 delay={(index + 4) * 0.1}
                 variant='default'
               />

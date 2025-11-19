@@ -387,19 +387,15 @@ export function EnterpriseSettingsPanel() {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Default Key Format</label>
-                  <select 
-                    value={settings.licenseKeySettings.defaultKeyFormat}
-                    onChange={(e) => setSettings({...settings, licenseKeySettings: {...settings.licenseKeySettings, defaultKeyFormat: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
-                  >
-                    <option value="SCO-XXXX-XXXX">SCO-XXXX-XXXX</option>
-                    <option value="XXXX-XXXX-XXXX-XXXX">XXXX-XXXX-XXXX-XXXX</option>
-                    <option value="XXXXXXXXXX">XXXXXXXXXX</option>
-                  </select>
+                <div className="bg-gradient-to-br from-[#00A8B5]/10 to-teal-50 p-4 rounded-lg border border-[#00A8B5]/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Key className="w-4 h-4 text-[#00A8B5]" />
+                    <label className="block text-sm font-medium text-gray-700">Key Format</label>
+                  </div>
+                  <div className="font-mono text-lg text-[#153B6B] font-semibold">SCO-XXXX-XXXX-XXXX</div>
+                  <p className="text-xs text-gray-500 mt-1">Standard format: 4 segments, 4 characters each</p>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Default Max Downloads</label>
                   <input 

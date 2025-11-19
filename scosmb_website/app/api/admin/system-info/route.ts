@@ -12,15 +12,33 @@ export async function GET() {
 
   try {
     const db = getDb();
-    
+
     // Get system metrics
     const [totalKeys] = await db.select({ count: count() }).from(license_keys);
     const [activeKeys] = await db.select({ count: count() }).from(license_keys).where(eq(license_keys.status, 'active'));
     const [totalAdmins] = await db.select({ count: count() }).from(admin_users);
     const [totalDownloads] = await db.select({ count: count() }).from(download_logs);
-    
-    // Get latest version from environment or database
-    const latestVersion = process.env.SCOSMB_VERSION || 'v1.1.1';
+
+    // Fetch latest version from GitHub
+    let latestVersion = 'Unknown';
+    try {
+      const githubResponse = await fetch(
+        'https://api.github.com/repos/C-Elkins/SCO-SMB/releases/latest',
+        {
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'SCO-SMB-Admin'
+          },
+          next: { revalidate: 300 } // Cache for 5 minutes
+        }
+      );
+      if (githubResponse.ok) {
+        const releaseData = await githubResponse.json();
+        latestVersion = releaseData.tag_name || 'Unknown';
+      }
+    } catch {
+      latestVersion = process.env.SCOSMB_VERSION || 'Unknown';
+    }
     
     // Calculate system uptime (since server start)
     const uptimeSeconds = process.uptime();

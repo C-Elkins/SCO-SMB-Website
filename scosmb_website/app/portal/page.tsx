@@ -1,15 +1,78 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Download, Book, Wrench, GitBranch, Shield, LogIn, Globe, Check, ExternalLink } from 'lucide-react';
+
+interface ReleaseAsset {
+  name: string;
+  browser_download_url: string;
+  size: number;
+}
+
+interface Release {
+  tag_name: string;
+  published_at: string;
+  assets: ReleaseAsset[];
+}
 
 export default function PortalPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [release, setRelease] = useState<Release | null>(null);
+  const [isLoadingRelease, setIsLoadingRelease] = useState(true);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchLatestRelease();
+    }
+  }, [isAuthenticated]);
+
+  const fetchLatestRelease = async () => {
+    try {
+      const response = await fetch('/api/releases/latest');
+      if (response.ok) {
+        const data = await response.json();
+        setRelease(data);
+      }
+    } catch (error) {
+      console.error('Error fetching release:', error);
+    } finally {
+      setIsLoadingRelease(false);
+    }
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const getAssetUrl = (platform: 'mac-arm' | 'mac-intel' | 'windows'): string => {
+    if (!release?.assets) return '#';
+
+    const asset = release.assets.find(a => {
+      const name = a.name.toLowerCase();
+      switch (platform) {
+        case 'mac-arm':
+          return name.includes('arm64') && name.endsWith('.dmg');
+        case 'mac-intel':
+          return name.includes('x64') && name.endsWith('.dmg');
+        case 'windows':
+          return name.endsWith('.exe');
+        default:
+          return false;
+      }
+    });
+
+    return asset?.browser_download_url || '#';
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,12 +186,12 @@ export default function PortalPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5]">
+      <section className="relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[url('/patterns/grid.svg')] opacity-10"></div>
         <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
-        
-        <div className="relative container-wide section max-w-5xl py-24 md:py-32">
+
+        <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -178,7 +241,7 @@ export default function PortalPage() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Portal Features */}
       <section className="py-20">
@@ -271,27 +334,31 @@ export default function PortalPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-[#153B6B]">Latest Release (v1.1.1)</h3>
+                      <h3 className="text-lg font-semibold text-[#153B6B]">
+                        {isLoadingRelease ? 'Loading...' : `Latest Release (${release?.tag_name || 'N/A'})`}
+                      </h3>
                       <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">RECOMMENDED</span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3">Production stable version • Released November 15, 2025</p>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Production stable version • {release ? `Released ${formatDate(release.published_at)}` : 'Loading...'}
+                    </p>
                     <div className="text-xs text-gray-500">All platforms • Direct GitHub download</div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <a 
-                      href="https://github.com/C-Elkins/SCO-SMB/releases/download/v1.1.1/SCO.SMB-1.1.1-arm64.dmg"
+                    <a
+                      href={getAssetUrl('mac-arm')}
                       className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors text-sm font-medium text-center"
                     >
                       Mac (Apple Silicon)
                     </a>
-                    <a 
-                      href="https://github.com/C-Elkins/SCO-SMB/releases/download/v1.1.1/SCO.SMB-1.1.1-x64.dmg"
+                    <a
+                      href={getAssetUrl('mac-intel')}
                       className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors text-sm font-medium text-center"
                     >
                       Mac (Intel)
                     </a>
-                    <a 
-                      href="https://github.com/C-Elkins/SCO-SMB/releases/download/v1.1.1/SCO.SMB-Setup-1.1.1.exe"
+                    <a
+                      href={getAssetUrl('windows')}
                       className="px-4 py-2 bg-[#153B6B] text-white rounded-lg hover:bg-[#0f2a4d] transition-colors text-sm font-medium text-center"
                     >
                       Windows

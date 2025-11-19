@@ -1,28 +1,41 @@
-const CACHE_NAME = 'sco-smb-v1';
+const CACHE_NAME = 'sco-smb-v2';
+const STATIC_CACHE = 'sco-smb-static-v2';
+const DYNAMIC_CACHE = 'sco-smb-dynamic-v2';
+
 const STATIC_ASSETS = [
   '/',
   '/manifest.webmanifest',
   '/logos/sco-smb-logo.png',
-  '/logos/sco-smb-icon.png'
+  '/logos/sco-smb-icon.png',
+  '/screenshots/sco-smb-hero-dashboard.png'
 ];
+
+const CACHE_STRATEGIES = {
+  images: 'CacheFirst',
+  scripts: 'StaleWhileRevalidate', 
+  pages: 'NetworkFirst',
+  static: 'CacheFirst'
+};
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
+    Promise.all([
+      caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS)),
+      caches.open(DYNAMIC_CACHE)
+    ]).then(() => self.skipWaiting())
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  const expectedCaches = [STATIC_CACHE, DYNAMIC_CACHE];
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
         return Promise.all(
           cacheNames
-            .filter((cacheName) => cacheName !== CACHE_NAME)
+            .filter((cacheName) => !expectedCaches.includes(cacheName))
             .map((cacheName) => caches.delete(cacheName))
         );
       })

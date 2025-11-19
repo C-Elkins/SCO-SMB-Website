@@ -5,9 +5,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronDown, ChevronUp, Package, Download, Shield, Clock, Users, ExternalLink } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { LicenseKeyForm } from '@/components/LicenseKeyForm';
-import { DownloadSection } from '@/components/DownloadSection';
+import dynamic from 'next/dynamic';
+import { DownloadSkeleton, FormSkeleton, ReleaseNotesSkeleton } from '@/components/LoadingSkeletons';
 import type { Release as LatestRelease } from '@/components/DownloadSection';
+
+// Progressive loading with dynamic imports
+const LicenseKeyForm = dynamic(() => import('@/components/LicenseKeyForm').then(mod => ({ default: mod.LicenseKeyForm })), {
+  loading: () => <FormSkeleton />,
+  ssr: true
+});
+
+const DownloadSection = dynamic(() => import('@/components/DownloadSection').then(mod => ({ default: mod.DownloadSection })), {
+  loading: () => <DownloadSkeleton />,
+  ssr: true
+});
 
 export default function DownloadPage() {
   const [isValidated, setIsValidated] = useState(false);

@@ -1,12 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { 
   Check, Building, Users, Shield, Phone, Mail, 
   Calendar, ArrowRight, Star, Award, Target
 } from 'lucide-react';
+import { PricingCardSkeleton } from '@/components/LoadingSkeletons';
 
 export default function PricingPage() {
+  const router = useRouter();
 
   const industries = [
     {
@@ -35,16 +39,18 @@ export default function PricingPage() {
     }
   ];
 
-  const handleContactSubmit = (planType: string) => {
+  const handleContactSubmit = async (planType: string) => {
     // Track pricing inquiry - simplified for ESLint
     try {
-      // Redirect to contact with pre-filled subject  
+      // Analytics tracking can go here
     } catch (error) {
       console.log('Analytics tracking error:', error);
     }
     
-    // Redirect to contact with pre-filled subject
-    window.location.href = `/contact?subject=Pricing Inquiry - ${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan&message=I'm interested in learning more about the ${planType} plan for my organization.`;
+    // Use Next.js router for SPA navigation
+    const subject = encodeURIComponent(`Pricing Inquiry - ${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan`);
+    const message = encodeURIComponent(`I'm interested in learning more about the ${planType} plan for my organization.`);
+    await router.push(`/contact?subject=${subject}&message=${message}`);
   };
 
   return (

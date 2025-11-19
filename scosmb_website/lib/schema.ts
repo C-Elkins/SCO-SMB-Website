@@ -53,3 +53,20 @@ export const system_settings = pgTable('system_settings', {
   updated_at: timestamp('updated_at').defaultNow(),
   created_at: timestamp('created_at').defaultNow(),
 });
+
+export const customers = pgTable('customers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  company: varchar('company', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  phone: varchar('phone', { length: 50 }),
+  point_of_contact: varchar('point_of_contact', { length: 255 }),
+  address: text('address'),
+  notes: text('notes'),
+  total_spent: integer('total_spent').default(0),
+  monthly_rate: integer('monthly_rate').default(0),
+  num_computers: integer('num_computers').default(0),
+  num_keys_needed: integer('num_keys_needed').default(0),
+  status: varchar('status', { length: 20 }).default('active'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_activity: timestamp('last_activity'),
+});

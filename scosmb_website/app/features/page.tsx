@@ -10,7 +10,11 @@ import {
   Server, 
   History,
   Settings,
-  Lock
+  Lock,
+  Monitor,
+  Zap,
+  Globe,
+  Database
 } from 'lucide-react';
 import { FeatureCard } from '@/components/FeatureCard';
 
@@ -94,17 +98,86 @@ export default function FeaturesPage() {
     {
       icon: Settings,
       title: 'Easy Configuration',
-      description: 'Intuitive settings panel for all configuration options. No command line required.'
+      description: 'Intuitive settings panel for all configuration options. No command line required.',
+      benefits: [
+        'Drag-and-drop printer setup',
+        'Visual protocol selection',
+        'One-click security toggles',
+        'Real-time configuration validation'
+      ],
+      technicalDetails: 'Modern GUI built with React and Electron, providing native OS integration with automatic settings persistence and real-time validation feedback.'
     },
     {
       icon: Lock,
       title: 'Secure by Default',
-      description: 'All security features enabled by default with audit logging for every critical action.'
+      description: 'All security features enabled by default with audit logging for every critical action.',
+      benefits: [
+        'Zero-trust security model',
+        'Encrypted local storage',
+        'Tamper-evident logging',
+        'Automatic security updates'
+      ],
+      technicalDetails: 'Military-grade AES-256 encryption for all local data, with SHA-512 checksums for file integrity and comprehensive audit trails that cannot be modified or deleted.'
     },
     {
       icon: RefreshCw,
       title: 'Always Current',
-      description: 'Automatic update notifications sourced from GitHub Releases with checksum verification.'
+      description: 'Automatic update notifications sourced from GitHub Releases with checksum verification.',
+      benefits: [
+        'Silent background updates',
+        'Rollback protection',
+        'Beta channel access',
+        'Update scheduling control'
+      ],
+      technicalDetails: 'GitHub Actions-powered CI/CD pipeline with automated security scanning, code signing, and delta updates to minimize bandwidth usage while ensuring authenticity.'
+    },
+    {
+      icon: Monitor,
+      title: 'Real-Time Monitoring',
+      description: 'Live dashboard showing scanner status, recent activities, and system health metrics.',
+      benefits: [
+        'Live printer connection status',
+        'Scan activity monitoring',
+        'Storage usage tracking',
+        'Performance metrics display'
+      ],
+      technicalDetails: 'WebSocket-based real-time updates with efficient data streaming, providing sub-second status updates and historical trend analysis for optimal system maintenance.'
+    },
+    {
+      icon: Zap,
+      title: 'High Performance',
+      description: 'Optimized for speed with concurrent scanning support and efficient file processing.',
+      benefits: [
+        'Parallel scan processing',
+        'Memory-efficient operation',
+        'Fast file transfers',
+        'Background compression'
+      ],
+      technicalDetails: 'Multi-threaded architecture with async I/O operations, intelligent memory management, and hardware-accelerated image processing for maximum throughput.'
+    },
+    {
+      icon: Globe,
+      title: 'Multi-Location Support',
+      description: 'Perfect for organizations with multiple offices or distributed scanning needs.',
+      benefits: [
+        'Centralized management',
+        'Remote configuration',
+        'Location-based routing',
+        'Unified reporting'
+      ],
+      technicalDetails: 'Cloud-ready architecture with secure API endpoints, encrypted communication channels, and role-based access control for enterprise-scale deployments.'
+    },
+    {
+      icon: Database,
+      title: 'Data Management',
+      description: 'Comprehensive data handling with backup, archival, and retention policies.',
+      benefits: [
+        'Automated backups',
+        'Retention policy enforcement',
+        'Data export capabilities',
+        'Archive management'
+      ],
+      technicalDetails: 'SQLite-based local storage with optional PostgreSQL integration, featuring ACID compliance, automatic vacuum operations, and configurable retention policies.'
     }
   ];
 
@@ -265,14 +338,32 @@ export default function FeaturesPage() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {additionalFeatures.map((feature, index) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {additionalFeatures.slice(0, 4).map((feature, index) => (
               <FeatureCard
                 key={feature.title}
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}
+                benefits={feature.benefits}
+                technicalDetails={feature.technicalDetails}
                 delay={index * 0.05}
+                variant="default"
+              />
+            ))}
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {additionalFeatures.slice(4).map((feature, index) => (
+              <FeatureCard
+                key={feature.title}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                benefits={feature.benefits}
+                technicalDetails={feature.technicalDetails}
+                delay={(index + 4) * 0.05}
+                variant="default"
               />
             ))}
           </div>
