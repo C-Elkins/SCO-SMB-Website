@@ -2,6 +2,9 @@ import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from './schema';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 // For local development with WebSocket
 if (typeof WebSocket === 'undefined') {
