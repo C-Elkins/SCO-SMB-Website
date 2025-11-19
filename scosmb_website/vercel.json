@@ -1,5 +1,4 @@
 {
-  "regions": ["iad1", "sfo1", "lhr1", "sin1"],
   "headers": [
     {
       "source": "/screenshots/(.*)",
