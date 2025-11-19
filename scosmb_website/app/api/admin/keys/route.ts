@@ -111,10 +111,17 @@ export async function POST(request: NextRequest) {
     const db = getDb();
     const keys = [];
 
-    // Generate random key codes
+    // Generate random key codes in format SCO-XXXX-XXXX-XXXX-XXXX
     function generateKeyCode(): string {
-      return 'SCO-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + 
-             Math.random().toString(36).substring(2, 8).toUpperCase();
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const generateSegment = () => {
+        let segment = '';
+        for (let i = 0; i < 4; i++) {
+          segment += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return segment;
+      };
+      return `SCO-${generateSegment()}-${generateSegment()}-${generateSegment()}-${generateSegment()}`;
     }
 
     for (let i = 0; i < Math.min(count, 100); i++) {
