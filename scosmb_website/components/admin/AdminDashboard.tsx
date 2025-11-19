@@ -228,7 +228,7 @@ export function AdminDashboard() {
     }
   };
 
-  const handleAdminUserSave = async (e: React.FormEvent, userId: number) => {
+  const handleAdminUserSave = async (e: React.FormEvent, userId: string) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -1548,7 +1548,7 @@ export function AdminDashboard() {
               </div>
             </div>
             
-            <form onSubmit={(e) => handleAdminUserSave(e, parseInt(selectedAdmin.id))}>
+            <form onSubmit={(e) => handleAdminUserSave(e, selectedAdmin.id)}>
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
