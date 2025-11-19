@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const db = getDb();
     const keys = [];
 
-    // Generate random key codes in format SCO-XXXX-XXXX-XXXX-XXXX
+    // Generate random key codes in format SCO-XXXX-XXXX-XXXX
     function generateKeyCode(): string {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const generateSegment = () => {
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         }
         return segment;
       };
-      return `SCO-${generateSegment()}-${generateSegment()}-${generateSegment()}-${generateSegment()}`;
+      return `SCO-${generateSegment()}-${generateSegment()}-${generateSegment()}`;
     }
 
     for (let i = 0; i < Math.min(count, 100); i++) {

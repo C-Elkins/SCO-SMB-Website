@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 export function generateLicenseKey(): string {
-  const segments = 4;
+  const segments = 3;
   const segmentLength = 4;
   
   let key = 'SCO';

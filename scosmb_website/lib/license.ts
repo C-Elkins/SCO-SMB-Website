@@ -29,7 +29,7 @@ export interface DownloadLog {
 }
 
 export function generateLicenseKey(): string {
-  const segments = 4;
+  const segments = 3;
   const segmentLength = 4;
   
   let key = 'SCO';
@@ -141,7 +141,7 @@ export async function validateLicenseKey(code: string): Promise<{
   key?: LicenseKey;
 }> {
   // Check format
-  if (!/^SCO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
+  if (!/^SCO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
     return { valid: false, error: 'Invalid license key format' };
   }
 
