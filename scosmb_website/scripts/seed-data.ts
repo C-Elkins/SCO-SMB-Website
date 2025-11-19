@@ -47,10 +47,23 @@ async function seedDatabase() {
 
     console.log(`Created ${adminUsers.length} admin users`);
 
+    // Generate license keys in correct SCO-XXXX-XXXX-XXXX format
+    function generateKeyCode(): string {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const generateSegment = () => {
+        let segment = '';
+        for (let i = 0; i < 4; i++) {
+          segment += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return segment;
+      };
+      return `SCO-${generateSegment()}-${generateSegment()}-${generateSegment()}`;
+    }
+
     // Create license keys
     const licenseKeys = await db.insert(schema.license_keys).values([
       {
-        key_code: 'SCOSMB-TRIAL-001',
+        key_code: generateKeyCode(),
         status: 'unused',
         created_by: 'admin',
         max_downloads: 3,
@@ -58,7 +71,7 @@ async function seedDatabase() {
         notes: 'Trial license key',
       },
       {
-        key_code: 'SCOSMB-ENT-001',
+        key_code: generateKeyCode(),
         status: 'unused',
         created_by: 'admin',
         max_downloads: 10,
@@ -66,7 +79,7 @@ async function seedDatabase() {
         notes: 'Enterprise license key',
       },
       {
-        key_code: 'SCOSMB-PRO-001',
+        key_code: generateKeyCode(),
         status: 'unused',
         created_by: 'admin',
         max_downloads: 5,
