@@ -6,9 +6,6 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: false,
   },
@@ -17,9 +14,16 @@ const nextConfig = {
   // Performance optimizations
   experimental: {
     scrollRestoration: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@vercel/speed-insights'],
     gzipSize: true,
     memoryBasedWorkersCount: true,
+    webpackBuildWorker: true,
+    optimizeCss: true,
+  },
+  
+  // Bundle analyzer and optimization
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   
   // Turbopack configuration (moved from experimental.turbo)

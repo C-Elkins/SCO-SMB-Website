@@ -6,9 +6,10 @@ import Footer from "@/components/Footer";
 import CriticalStyles from "@/components/CriticalStyles";
 import ClientInitializer from "@/components/ClientInitializer";
 import Script from "next/script";
-import { Analytics } from "@vercel/analytics/next";
+// Analytics removed due to 404 issues
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
+import ScrollProgressIndicator from "@/components/ScrollProgressIndicator";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -105,14 +106,20 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//vercel.com" />
+        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="//vitals.vercel-analytics.com" />
         
-        {/* Critical Resource Preloading */}
+        {/* Preload critical assets */}
         <link rel="preload" href="/screenshots/sco-smb-hero-dashboard.png" as="image" fetchPriority="high" />
-        <link rel="preload" href="/logos/sco-smb-logo.png" as="image" />
+        
+        {/* Performance hints */}
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         
         {/* Security headers are now set in next.config.js HTTP headers */}
       </head>
-      <body className={`${inter.variable} antialiased bg-white text-neutral-dark`}>        
+      <body className={`${inter.variable} antialiased bg-white text-neutral-dark`}>
+        <ScrollProgressIndicator />
         {/* Structured Data */}
         <Script
           id="structured-data"
@@ -169,22 +176,43 @@ export default function RootLayout({
           };
           window.addEventListener('scroll', onScroll);
         `}</Script>
-        <Analytics />
+        <ClientInitializer />
+        {/* Analytics temporarily disabled */}
         <SpeedInsights />
         <PerformanceMonitor />
-        <ClientInitializer />
         {/* Service Worker Registration */}
         <Script id="sw-registration" strategy="afterInteractive">{`
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/sw.js')
+              navigator.serviceWorker.register('/sw-optimized.js')
                 .then((registration) => {
                   console.log('SW registered: ', registration);
+                  // Update existing SW
+                  registration.update();
                 })
                 .catch((registrationError) => {
                   console.log('SW registration failed: ', registrationError);
                 });
             });
+          }
+        `}</Script>
+        {/* Core Web Vitals Monitoring */}
+        <Script id="web-vitals" strategy="afterInteractive">{`
+          if ('PerformanceObserver' in window) {
+            const observer = new PerformanceObserver((list) => {
+              for (const entry of list.getEntries()) {
+                if (entry.entryType === 'largest-contentful-paint') {
+                  console.log('LCP: ' + entry.startTime + 'ms');
+                }
+                if (entry.entryType === 'first-input') {
+                  console.log('FID: ' + (entry.processingStart - entry.startTime) + 'ms');
+                }
+                if (entry.entryType === 'layout-shift' && !entry.hadRecentInput) {
+                  console.log('CLS: ' + entry.value);
+                }
+              }
+            });
+            observer.observe({entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift']});
           }
         `}</Script>
       </body>

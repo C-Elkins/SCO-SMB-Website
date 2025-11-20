@@ -3,6 +3,9 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Suspense, lazy } from 'react';
+import { FastLoadingSkeleton } from '@/components/FastLoadingSkeleton';
+import { EnhancedFeatureCard, FeatureGrid } from '@/components/EnhancedFeatureCard';
 import {
   Network,
   Shield,
@@ -13,7 +16,43 @@ import {
   Laptop,
   Zap
 } from 'lucide-react';
-import { DynamicHero, DynamicFeatureCard } from '@/components/DynamicComponents';
+
+// Lazy load heavy components
+const Hero = lazy(() => import('../components/HeroNew'));
+const DynamicFeatureCard = lazy(() => import('@/components/DynamicComponents').then(module => ({ default: module.DynamicFeatureCard })));
+
+// Loading components
+function HeroSkeleton() {
+  return (
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900">
+      <div className="animate-pulse text-center">
+        <div className="h-16 bg-slate-600/20 rounded-lg mb-6 mx-auto max-w-md"></div>
+        <div className="h-8 bg-slate-600/20 rounded-lg mb-8 mx-auto max-w-lg"></div>
+        <div className="flex gap-4 justify-center">
+          <div className="h-12 w-32 bg-slate-600/20 rounded-lg"></div>
+          <div className="h-12 w-32 bg-slate-600/20 rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FeatureCardSkeleton() {
+  return (
+    <div className="animate-pulse bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div className="w-12 h-12 bg-gray-200 rounded-lg mb-4"></div>
+      <div className="h-6 bg-gray-200 rounded mb-3 w-3/4"></div>
+      <div className="space-y-2 mb-4">
+        <div className="h-4 bg-gray-200 rounded w-full"></div>
+        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+      </div>
+      <div className="space-y-1">
+        <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+        <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const features = [
@@ -79,11 +118,13 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Shared Hero - Full viewport with proper spacing */}
       <div className="bg-primary-navy/5 dark:bg-neutral-950">
-        <DynamicHero />
+        <Suspense fallback={<HeroSkeleton />}>
+          <Hero />
+        </Suspense>
       </div>
 
       {/* Product Preview */}
-      <section className="py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white">
+      <section className="content-section py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white">
         <div className="container-wide">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -169,8 +210,8 @@ export default function Home() {
                   alt="SCO SMB dashboard preview showing scan management interface"
                   width={600}
                   height={400}
-                  className="rounded-xl w-full h-auto"
-                  style={{ width: 'auto', height: 'auto' }}
+                  className="rounded-xl w-full"
+                  style={{ width: '100%', height: 'auto' }}
                   priority
                 />
                 
@@ -200,7 +241,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 md:py-32 bg-white">
+      <section className="content-section py-24 md:py-32 bg-white">
         <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -224,40 +265,44 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {features.slice(0, 4).map((feature, index) => (
-              <DynamicFeatureCard
-                key={feature.title}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                benefits={feature.benefits}
-                technicalDetails={feature.technicalDetails}
-                delay={index * 0.1}
-                variant='default'
-              />
-            ))}
-          </div>
+          <Suspense fallback={
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+              {Array(8).fill(0).map((_, i) => <FeatureCardSkeleton key={i} />)}
+            </div>
+          }>
+            <FeatureGrid>
+              {features.slice(0, 4).map((feature, index) => (
+                <EnhancedFeatureCard
+                  key={feature.title}
+                  icon={feature.icon}
+                  title={feature.title}
+                  description={feature.description}
+                  delay={index * 0.1}
+                  gradient={index % 2 === 0 ? "from-[#153B6B] to-[#00A8B5]" : "from-[#00A8B5] to-[#153B6B]"}
+                />
+              ))}
+            </FeatureGrid>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mt-12">
-            {features.slice(4).map((feature, index) => (
-              <DynamicFeatureCard
-                key={feature.title}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                benefits={feature.benefits}
-                technicalDetails={feature.technicalDetails}
-                delay={(index + 4) * 0.1}
-                variant='default'
-              />
-            ))}
-          </div>
+            <div className="mt-12">
+              <FeatureGrid>
+                {features.slice(4).map((feature, index) => (
+                  <EnhancedFeatureCard
+                    key={feature.title}
+                    icon={feature.icon}
+                    title={feature.title}
+                    description={feature.description}
+                    delay={(index + 4) * 0.1}
+                    gradient={index % 2 === 0 ? "from-[#153B6B] to-[#00A8B5]" : "from-[#00A8B5] to-[#153B6B]"}
+                  />
+                ))}
+              </FeatureGrid>
+            </div>
+          </Suspense>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="section-padding bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white relative overflow-hidden">
+      <section className="content-section section-padding bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />

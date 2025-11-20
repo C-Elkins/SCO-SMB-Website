@@ -1,7 +1,23 @@
 "use client";
 import { motion } from 'framer-motion';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
+
+// Loading skeleton for Hero
+function HeroSkeleton() {
+  return (
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900">
+      <div className="animate-pulse text-center">
+        <div className="h-16 bg-slate-600/20 rounded-lg mb-6 mx-auto max-w-md"></div>
+        <div className="h-8 bg-slate-600/20 rounded-lg mb-8 mx-auto max-w-lg"></div>
+        <div className="flex gap-4 justify-center">
+          <div className="h-12 w-32 bg-slate-600/20 rounded-lg"></div>
+          <div className="h-12 w-32 bg-slate-600/20 rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -22,49 +38,62 @@ export function Hero() {
     }));
   }, []);
 
-  // Ultra-optimized dot grid with pre-calculated positions and zones
+  // Optimized dot grid with performance-first approach
   const dotGridData = React.useMemo(() => {
-    if (!isClient || viewportDimensions.width === 0) return [];
+    if (!isClient) return [];
 
-    // Responsive spacing optimized for performance - fewer dots on all devices
+    // Use default dimensions initially to prevent layout shift
+    const width = viewportDimensions.width || 1200;
+    const height = viewportDimensions.height || 800;
+
+    // Balanced spacing for performance and visual appeal
     const getSpacing = () => {
-      if (viewportDimensions.width < 480) return 40; // Small mobile - much fewer dots
-      if (viewportDimensions.width < 640) return 36; // Mobile
-      if (viewportDimensions.width < 1024) return 38; // Tablet
-      if (viewportDimensions.width < 1440) return 40; // Desktop
-      return 42; // Large desktop
+      if (width < 640) return 50; // Mobile - fewer dots for better performance
+      if (width < 1024) return 45; // Tablet
+      return 40; // Desktop - balanced approach
     };
 
     const spacing = getSpacing();
-    const cols = Math.ceil(viewportDimensions.width / spacing) + 2;
-    const rows = Math.ceil(viewportDimensions.height / spacing) + 2;
+    const cols = Math.ceil(width / spacing) + 2; // Reduced extra columns
+    const rows = Math.ceil(height / spacing) + 2; // Reduced extra rows
 
-    // Pre-calculate ALL dot positions with performance zones
-    return Array.from({ length: rows }, (_, rowIndex) =>
-      Array.from({ length: cols }, (_, colIndex) => {
+    // Limit maximum dots for consistent performance
+    const maxDots = 300;
+    const totalPossible = cols * rows;
+    const skipFactor = totalPossible > maxDots ? Math.ceil(totalPossible / maxDots) : 1;
+
+    const dots = [];
+    let count = 0;
+    
+    for (let rowIndex = 0; rowIndex < rows && count < maxDots; rowIndex++) {
+      for (let colIndex = 0; colIndex < cols && count < maxDots; colIndex++) {
+        // Skip dots if we need to reduce total count
+        if (skipFactor > 1 && (rowIndex + colIndex) % skipFactor !== 0) continue;
+        
         const x = colIndex * spacing;
         const y = rowIndex * spacing;
-        return {
+        dots.push({
           key: `${rowIndex}-${colIndex}`,
           x,
           y,
           rowIndex,
           colIndex,
-          // Pre-calculate zone boundaries for ultra-fast lookups
-          isEdgeZone: rowIndex < 2 || rowIndex >= rows - 2 || colIndex < 2 || colIndex >= cols - 2,
-        };
-      })
-    ).flat();
+        });
+        count++;
+      }
+    }
+
+    return dots;
   }, [isClient, viewportDimensions]);
   
-  // Ultra-optimized mouse-based calculations - only calculate nearby dots
+  // Beautiful mouse-based interactions with original design
   const interactiveDots = React.useMemo(() => {
     const mouseX = mousePosition.x;
     const mouseY = mousePosition.y;
-    const maxDistance = 150; // Reduced for performance
+    const maxDistance = 150; // Original interaction radius
     const maxDistanceSquared = 22500; // 150^2
 
-    // Early return for initial state - don't spread objects
+    // Early return for initial state
     if (mouseX === 0 && mouseY === 0) {
       return dotGridData.map(dot => ({
         key: dot.key,
@@ -75,52 +104,77 @@ export function Hero() {
       }));
     }
 
-    // Direct iteration without chunking for better performance
-    const results = new Array(dotGridData.length);
-
-    for (let i = 0; i < dotGridData.length; i++) {
-      const dot = dotGridData[i];
+    // Calculate interactions for all dots with original beautiful effects
+    return dotGridData.map(dot => {
       const dx = mouseX - dot.x;
       const dy = mouseY - dot.y;
       const distanceSquared = dx * dx + dy * dy;
 
       if (distanceSquared > maxDistanceSquared) {
-        results[i] = {
+        return {
           key: dot.key,
           x: dot.x,
           y: dot.y,
           type: 'static' as const,
           intensity: 0
         };
-        continue;
       }
 
       const distance = Math.sqrt(distanceSquared);
       const intensity = 1 - (distance / maxDistance);
 
       if (intensity <= 0.1) {
-        results[i] = {
+        return {
           key: dot.key,
           x: dot.x,
           y: dot.y,
           type: 'dim' as const,
           intensity: 0
         };
-      } else {
-        results[i] = {
-          key: dot.key,
-          x: dot.x,
-          y: dot.y,
-          type: 'interactive' as const,
-          intensity,
-          scale: 1 + (intensity * 2.5),
-          opacity: 0.3 + (intensity * 0.7)
-        };
       }
+
+      return {
+        key: dot.key,
+        x: dot.x,
+        y: dot.y,
+        type: 'interactive' as const,
+        intensity,
+        scale: 1 + (intensity * 2.5), // Original scale effect
+        opacity: 0.3 + (intensity * 0.7) // Original opacity range
+      };
+    });
+  }, [dotGridData, mousePosition.x, mousePosition.y]);
+
+  // Mouse move handler - moved outside useEffect to fix hook rules
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const now = performance.now();
+    // Throttle to 30fps for smooth interactions
+    if (now - lastMouseUpdate.current < 33) return; // ~30fps
+
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
     }
 
-    return results;
-  }, [dotGridData, mousePosition.x, mousePosition.y]);
+    rafId.current = requestAnimationFrame(() => {
+      if (heroRef.current) {
+        const rect = heroRef.current.getBoundingClientRect();
+        const newX = e.clientX - rect.left;
+        const newY = e.clientY - rect.top;
+
+        // Update mouse position with original sensitivity
+        setMousePosition((prevPosition) => {
+          const deltaX = Math.abs(newX - prevPosition.x);
+          const deltaY = Math.abs(newY - prevPosition.y);
+
+          if (deltaX > 4 || deltaY > 4) { // Original sensitivity for smooth interactions
+            lastMouseUpdate.current = now;
+            return { x: newX, y: newY };
+          }
+          return prevPosition;
+        });
+      }
+    });
+  }, []); // Empty dependency array since we use refs and setState callback
 
   useEffect(() => {
     setIsClient(true);
@@ -134,35 +188,6 @@ export function Hero() {
           height: rect.height || window.innerHeight
         });
       }
-    };
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      const now = performance.now();
-      // Throttle to 30fps for better performance while still smooth
-      if (now - lastMouseUpdate.current < 33) return; // ~30fps
-
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
-
-      rafId.current = requestAnimationFrame(() => {
-        if (heroRef.current) {
-          const rect = heroRef.current.getBoundingClientRect();
-          const newX = e.clientX - rect.left;
-          const newY = e.clientY - rect.top;
-
-          // Only update if mouse moved significantly (reduce unnecessary renders)
-          const oldX = mousePosition.x;
-          const oldY = mousePosition.y;
-          const deltaX = Math.abs(newX - oldX);
-          const deltaY = Math.abs(newY - oldY);
-
-          if (deltaX > 4 || deltaY > 4) { // Only update if moved >4px
-            setMousePosition({ x: newX, y: newY });
-            lastMouseUpdate.current = now;
-          }
-        }
-      });
     };
 
     const handleResize = () => {
@@ -278,11 +303,11 @@ export function Hero() {
           />
         ))}
         
-        {/* ULTRA-OPTIMIZED Interactive Dot Grid - GPU accelerated */}
+        {/* Beautiful Interactive Dot Grid - Original Design Restored */}
         {isClient && (
           <div className="hero-dots absolute inset-0 pointer-events-none" style={{ willChange: 'contents' }}>
             {interactiveDots.map((dot) => {
-              // Ultra-fast rendering based on pre-calculated data
+              // Render dots with original beautiful styling
               if (dot.type === 'static') {
                 return (
                   <div
@@ -311,7 +336,7 @@ export function Hero() {
                 );
               }
 
-              // Interactive dots with pre-calculated values
+              // Interactive dots with original beautiful effects
               const intensity = (dot as any).intensity || 0;
               const scale = (dot as any).scale || 1;
               const opacity = (dot as any).opacity || 0.3;
@@ -328,7 +353,7 @@ export function Hero() {
                     backgroundColor: intensity > 0.3
                       ? `rgba(59, 130, 246, ${Math.min(opacity + 0.2, 1)})`
                       : `rgba(100, 149, 237, ${opacity})`,
-                    // Simplified glow - only for high intensity dots
+                    // Original beautiful glow effect
                     boxShadow: intensity > 0.5
                       ? `0 0 ${intensity * 12}px rgba(59, 130, 246, ${intensity * 0.5})`
                       : 'none',

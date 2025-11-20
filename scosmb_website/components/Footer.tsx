@@ -12,9 +12,13 @@ export default function Footer() {
           <div>
             <div className="mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-teal-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">S</span>
-                </div>
+                <Image
+                  src="/logos/sco-smb-logo-primary.svg"
+                  alt="SCO SMB Logo"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10"
+                />
                 <div>
                   <div className="text-white font-bold text-xl">SCO SMB</div>
                   <div className="text-gray-400 text-sm">Enterprise Document Scanning</div>

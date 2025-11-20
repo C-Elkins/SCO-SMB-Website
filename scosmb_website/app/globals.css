@@ -258,8 +258,9 @@
 }
 
 /* Browser Compatibility Fixes */
-* {
-  -webkit-text-size-adjust: 100%; /* Fix Chrome/Safari compatibility */
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
@@ -438,6 +439,90 @@
 .form-container {
   contain: layout style;
   min-height: 300px;
+}
+
+/* Parallax Effects */
+.parallax-container {
+  perspective: 1px;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.parallax-element {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.parallax-back {
+  transform: translateZ(-1px) scale(2);
+}
+
+.parallax-base {
+  transform: translateZ(0);
+}
+
+.smooth-parallax {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  contain: layout style paint;
+  backface-visibility: hidden;
+  transform-origin: center center;
+  perspective: 1000px;
+}
+
+/* Prevent parallax overflow issues */
+section {
+  position: relative;
+  z-index: auto;
+  contain: layout;
+}
+
+/* Ensure proper stacking context */
+.hero-section {
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+  transform-style: flat;
+}
+
+.content-section {
+  isolation: isolate;
+  position: relative;
+  z-index: 2;
+  transform-style: flat;
+  margin-top: 0;
+  padding-top: 2rem;
+}
+
+.content-section:not(:first-child) {
+  margin-top: -1px; /* Prevent gaps */
+}
+
+/* Override parallax for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .smooth-parallax {
+    transform: none !important;
+  }
+  
+  .hero-section,
+  .content-section {
+    transform: none !important;
+  }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Floating Card Effects */

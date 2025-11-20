@@ -16,9 +16,19 @@ import {
   Globe,
   Database
 } from 'lucide-react';
-import { FeatureCard } from '@/components/FeatureCard';
+import { EnhancedFeatureCard, FeatureGrid } from '@/components/EnhancedFeatureCard';
+import { useScrollReveal, useParallax } from '@/lib/useScrollReveal';
 
 export default function FeaturesPage() {
+  const heroParallax = useParallax(0.1);
+  const { ref: featuresRef, isRevealed: featuresRevealed } = useScrollReveal({ threshold: 0.2 });
+  
+  // Create hooks for each feature outside the render loop
+  const featureHooks = Array.from({ length: 6 }, () => ({
+    scrollReveal: useScrollReveal({ threshold: 0.3 }),
+    parallax: useParallax(0.05)
+  }));
+  
   const features = [
     {
       icon: <Network className="w-12 h-12" />,
@@ -184,12 +194,50 @@ export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse" />
-          <div className="absolute top-40 right-20 w-48 h-48 bg-[#00A8B5]/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute bottom-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '4s' }} />
+      <section className="hero-section relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
+        {/* Animated Background Elements with Parallax */}
+        <div 
+          className="absolute inset-0 smooth-parallax"
+          style={{ transform: heroParallax.transform }}
+        >
+          <motion.div 
+            className="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.5, 0.8, 0.5]
+            }}
+            transition={{ 
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="absolute top-40 right-20 w-48 h-48 bg-[#00A8B5]/20 rounded-full blur-2xl" 
+            animate={{ 
+              scale: [1, 1.05, 1],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ 
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-xl" 
+            animate={{ 
+              scale: [1, 1.08, 1],
+              opacity: [0.1, 0.3, 0.1]
+            }}
+            transition={{ 
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 4
+            }}
+          />
           <div style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.03\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }} className="absolute inset-0 opacity-40" />
         </div>
         
@@ -272,20 +320,36 @@ export default function FeaturesPage() {
       </section>
 
       {/* Features Detail */}
-      <section className="py-20 md:py-28">
+      <section ref={featuresRef} className="content-section py-20 md:py-28 bg-white">
         <div className="container-wide">
           <div className="space-y-24">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className={`grid md:grid-cols-2 gap-12 items-center ${
-                  index % 2 === 1 ? 'md:flex-row-reverse' : ''
-                }`}
-              >
+            {features.map((feature, index) => {
+              const { ref: featureRef, isRevealed } = featureHooks[index].scrollReveal;
+              const featureParallax = featureHooks[index].parallax;
+              
+              return (
+                <motion.div
+                  key={index}
+                  ref={featureRef}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ 
+                    opacity: isRevealed ? 1 : 0, 
+                    y: isRevealed ? 0 : 40 
+                  }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: index * 0.2,
+                    ease: "easeOut"
+                  }}
+                  className={`grid md:grid-cols-2 gap-12 items-center smooth-parallax relative ${
+                    index % 2 === 1 ? 'md:flex-row-reverse' : ''
+                  }`}
+                  style={{ 
+                    transform: featureParallax.transform,
+                    zIndex: 10 - index,
+                    marginBottom: '6rem'
+                  }}
+                >
                 <div className={index % 2 === 1 ? 'md:order-2' : ''}>
                   <div className="text-[#00A8B5] mb-4">{feature.icon}</div>
                   <h2 className="text-3xl font-bold text-[#153B6B] mb-4">
@@ -313,18 +377,19 @@ export default function FeaturesPage() {
                     alt={feature.title}
                     width={600}
                     height={400}
-                    className="rounded-lg shadow-xl"
-                    style={{ width: 'auto', height: 'auto' }}
+                    className="rounded-lg shadow-xl w-full"
+                    style={{ width: '100%', height: 'auto' }}
                   />
                 </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Additional Features Grid */}
-      <section className="py-32 md:py-40 bg-white">
+      <section className="content-section py-32 md:py-40 bg-white">
         <div className="w-full mx-auto px-8 lg:px-16 xl:px-24" style={{ maxWidth: '1600px' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -338,35 +403,35 @@ export default function FeaturesPage() {
             </h2>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {additionalFeatures.slice(0, 4).map((feature, index) => (
-              <FeatureCard
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {additionalFeatures.slice(0, 6).map((feature, index) => (
+              <EnhancedFeatureCard
                 key={feature.title}
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}
-                benefits={feature.benefits}
-                technicalDetails={feature.technicalDetails}
-                delay={index * 0.05}
-                variant="default"
+                delay={index * 0.1}
+                gradient={index % 2 === 0 ? "from-[#153B6B] to-[#00A8B5]" : "from-[#00A8B5] to-[#153B6B]"}
               />
             ))}
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {additionalFeatures.slice(4).map((feature, index) => (
-              <FeatureCard
-                key={feature.title}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                benefits={feature.benefits}
-                technicalDetails={feature.technicalDetails}
-                delay={(index + 4) * 0.05}
-                variant="default"
-              />
-            ))}
-          </div>
+          {additionalFeatures.length > 6 && (
+            <div className="mt-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {additionalFeatures.slice(6).map((feature, index) => (
+                  <EnhancedFeatureCard
+                    key={feature.title}
+                    icon={feature.icon}
+                    title={feature.title}
+                    description={feature.description}
+                    delay={(index + 6) * 0.1}
+                    gradient={index % 2 === 0 ? "from-[#153B6B] to-[#00A8B5]" : "from-[#00A8B5] to-[#153B6B]"}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>
