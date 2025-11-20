@@ -20,7 +20,6 @@ import { EnhancedFeatureCard, FeatureGrid } from '@/components/EnhancedFeatureCa
 import { useScrollReveal, useParallax } from '@/lib/useScrollReveal';
 
 export default function FeaturesPage() {
-  const heroParallax = useParallax(0.1);
   const { ref: featuresRef, isRevealed: featuresRevealed } = useScrollReveal({ threshold: 0.2 });
   
   // Create hooks for each feature outside the render loop
@@ -194,73 +193,29 @@ export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="hero-section relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
-        {/* Animated Background Elements with Parallax */}
-        <div 
-          className="absolute inset-0 smooth-parallax"
-          style={{ transform: heroParallax.transform }}
-        >
-          <motion.div 
-            className="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" 
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.5, 0.8, 0.5]
-            }}
-            transition={{ 
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-          <motion.div 
-            className="absolute top-40 right-20 w-48 h-48 bg-[#00A8B5]/20 rounded-full blur-2xl" 
-            animate={{ 
-              scale: [1, 1.05, 1],
-              opacity: [0.2, 0.4, 0.2]
-            }}
-            transition={{ 
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2
-            }}
-          />
-          <motion.div 
-            className="absolute bottom-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-xl" 
-            animate={{ 
-              scale: [1, 1.08, 1],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{ 
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 4
-            }}
-          />
+      <section className="relative bg-linear-to-br from-[#153B6B] via-[#1e4a7f] to-[#00A8B5] text-white pt-32 pb-20 overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 right-10 w-40 h-40 bg-white/5 rounded-full blur-xl animate-pulse" />
+          <div className="absolute bottom-20 left-10 w-60 h-60 bg-[#00A8B5]/15 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '3s' }} />
           <div style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.03\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }} className="absolute inset-0 opacity-40" />
         </div>
         
-        {/* Floating Geometric Elements */}
+        {/* Floating Elements */}
         <div className="absolute inset-0 pointer-events-none">
           <motion.div
-            animate={{ y: [-20, 20, -20], rotate: [0, 180, 360] }}
+            animate={{ y: [-15, 15, -15], rotate: [0, 90, 180] }}
             transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-20 right-10 w-6 h-6 border-2 border-white/20 rotate-45"
+            className="absolute top-32 right-20 w-5 h-5 border-2 border-white/25 rotate-45"
           />
           <motion.div
-            animate={{ y: [20, -20, 20], rotate: [360, 180, 0] }}
+            animate={{ y: [25, -25, 25], x: [-10, 10, -10] }}
             transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-32 left-16 w-4 h-4 bg-white/10 rounded-full"
-          />
-          <motion.div
-            animate={{ x: [-10, 10, -10], y: [10, -10, 10] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/2 right-1/4 w-8 h-8 border border-[#00A8B5]/30 rounded-full"
+            className="absolute bottom-40 right-32 w-3 h-3 bg-white/15 rounded-full"
           />
         </div>
 
-        <div className="container-wide relative z-10">
+        <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -282,9 +237,7 @@ export default function FeaturesPage() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-white to-gray-200 bg-clip-text text-transparent leading-tight"
             >
-              Powerful Features for
-              <br />
-              <span className="text-[#00A8B5]">Professional Scanning</span>
+              Powerful <span className="text-[#00A8B5]">Features</span>
             </motion.h1>
             
             <motion.p
@@ -293,7 +246,7 @@ export default function FeaturesPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light"
             >
-              Everything you need for enterprise-grade document scanning and management
+              Everything you need for enterprise-grade document scanning and management.
             </motion.p>
             
             <motion.div
@@ -304,15 +257,15 @@ export default function FeaturesPage() {
             >
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                Enterprise Ready
+                Enterprise Security
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
-                Cross-Platform
+                Cross-Platform Support
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-                Secure by Design
+                Auto Organization
               </div>
             </motion.div>
           </motion.div>
