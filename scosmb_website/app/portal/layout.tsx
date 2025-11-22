@@ -23,7 +23,7 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`${inter.variable} antialiased`}>
+    <div className={`${inter.variable} antialiased portal-container`}>
       {children}
     </div>
   );
