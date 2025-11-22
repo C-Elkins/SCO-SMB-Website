@@ -129,14 +129,14 @@ export default function PortalPage() {
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => { setIsLogin(true); setError(''); }}
-              className={\`flex-1 py-4 text-center font-semibold transition-colors \${isLogin ? 'text-[#00A8B5] border-b-2 border-[#00A8B5] bg-blue-50' : 'text-gray-500 hover:text-gray-700'}\`}
+              className={`flex-1 py-4 text-center font-semibold transition-colors ${isLogin ? 'text-[#00A8B5] border-b-2 border-[#00A8B5] bg-blue-50' : 'text-gray-500 hover:text-gray-700'}`}
             >
               <LogIn className="w-5 h-5 inline mr-2" />
               Login
             </button>
             <button
               onClick={() => { setIsLogin(false); setError(''); }}
-              className={\`flex-1 py-4 text-center font-semibold transition-colors \${!isLogin ? 'text-[#00A8B5] border-b-2 border-[#00A8B5] bg-blue-50' : 'text-gray-500 hover:text-gray-700'}\`}
+              className={`flex-1 py-4 text-center font-semibold transition-colors ${!isLogin ? 'text-[#00A8B5] border-b-2 border-[#00A8B5] bg-blue-50' : 'text-gray-500 hover:text-gray-700'}`}
             >
               <UserPlus className="w-5 h-5 inline mr-2" />
               Register
