@@ -1,3 +1,7 @@
+#!/bin/bash
+# Script to create the new tech portal page
+
+cat > "$(dirname "$0")/../app/portal/page.tsx" << 'EOF'
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -215,3 +219,6 @@ export default function PortalPage() {
     </div>
   );
 }
+EOF
+
+echo "✅ Portal page created successfully!"

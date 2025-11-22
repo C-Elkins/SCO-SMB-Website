@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       until: Math.floor(Date.now() / 1000).toString() // Now
     });
 
-    const [statsResponse, issuesResponse] = await Promise.all([
+    const [statsResponse, issuesResponse, resolvedIssuesResponse] = await Promise.all([
       fetch(`${statsUrl}?${statsParams}`, {
         headers: {
           'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
@@ -57,16 +57,25 @@ export async function GET(request: NextRequest) {
           'Content-Type': 'application/json'
         },
         next: { revalidate: 300 }
+      }),
+      fetch(`${issuesUrl}?query=is:resolved&limit=20`, {
+        headers: {
+          'Authorization': `Bearer ${SENTRY_AUTH_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        next: { revalidate: 300 }
       })
     ]);
 
-    if (!statsResponse.ok || !issuesResponse.ok) {
+    if (!statsResponse.ok || !issuesResponse.ok || !resolvedIssuesResponse.ok) {
       const statsError = !statsResponse.ok ? await statsResponse.text() : null;
       const issuesError = !issuesResponse.ok ? await issuesResponse.text() : null;
+      const resolvedError = !resolvedIssuesResponse.ok ? await resolvedIssuesResponse.text() : null;
       
       console.error('Sentry API error:', {
         stats: { status: statsResponse.status, error: statsError },
         issues: { status: issuesResponse.status, error: issuesError },
+        resolved: { status: resolvedIssuesResponse.status, error: resolvedError },
         org: SENTRY_ORG,
         project: SENTRY_PROJECT
       });
@@ -74,10 +83,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { 
           error: 'Failed to fetch from Sentry API',
-          message: `HTTP ${!statsResponse.ok ? statsResponse.status : issuesResponse.status}. Check that SENTRY_ORG and SENTRY_PROJECT are correct and your token has the required permissions.`,
+          message: `HTTP ${!statsResponse.ok ? statsResponse.status : !issuesResponse.ok ? issuesResponse.status : resolvedIssuesResponse.status}. Check that SENTRY_ORG and SENTRY_PROJECT are correct and your token has the required permissions.`,
           details: {
             statsStatus: statsResponse.status,
             issuesStatus: issuesResponse.status,
+            resolvedStatus: resolvedIssuesResponse.status,
             org: SENTRY_ORG,
             project: SENTRY_PROJECT
           }
@@ -88,6 +98,7 @@ export async function GET(request: NextRequest) {
 
     const stats = await statsResponse.json();
     const issues = await issuesResponse.json();
+    const resolvedIssues = await resolvedIssuesResponse.json();
 
     // Calculate metrics
     const totalEvents = Array.isArray(stats) 
@@ -104,7 +115,8 @@ export async function GET(request: NextRequest) {
       crashFreeRate: `${crashFreeRate}%`,
       last24Hours: {
         totalErrors: totalEvents,
-        unresolvedIssues: Array.isArray(issues) ? issues.length : 0
+        unresolvedIssues: Array.isArray(issues) ? issues.length : 0,
+        resolvedIssues: Array.isArray(resolvedIssues) ? resolvedIssues.length : 0
       },
       recentIssues: Array.isArray(issues) 
         ? issues.slice(0, 5).map((issue: any) => ({
@@ -114,8 +126,22 @@ export async function GET(request: NextRequest) {
             level: issue.level,
             firstSeen: issue.firstSeen,
             lastSeen: issue.lastSeen,
-            permalink: issue.permalink
+            permalink: issue.permalink,
+            status: 'unresolved'
             // Don't include: stack traces, user data, file paths
+          }))
+        : [],
+      resolvedIssues: Array.isArray(resolvedIssues)
+        ? resolvedIssues.slice(0, 10).map((issue: any) => ({
+            id: issue.id,
+            title: issue.title,
+            count: issue.count,
+            level: issue.level,
+            firstSeen: issue.firstSeen,
+            lastSeen: issue.lastSeen,
+            resolvedAt: issue.statusDetails?.inCommit ? new Date(issue.statusDetails.inCommit.dateCreated).toISOString() : issue.lastSeen,
+            permalink: issue.permalink,
+            status: 'resolved'
           }))
         : [],
       timestamp: new Date().toISOString()

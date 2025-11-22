@@ -656,6 +656,46 @@ export function EnterpriseSettingsPanel() {
                     </label>
                   </div>
                 </div>
+
+                {/* Test Email Section */}
+                <div className="bg-gradient-to-br from-[#00A8B5]/10 to-teal-50 p-6 rounded-lg border border-[#00A8B5]/20">
+                  <h4 className="font-medium text-[#153B6B] mb-3 flex items-center gap-2">
+                    <Bell className="w-5 h-5" />
+                    Test Email Service
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4">Verify that Resend email integration is working correctly</p>
+                  <button 
+                    onClick={async () => {
+                      try {
+                        const response = await fetch('/api/test-email', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          credentials: 'include',
+                          body: JSON.stringify({
+                            to: settings.portalSettings.adminEmail,
+                            subject: '🧪 SCO SMB - Test Email',
+                            message: 'This is a test email sent from the admin dashboard.'
+                          })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                          alert(`✅ Test email sent successfully to ${settings.portalSettings.adminEmail}!\n\nCheck your inbox for the test message.`);
+                        } else {
+                          alert(`❌ Failed to send test email:\n${data.error || data.message}`);
+                        }
+                      } catch (error) {
+                        alert(`❌ Error sending test email:\n${error instanceof Error ? error.message : 'Unknown error'}`);
+                      }
+                    }}
+                    className="w-full px-4 py-3 bg-[#00A8B5] text-white rounded-lg font-medium hover:bg-[#008c97] transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Bell className="w-4 h-4" />
+                    Send Test Email to {settings.portalSettings.adminEmail}
+                  </button>
+                  <p className="text-xs text-gray-500 mt-2 text-center">
+                    A test email will be sent to verify Resend configuration
+                  </p>
+                </div>
               </div>
             </div>
           </div>

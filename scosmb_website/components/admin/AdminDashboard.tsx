@@ -912,15 +912,15 @@ export function AdminDashboard() {
           {/* Premium Features */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
             {/* Advanced Analytics Preview */}
-            <div className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] p-6 rounded-xl shadow-lg text-white">
-              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <div className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] p-6 rounded-xl shadow-lg">
+              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-white">
                 <BarChart3 className="w-5 h-5" />
                 Advanced Analytics
               </h3>
-              <p className="text-sm text-white/80 mb-4">View detailed metrics, revenue tracking, and activity timeline</p>
+              <p className="text-sm text-white mb-4">View detailed metrics, revenue tracking, and activity timeline</p>
               <button
                 onClick={() => setActiveTab('analytics')}
-                className="px-4 py-2 bg-white text-[#153B6B] rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 bg-white text-[#153B6B] rounded-lg font-medium hover:bg-gray-100 transition-colors shadow-sm"
               >
                 View Full Analytics →
               </button>

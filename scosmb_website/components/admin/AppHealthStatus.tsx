@@ -3,21 +3,27 @@
 import { useState, useEffect } from 'react';
 import { Activity, AlertCircle, CheckCircle, Clock, TrendingDown } from 'lucide-react';
 
+interface SentryIssue {
+  id: string;
+  title: string;
+  count: number;
+  level: string;
+  firstSeen: string;
+  lastSeen: string;
+  permalink?: string;
+  status: 'resolved' | 'unresolved';
+  resolvedAt?: string;
+}
+
 interface SentryData {
   crashFreeRate: string;
   last24Hours: {
     totalErrors: number;
     unresolvedIssues: number;
+    resolvedIssues: number;
   };
-  recentIssues: Array<{
-    id: string;
-    title: string;
-    count: number;
-    level: string;
-    firstSeen: string;
-    lastSeen: string;
-    permalink?: string;
-  }>;
+  recentIssues: SentryIssue[];
+  resolvedIssues: SentryIssue[];
   timestamp: string;
 }
 
@@ -25,6 +31,7 @@ export function AppHealthStatus() {
   const [data, setData] = useState<SentryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showResolved, setShowResolved] = useState(false);
 
   useEffect(() => {
     async function fetchSentryData() {
@@ -139,7 +146,7 @@ export function AppHealthStatus() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-3">
             <span className="text-gray-600 text-sm font-medium">Errors (24h)</span>
@@ -159,50 +166,170 @@ export function AppHealthStatus() {
             {data.last24Hours.unresolvedIssues}
           </div>
         </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-gray-600 text-sm font-medium">Issues Resolved</span>
+            <CheckCircle className="w-5 h-5 text-green-500" />
+          </div>
+          <div className="text-3xl font-bold text-gray-900">
+            {data.last24Hours.resolvedIssues}
+          </div>
+          {data.last24Hours.resolvedIssues > 0 && (
+            <a
+              href={`https://sentry.io/organizations/${process.env.NEXT_PUBLIC_SENTRY_ORG || 'south-coast-office-smb'}/issues/?query=is:resolved`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-green-600 hover:text-green-700 font-medium mt-2 inline-block"
+            >
+              View all resolved →
+            </a>
+          )}
+        </div>
       </div>
 
-      {/* Recent Issues */}
-      {data.recentIssues.length > 0 && (
+      {/* Issues Tabs */}
+      {(data.recentIssues.length > 0 || data.resolvedIssues.length > 0) && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Issues</h3>
-          <div className="space-y-3">
-            {data.recentIssues.map((issue) => (
-              <div 
-                key={issue.id} 
-                className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
+          {/* Tab Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex gap-4 border-b border-gray-200">
+              <button
+                onClick={() => setShowResolved(false)}
+                className={`pb-3 px-4 font-semibold transition-colors relative ${
+                  !showResolved
+                    ? 'text-[#00A8B5] border-b-2 border-[#00A8B5]'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-gray-900 truncate mb-2">
-                      {issue.title}
-                    </div>
-                    <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        issue.level === 'error' 
-                          ? 'bg-red-100 text-red-700' 
-                          : issue.level === 'warning'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        {issue.level}
-                      </span>
-                      <span>{issue.count} occurrences</span>
-                      <span>Last: {new Date(issue.lastSeen).toLocaleString()}</span>
+                Active Issues
+                {data.recentIssues.length > 0 && (
+                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    {data.recentIssues.length}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setShowResolved(true)}
+                className={`pb-3 px-4 font-semibold transition-colors relative ${
+                  showResolved
+                    ? 'text-[#00A8B5] border-b-2 border-[#00A8B5]'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Resolved Issues
+                {data.resolvedIssues.length > 0 && (
+                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                    {data.resolvedIssues.length}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Issues List */}
+          <div className="space-y-3">
+            {!showResolved ? (
+              // Active Issues
+              data.recentIssues.length > 0 ? (
+                data.recentIssues.map((issue) => (
+                  <div 
+                    key={issue.id} 
+                    className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 mb-2">
+                          {issue.title}
+                        </div>
+                        <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            issue.level === 'error' 
+                              ? 'bg-red-100 text-red-700' 
+                              : issue.level === 'warning'
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {issue.level}
+                          </span>
+                          <span className="inline-flex items-center">
+                            <AlertCircle className="w-3 h-3 mr-1" />
+                            {issue.count} occurrences
+                          </span>
+                          <span className="inline-flex items-center">
+                            <Clock className="w-3 h-3 mr-1" />
+                            Last: {new Date(issue.lastSeen).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      {issue.permalink && (
+                        <a
+                          href={issue.permalink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-700 text-sm font-medium whitespace-nowrap flex items-center gap-1"
+                        >
+                          Details →
+                        </a>
+                      )}
                     </div>
                   </div>
-                  {issue.permalink && (
-                    <a
-                      href={issue.permalink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 text-sm font-medium whitespace-nowrap"
-                    >
-                      View →
-                    </a>
-                  )}
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <CheckCircle className="w-12 h-12 mx-auto mb-2 text-green-500" />
+                  <p>No active issues! 🎉</p>
                 </div>
-              </div>
-            ))}
+              )
+            ) : (
+              // Resolved Issues
+              data.resolvedIssues.length > 0 ? (
+                data.resolvedIssues.map((issue) => (
+                  <div 
+                    key={issue.id} 
+                    className="border border-green-200 bg-green-50 rounded-lg p-4 hover:border-green-300 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
+                          {issue.title}
+                        </div>
+                        <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            issue.level === 'error' 
+                              ? 'bg-red-100 text-red-700' 
+                              : issue.level === 'warning'
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {issue.level}
+                          </span>
+                          <span>{issue.count} total occurrences</span>
+                          <span className="text-green-700 font-medium">
+                            ✓ Resolved {issue.resolvedAt ? new Date(issue.resolvedAt).toLocaleDateString() : 'recently'}
+                          </span>
+                        </div>
+                      </div>
+                      {issue.permalink && (
+                        <a
+                          href={issue.permalink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-600 hover:text-green-700 text-sm font-medium whitespace-nowrap flex items-center gap-1"
+                        >
+                          Details →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>No resolved issues in recent history</p>
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
