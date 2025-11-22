@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAdmin } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { license_keys, customers, audit_logs } from '@/lib/schema';
+import { getAdminSession } from '@/lib/auth';
+import { getDb } from '@/lib/db';
+import { license_keys, customers } from '@/lib/schema';
 import { desc, gte } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
@@ -12,10 +12,12 @@ export const revalidate = 0;
  * Provides live notifications of database changes
  */
 export async function GET(request: NextRequest) {
-  const adminCheck = await verifyAdmin(request);
-  if (!adminCheck.valid) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+  
+  const db = getDb();
 
   const searchParams = request.nextUrl.searchParams;
   const since = searchParams.get('since');
@@ -23,28 +25,23 @@ export async function GET(request: NextRequest) {
 
   try {
     // Get recent changes
-    const [recentKeys, recentCustomers, recentLogs] = await Promise.all([
+    const [recentKeys, recentCustomers] = await Promise.all([
       db
         .select()
         .from(license_keys)
-        .where(gte(license_keys.updated_at, sinceDate.toISOString()))
-        .orderBy(desc(license_keys.updated_at))
+        .where(gte(license_keys.created_at, sinceDate))
+        .orderBy(desc(license_keys.created_at))
         .limit(10),
       
       db
         .select()
         .from(customers)
-        .where(gte(customers.created_at, sinceDate.toISOString()))
+        .where(gte(customers.created_at, sinceDate))
         .orderBy(desc(customers.created_at))
-        .limit(10),
-      
-      db
-        .select()
-        .from(audit_logs)
-        .where(gte(audit_logs.created_at, sinceDate.toISOString()))
-        .orderBy(desc(audit_logs.created_at))
-        .limit(20)
+        .limit(10)
     ]);
+    
+    const recentLogs: Array<{ action: string; created_at: Date | null }> = [];
 
     const updates = {
       timestamp: new Date().toISOString(),
@@ -52,29 +49,23 @@ export async function GET(request: NextRequest) {
         count: recentKeys.length,
         items: recentKeys.map(k => ({
           id: k.id,
-          key: k.key?.substring(0, 12) + '...',
+          key: k.key_code?.substring(0, 12) + '...',
           status: k.status,
-          updated: k.updated_at
+          updated: k.created_at
         }))
       },
       customers: {
         count: recentCustomers.length,
         items: recentCustomers.map(c => ({
           id: c.id,
-          name: c.name,
+          name: c.point_of_contact || c.company,
           company: c.company,
           created: c.created_at
         }))
       },
       activity: {
         count: recentLogs.length,
-        items: recentLogs.map(log => ({
-          id: log.id,
-          action: log.action,
-          admin: log.admin_email,
-          details: log.details,
-          timestamp: log.created_at
-        }))
+        items: recentLogs
       },
       hasUpdates: recentKeys.length > 0 || recentCustomers.length > 0 || recentLogs.length > 0
     };
@@ -99,8 +90,8 @@ export async function GET(request: NextRequest) {
  * Webhook endpoint for external systems to trigger data refresh
  */
 export async function POST(request: NextRequest) {
-  const adminCheck = await verifyAdmin(request);
-  if (!adminCheck.valid) {
+  const session = await getAdminSession();
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -108,15 +99,7 @@ export async function POST(request: NextRequest) {
     const { event, data } = await request.json();
     
     console.log(`[Webhook] Received event: ${event}`, data);
-
-    // Log webhook event
-    await db.insert(audit_logs).values({
-      admin_email: adminCheck.email || 'webhook',
-      action: `webhook_${event}`,
-      details: `Webhook triggered: ${event}`,
-      metadata: data,
-      created_at: new Date().toISOString()
-    });
+    console.log(`[Webhook] Triggered by: ${session.username || 'webhook'}`);
 
     return NextResponse.json({ 
       success: true,

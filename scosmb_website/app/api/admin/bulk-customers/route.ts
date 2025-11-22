@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { customers, audit_logs } from '@/lib/schema';
-import { verifyAdmin } from '@/lib/auth';
+import { getDb } from '@/lib/db';
+import { customers } from '@/lib/schema';
+import { getAdminSession } from '@/lib/auth';
 import { inArray } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
-    const adminCheck = await verifyAdmin(request);
-    if (!adminCheck.valid) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    const db = getDb();
 
     const { action, ids } = await request.json();
 
@@ -20,8 +22,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let result;
-    
     switch (action) {
       case 'email':
         // Get customer emails
@@ -33,13 +33,7 @@ export async function POST(request: NextRequest) {
         const emails = customerList.map(c => c.email);
 
         // Log the action (actual email sending would happen here)
-        await db.insert(audit_logs).values({
-          admin_email: adminCheck.email || 'system',
-          action: 'bulk_email_customers',
-          details: `Prepared email for ${ids.length} customers`,
-          metadata: { count: ids.length, emails },
-          created_at: new Date().toISOString()
-        });
+        console.log('[Bulk Action] Email prepared for customers:', emails);
 
         return NextResponse.json({ 
           success: true,
@@ -49,17 +43,11 @@ export async function POST(request: NextRequest) {
         });
 
       case 'delete':
-        result = await db
+        await db
           .delete(customers)
           .where(inArray(customers.id, ids));
         
-        await db.insert(audit_logs).values({
-          admin_email: adminCheck.email || 'system',
-          action: 'bulk_delete_customers',
-          details: `Deleted ${ids.length} customers`,
-          metadata: { count: ids.length },
-          created_at: new Date().toISOString()
-        });
+        console.log('[Bulk Action] Deleted customers:', ids.length);
         break;
 
       default:

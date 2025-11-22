@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { license_keys, audit_logs } from '@/lib/schema';
-import { verifyAdmin } from '@/lib/auth';
+import { getDb } from '@/lib/db';
+import { license_keys } from '@/lib/schema';
+import { getAdminSession } from '@/lib/auth';
 import { inArray, eq } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
-    const adminCheck = await verifyAdmin(request);
-    if (!adminCheck.valid) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    const db = getDb();
 
     const { action, ids } = await request.json();
 
@@ -20,40 +22,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let result;
-    
     switch (action) {
       case 'revoke':
-        result = await db
+        await db
           .update(license_keys)
           .set({ 
-            status: 'revoked',
-            updated_at: new Date().toISOString()
+            status: 'revoked'
           })
           .where(inArray(license_keys.id, ids));
         
-        // Log audit
-        await db.insert(audit_logs).values({
-          admin_email: adminCheck.email || 'system',
-          action: 'bulk_revoke_keys',
-          details: `Revoked ${ids.length} license keys`,
-          metadata: { count: ids.length, keyIds: ids },
-          created_at: new Date().toISOString()
-        });
+        console.log('[Bulk Action] Revoked keys:', ids.length);
         break;
 
       case 'delete':
-        result = await db
+        await db
           .delete(license_keys)
           .where(inArray(license_keys.id, ids));
         
-        await db.insert(audit_logs).values({
-          admin_email: adminCheck.email || 'system',
-          action: 'bulk_delete_keys',
-          details: `Deleted ${ids.length} license keys`,
-          metadata: { count: ids.length },
-          created_at: new Date().toISOString()
-        });
+        console.log('[Bulk Action] Deleted keys:', ids.length);
         break;
 
       case 'extend':
@@ -70,19 +56,12 @@ export async function POST(request: NextRequest) {
           await db
             .update(license_keys)
             .set({ 
-              expires_at: currentExpiry.toISOString(),
-              updated_at: new Date().toISOString()
+              expires_at: currentExpiry
             })
             .where(eq(license_keys.id, key.id));
         }
 
-        await db.insert(audit_logs).values({
-          admin_email: adminCheck.email || 'system',
-          action: 'bulk_extend_keys',
-          details: `Extended ${ids.length} license keys by 30 days`,
-          metadata: { count: ids.length, days: 30 },
-          created_at: new Date().toISOString()
-        });
+        console.log('[Bulk Action] Extended keys:', ids.length);
         break;
 
       default:
