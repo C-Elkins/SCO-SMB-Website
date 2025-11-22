@@ -42,7 +42,7 @@ export function Hero() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0
@@ -51,7 +51,7 @@ export function Hero() {
 
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
       style={{
         background: 'linear-gradient(135deg, #153B6B 0%, #1e4a7f 50%, #00A8B5 100%)'
       }}
@@ -91,105 +91,110 @@ export function Hero() {
 
       {/* Main Content - Optimized for LCP */}
       <motion.div
-        className="relative z-10 text-center text-white px-6 sm:px-8 lg:px-12 max-w-6xl mx-auto"
+        className="relative z-10 text-center text-white w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 md:py-28 lg:py-32"
         variants={containerVariants}
         initial="hidden"
         animate={isVisible ? "visible" : "hidden"}
       >
-        {/* Headline - Critical for LCP */}
+        {/* Headline - Critical for LCP with Brand Focus */}
         <motion.h1 
           variants={itemVariants}
-          className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-8 leading-tight"
-          style={{
-            background: 'linear-gradient(135deg, #FFFFFF 0%, #E0E7FF 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 leading-tight max-w-6xl mx-auto"
         >
-          Transform your office workflow with{' '}
-          <span className="text-[#00A8B5] font-semibold">secure, automated document ingestion</span>{' '}
-          from <span className="text-white font-semibold">Kyocera & Sharp</span> printers.
+          <span className="block mb-3 sm:mb-4 md:mb-6">
+            <span className="font-black tracking-tight" style={{
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #E0E7FF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 40px rgba(255, 255, 255, 0.3)'
+            }}>
+              SCO SMB
+            </span>
+          </span>
+          <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold leading-tight mb-2 sm:mb-3">
+            <span style={{
+              background: 'linear-gradient(135deg, #00A8B5 0%, #FFFFFF 50%, #153B6B 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 30px rgba(0, 168, 181, 0.4)'
+            }}>
+              Enterprise Document Scanning
+            </span>
+          </span>
+          <span className="block text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-medium mt-3 sm:mt-4 text-white/90">
+            for Kyocera & Sharp Printers
+          </span>
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p 
           variants={itemVariants}
-          className="text-xl sm:text-2xl text-gray-100 mb-12 max-w-4xl mx-auto font-light leading-relaxed"
+          className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-100 mb-10 sm:mb-12 max-w-5xl mx-auto font-light leading-relaxed"
         >
-          Enterprise-grade document scanning software that automatically organizes, 
-          secures, and routes scanned documents to the right destinations.
+          Secure, automated document ingestion with zero-configuration network discovery, enterprise-grade security, and intelligent file organization.
         </motion.p>
 
         {/* Action Buttons - Optimized for INP */}
         <motion.div 
           variants={itemVariants}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-10 sm:mb-12 max-w-2xl mx-auto"
         >
           {/* Primary CTA - Fixed link to /trial */}
           <Link
             href="/trial"
-            className="inline-flex items-center gap-3 px-12 py-6 rounded-xl font-bold text-2xl transition-colors duration-200 hover:scale-105 transform"
+            className="inline-flex items-center gap-3 px-8 sm:px-10 md:px-12 lg:px-14 py-4 sm:py-5 md:py-6 rounded-xl font-bold text-lg sm:text-xl md:text-2xl transition-all duration-200 hover:scale-105 transform w-full sm:w-auto text-center justify-center"
             style={{ 
-              background: 'linear-gradient(135deg, #2196F3 0%, #00A8B5 100%)',
+              background: 'linear-gradient(135deg, #00A8B5 0%, #153B6B 100%)',
               color: '#FFFFFF',
-              boxShadow: '0 12px 32px rgba(33, 150, 243, 0.4)'
+              boxShadow: '0 10px 40px rgba(0, 168, 181, 0.4)'
             }}
           >
             Start Free Trial
-            <span className="text-xl">→</span>
+            <span className="text-xl sm:text-2xl">→</span>
           </Link>
           
           {/* Secondary CTA */}
           <Link
             href="/contact"
-            className="inline-flex items-center gap-3 px-12 py-6 rounded-xl font-bold text-2xl transition-colors duration-200 border-2 border-white/30 hover:border-white/60 hover:bg-white/10"
+            className="inline-flex items-center gap-3 px-8 sm:px-10 md:px-12 lg:px-14 py-4 sm:py-5 md:py-6 rounded-xl font-bold text-lg sm:text-xl md:text-2xl transition-all duration-200 border-2 border-white/30 hover:border-white/60 hover:bg-white/10 w-full sm:w-auto text-center justify-center"
             style={{ color: '#FFFFFF' }}
           >
             Contact Sales
-            <span className="text-xl">→</span>
+            <span className="text-xl sm:text-2xl">→</span>
           </Link>
         </motion.div>
 
         {/* Trust Indicators */}
         <motion.div 
           variants={itemVariants}
-          className="flex flex-wrap justify-center gap-8 text-sm text-white/80"
+          className="flex flex-row flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 text-sm sm:text-base md:text-lg text-white/80 max-w-4xl mx-auto"
         >
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-            30-Day Free Trial
+          <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm whitespace-nowrap">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shrink-0" />
+            <span className="font-medium">30-Day Free Trial</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
-            Enterprise Security
+          <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm whitespace-nowrap">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shrink-0" style={{ animationDelay: '0.5s' }} />
+            <span className="font-medium">Enterprise Security</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-            24/7 Support
+          <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm whitespace-nowrap">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shrink-0" style={{ animationDelay: '1s' }} />
+            <span className="font-medium">24/7 Support</span>
           </div>
         </motion.div>
       </motion.div>
 
       {/* Scroll indicator - Simple CSS animation */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-sm font-medium">Scroll to explore</span>
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce"></div>
+      <div className="absolute bottom-6 sm:bottom-8 md:bottom-12 left-1/2 transform -translate-x-1/2 text-white/60 z-20">
+        <div className="flex flex-col items-center gap-1 sm:gap-2">
+          <span className="text-xs sm:text-sm font-medium hidden md:block">Scroll to explore</span>
+          <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/30 rounded-full flex justify-center">
+            <div className="w-1 h-2 sm:h-3 bg-white/50 rounded-full mt-1 sm:mt-2 animate-bounce"></div>
           </div>
         </div>
       </div>
-      
-      {/* Performance optimization styles */}
-      <style jsx>{`
-        @media (prefers-reduced-motion: reduce) {
-          .animate-pulse,
-          .animate-bounce {
-            animation: none;
-          }
-        }
-      `}</style>
     </section>
   );
 }

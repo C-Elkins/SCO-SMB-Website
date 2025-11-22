@@ -17,11 +17,47 @@ const nextConfig = {
   // Performance optimizations
   experimental: {
     scrollRestoration: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion', '@vercel/speed-insights'],
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@vercel/speed-insights', '@hookform/resolvers', 'react-hook-form'],
     gzipSize: true,
     memoryBasedWorkersCount: true,
     webpackBuildWorker: true,
     optimizeCss: true,
+  },
+  
+  // Webpack optimizations for better bundle splitting
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+            enforce: true,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          framerMotion: {
+            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+            name: 'framer-motion',
+            chunks: 'all',
+            enforce: true,
+          },
+          lucide: {
+            test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
+            name: 'lucide-react',
+            chunks: 'all',
+            enforce: true,
+          },
+        },
+      };
+    }
+    return config;
   },
   
   // Bundle analyzer and optimization
@@ -39,12 +75,13 @@ const nextConfig = {
     },
   },
   
-  // Image optimization
+  // Advanced image optimization for better LCP
   images: {
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512],
     minimumCacheTTL: 31536000, // 1 year
+    loader: 'default',
     remotePatterns: [
       {
         protocol: 'https',
@@ -53,6 +90,7 @@ const nextConfig = {
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: false,
   },
   
   // Security headers
@@ -88,6 +126,14 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains'
           }
         ]
       },

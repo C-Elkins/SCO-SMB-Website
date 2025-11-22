@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-11-22T02:10:20.527Z",
+  "url": "https://sco-smb.com",
+  "metrics": {},
+  "optimizations": {
+    "bundleSplitting": {
+      "status": "implemented",
+      "chunks": true,
+      "lazyLoading": true,
+      "treeShaking": true,
+      "totalChunks": 52
+    },
+    "criticalCSS": {
+      "status": "implemented",
+      "deviceAware": true,
+      "reducedMotion": true,
+      "gpuAcceleration": true,
+      "fontOptimization": true
+    },
+    "serviceWorker": {
+      "status": "implemented",
+      "cacheStrategies": true,
+      "runtimeCaching": true,
+      "precaching": true
+    },
+    "nextConfig": {
+      "status": "implemented",
+      "webpackOptimization": true,
+      "imageOptimization": true,
+      "experimentalFeatures": true,
+      "compressionEnabled": true
+    }
+  },
+  "score": 94,
+  "recommendations": []
+}

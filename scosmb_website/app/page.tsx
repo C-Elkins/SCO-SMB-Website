@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState, useEffect } from 'react';
 import { FastLoadingSkeleton } from '@/components/FastLoadingSkeleton';
 import { EnhancedFeatureCard, FeatureGrid } from '@/components/EnhancedFeatureCard';
 import {
@@ -17,9 +17,69 @@ import {
   Zap
 } from 'lucide-react';
 
-// Lazy load heavy components
-const Hero = lazy(() => import('../components/HeroOptimizedNew'));
-const DynamicFeatureCard = lazy(() => import('@/components/DynamicComponents').then(module => ({ default: module.DynamicFeatureCard })));
+// Performance monitoring
+if (typeof window !== 'undefined') {
+  // Track Core Web Vitals
+  import('web-vitals').then(({ onCLS, onFCP, onLCP, onTTFB, onINP }) => {
+    onCLS(console.log);
+    onFCP(console.log);
+    onLCP(console.log);
+    onTTFB(console.log);
+    onINP(console.log);
+  });
+}
+
+// Aggressive lazy loading with performance hints
+const Hero = lazy(() => 
+  import('../components/HeroOptimizedNew' /* webpackChunkName: "hero" */)
+);
+const DynamicFeatureCard = lazy(() => 
+  import('@/components/DynamicComponents' /* webpackChunkName: "features" */)
+    .then(module => ({ default: module.DynamicFeatureCard }))
+);
+
+// Intelligent resource preloading
+if (typeof window !== 'undefined') {
+  // Check device capabilities for adaptive loading
+  const memory = (navigator as any)?.deviceMemory || 4;
+  const cores = navigator.hardwareConcurrency || 4;
+  const connection = (navigator as any)?.connection;
+  
+  const shouldPreload = memory >= 4 && cores >= 4 && 
+    (!connection || !['slow-2g', '2g', '3g'].includes(connection.effectiveType));
+  
+  if (shouldPreload) {
+    // Aggressive preloading for capable devices
+    const preloadLinks = [
+      '/_next/static/chunks/hero.js',
+      '/_next/static/chunks/features.js'
+    ];
+    
+    // Ensure we're in the browser environment
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          preloadLinks.forEach(href => {
+            const link = document.createElement('link');
+            link.rel = 'modulepreload';
+            link.href = href;
+            document.head.appendChild(link);
+          });
+        }, { timeout: 2000 });
+      } else {
+        // Fallback for browsers without requestIdleCallback (like Safari)
+        setTimeout(() => {
+          preloadLinks.forEach(href => {
+            const link = document.createElement('link');
+            link.rel = 'modulepreload';
+            link.href = href;
+            document.head.appendChild(link);
+          });
+        }, 100);
+      }
+    }
+  }
+}
 
 // Loading components
 function HeroSkeleton() {
@@ -55,6 +115,32 @@ function FeatureCardSkeleton() {
 }
 
 export default function Home() {
+  const [isLowEndDevice, setIsLowEndDevice] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  
+  // Detect device capabilities and user preferences
+  useEffect(() => {
+    const checkCapabilities = () => {
+      const memory = (navigator as any)?.deviceMemory || 4;
+      const cores = navigator.hardwareConcurrency || 4;
+      const connection = (navigator as any)?.connection;
+      
+      const isLowEnd = memory < 4 || cores < 4 || 
+        (connection && ['slow-2g', '2g', '3g'].includes(connection.effectiveType));
+      
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      setIsLowEndDevice(isLowEnd);
+      setReducedMotion(prefersReducedMotion || isLowEnd);
+      
+      // Set CSS custom properties for adaptive styling
+      document.documentElement.style.setProperty('--low-end-device', isLowEnd ? '1' : '0');
+      document.documentElement.style.setProperty('--reduced-motion', (prefersReducedMotion || isLowEnd) ? '1' : '0');
+    };
+    
+    checkCapabilities();
+  }, []);
+  
   const features = [
     {
       icon: Network,
@@ -116,22 +202,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Shared Hero - Full viewport with proper spacing */}
-      <div className="bg-primary-navy/5 dark:bg-neutral-950">
-        <Suspense fallback={<HeroSkeleton />}>
-          <Hero />
-        </Suspense>
-      </div>
+      {/* Hero Section - Full viewport */}
+      <Suspense fallback={<HeroSkeleton />}>
+        <Hero />
+      </Suspense>
 
       {/* Product Preview */}
       <section className="content-section py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white">
         <div className="container-wide">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8 }}
+              transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
               className="space-y-8"
             >
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
@@ -178,7 +262,7 @@ export default function Home() {
                 <Link href="/download" className="btn btn-primary btn-lg group">
                   <span>Download Free</span>
                   <svg
-                    className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
+                    className="w-5 h-5 group-hover:translate-x-1 transition-transform"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -193,10 +277,10 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, x: 50 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={reducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
               className="relative"
             >
               {/* Background decorations */}
@@ -212,10 +296,11 @@ export default function Home() {
                   height={400}
                   className="rounded-xl w-full"
                   style={{ width: '100%', height: 'auto' }}
-                  priority
-                  fetchPriority="high"
-                  loading="eager"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={!isLowEndDevice}
+                  loading={isLowEndDevice ? 'lazy' : 'eager'}
+                  quality={isLowEndDevice ? 75 : 90}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                 />
                 
                 {/* Floating UI elements */}
@@ -247,10 +332,10 @@ export default function Home() {
       <section className="content-section py-24 md:py-32 bg-white">
         <div className="container-wide">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
+            whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
+            transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
             className="text-center mb-24"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 text-sm font-medium text-gray-700 mb-6 shadow-sm">
@@ -315,10 +400,10 @@ export default function Home() {
 
         <div className="container-wide max-w-6xl text-center relative">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
+            whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
+            transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
             className="space-y-8"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium text-white mb-16 mt-8 shadow-lg">
@@ -358,11 +443,11 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                 <Link
                 href="/trial"
-                className="btn btn-primary btn-lg group shadow-xl"
+                className="btn btn-primary btn-lg group shadow-2xl shadow-blue-500/25"
               >
                 <span>Start Free Trial</span>
                 <svg
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

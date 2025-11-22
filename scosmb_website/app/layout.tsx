@@ -91,6 +91,19 @@ export default function RootLayout({
         <CriticalStyles />
         {/* PWA Meta Tags */}
         <meta name="theme-color" content="#153B6B" />
+        
+        {/* Critical CSS for instant rendering */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif}
+            .hero-skeleton{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#153B6B 0%,#1e4a7f 50%,#00A8B5 100%)}
+            .animate-pulse{animation:pulse 2s cubic-bezier(0.4,0,0.6,1) infinite}
+            @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+            .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:0.5rem;font-weight:600;transition:all 0.2s;text-decoration:none}
+            .btn-primary{background:linear-gradient(135deg,#2196F3 0%,#00A8B5 100%);color:white}
+            .btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 25px rgba(33,150,243,0.3)}
+          `
+        }} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="SCO SMB" />
@@ -117,6 +130,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preload" href="/screenshots/sco-smb-hero-dashboard.png" as="image" fetchPriority="high" />
         <link rel="dns-prefetch" href="//vercel-insights.com" />
+        <link rel="dns-prefetch" href="//vercel-speed-insights.com" />
+        <link rel="preconnect" href="https://rsms.me/" crossOrigin="" />
+        <link rel="modulepreload" href="/_next/static/chunks/app/layout.js" />
+        <link rel="prefetch" href="/trial" />
+        <link rel="prefetch" href="/contact" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         
         {/* Security headers are now set in next.config.js HTTP headers */}
@@ -183,20 +201,28 @@ export default function RootLayout({
         {/* Analytics temporarily disabled */}
         <SpeedInsights />
         <PerformanceMonitor />
-        {/* Service Worker Registration */}
-        <Script id="sw-registration" strategy="afterInteractive">{`
-          if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/sw-optimized.js')
+        {/* Optimized Service Worker Registration */}
+        <Script id="sw-registration" strategy="worker">{`
+          if ('serviceWorker' in navigator && 'requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+              navigator.serviceWorker.register('/sw-optimized.js', {
+                scope: '/',
+                updateViaCache: 'none'
+              })
                 .then((registration) => {
                   console.log('SW registered: ', registration);
-                  // Update existing SW
-                  registration.update();
+                  // Check for updates every 24 hours
+                  setInterval(() => registration.update(), 86400000);
                 })
                 .catch((registrationError) => {
                   console.log('SW registration failed: ', registrationError);
                 });
             });
+          } else if ('serviceWorker' in navigator) {
+            // Fallback for browsers without requestIdleCallback
+            setTimeout(() => {
+              navigator.serviceWorker.register('/sw-optimized.js');
+            }, 2000);
           }
         `}</Script>
         {/* Core Web Vitals Monitoring */}

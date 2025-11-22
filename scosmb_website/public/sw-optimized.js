@@ -1,25 +1,33 @@
-// Optimized Service Worker for performance
-const STATIC_CACHE = 'sco-smb-static-v1';
-const DYNAMIC_CACHE = 'sco-smb-dynamic-v1';
+// High-performance service worker for Real Experience Score optimization
+const CACHE_NAME = 'sco-smb-v2';
+const STATIC_CACHE = 'sco-smb-static-v2';
+const DYNAMIC_CACHE = 'sco-smb-dynamic-v2';
 
-// Resources to cache immediately
-const STATIC_ASSETS = [
+// Critical resources to cache for instant loading
+const CRITICAL_RESOURCES = [
   '/',
+  '/trial',
+  '/contact',
+  '/download',
   '/manifest.webmanifest',
-  '/logos/sco-smb-logo.png',
   '/screenshots/sco-smb-hero-dashboard.png'
 ];
 
+// Static assets with long cache times
+const STATIC_ASSETS = [
+  '/logos/',
+  '/screenshots/',
+  '/patterns/',
+];
+
 // Install event - cache critical resources
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then(cache => {
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .catch(err => console.log('Cache install failed:', err))
+    Promise.all([
+      caches.open(STATIC_CACHE).then((cache) => cache.addAll(CRITICAL_RESOURCES)),
+      self.skipWaiting()
+    ])
   );
-  self.skipWaiting();
 });
 
 // Activate event - clean old caches
