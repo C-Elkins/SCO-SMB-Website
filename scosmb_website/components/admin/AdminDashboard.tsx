@@ -31,6 +31,10 @@ import {
 import { AdminAnalytics } from './AdminAnalytics';
 import { EnterpriseSettingsPanel } from './EnterpriseSettingsPanel';
 import { AppHealthStatus } from './AppHealthStatus';
+import { AdvancedAnalytics } from './AdvancedAnalytics';
+import { ActivityFeed } from './ActivityFeed';
+import { BulkActions } from './BulkActions';
+import { dataSyncManager, dataCache } from '@/lib/dataSync';
 
 interface DashboardStats {
   totalKeys: number;
@@ -146,37 +150,118 @@ export function AdminDashboard() {
   const [selectedKey, setSelectedKey] = useState<LicenseKey | null>(null);
   const [selectedAdmin, setSelectedAdmin] = useState<AdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastSyncTime, setLastSyncTime] = useState<Date>(new Date());
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+
+    // Register auto-refresh syncs with data sync manager
+    if (autoRefresh) {
+      dataSyncManager.register('dashboard-stats', fetchDashboardStats, { 
+        interval: 30000,  // 30 seconds
+        enabled: true 
+      });
+      dataSyncManager.register('license-keys', fetchLicenseKeys, { 
+        interval: 15000,  // 15 seconds - more frequent for keys
+        enabled: true 
+      });
+      dataSyncManager.register('customers', fetchCustomers, { 
+        interval: 30000,  // 30 seconds
+        enabled: true 
+      });
+      dataSyncManager.register('admin-users', fetchAdminUsers, { 
+        interval: 60000,  // 60 seconds - less frequent for admin users
+        enabled: true 
+      });
+    }
+
+    // Cleanup on unmount
+    return () => {
+      dataSyncManager.unregister('dashboard-stats');
+      dataSyncManager.unregister('license-keys');
+      dataSyncManager.unregister('customers');
+      dataSyncManager.unregister('admin-users');
+    };
+  }, [autoRefresh]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [statsRes, keysRes, adminsRes, customersRes] = await Promise.all([
-        fetch('/api/admin/stats', { credentials: 'include' }),
-        fetch('/api/admin/keys', { credentials: 'include' }),
-        fetch('/api/admin/users', { credentials: 'include' }),
-        fetch('/api/admin/customers', { credentials: 'include' })
+      await Promise.all([
+        fetchDashboardStats(),
+        fetchLicenseKeys(),
+        fetchAdminUsers(),
+        fetchCustomers()
       ]);
-
-      const [statsData, keysData, adminsData, customersData] = await Promise.all([
-        statsRes.json(),
-        keysRes.json(),
-        adminsRes.json(),
-        customersRes.json()
-      ]);
-
-      setStats(statsData);
-      setLicenseKeys(keysData.keys || []);
-      setAdminUsers(adminsData.users || []);
-      setCustomers(customersData.customers || []);
+      setLastSyncTime(new Date());
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await fetch('/api/admin/stats', { 
+        credentials: 'include',
+        cache: 'no-store' // Always fetch fresh data
+      });
+      const data = await response.json();
+      setStats(data);
+      dataCache.set('dashboard-stats', data, 30000);
+    } catch (error) {
+      console.error('Failed to fetch stats:', error);
+    }
+  };
+
+  const fetchLicenseKeys = async () => {
+    try {
+      const response = await fetch('/api/admin/keys', { 
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      const data = await response.json();
+      setLicenseKeys(data.keys || []);
+      dataCache.set('license-keys', data.keys, 15000);
+    } catch (error) {
+      console.error('Failed to fetch keys:', error);
+    }
+  };
+
+  const fetchAdminUsers = async () => {
+    try {
+      const response = await fetch('/api/admin/users', { 
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      const data = await response.json();
+      setAdminUsers(data.users || []);
+      dataCache.set('admin-users', data.users, 60000);
+    } catch (error) {
+      console.error('Failed to fetch admin users:', error);
+    }
+  };
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await fetch('/api/admin/customers', { 
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      const data = await response.json();
+      setCustomers(data.customers || []);
+      dataCache.set('customers', data.customers, 30000);
+    } catch (error) {
+      console.error('Failed to fetch customers:', error);
+    }
+  };
+
+  const handleManualRefresh = async () => {
+    setIsLoading(true);
+    await fetchDashboardData();
+    setIsLoading(false);
   };
 
   const generateKeys = async () => {
@@ -198,7 +283,11 @@ export function AdminDashboard() {
           customer_company: '',
           expires_at: ''
         });
-        fetchDashboardData();
+        // Invalidate cache and refresh immediately
+        dataCache.invalidate('license-keys');
+        dataCache.invalidate('dashboard-stats');
+        await fetchLicenseKeys();
+        await fetchDashboardStats();
       }
     } catch (error) {
       console.error('Failed to generate keys:', error);
@@ -222,7 +311,11 @@ export function AdminDashboard() {
           password: '',
           role: 'admin'
         });
-        fetchDashboardData();
+        // Invalidate cache and refresh
+        dataCache.invalidate('admin-users');
+        dataCache.invalidate('dashboard-stats');
+        await fetchAdminUsers();
+        await fetchDashboardStats();
       }
     } catch (error) {
       console.error('Failed to create admin:', error);
@@ -299,6 +392,27 @@ export function AdminDashboard() {
     }
   };
 
+  const deleteLicenseKey = async (keyId: string) => {
+    if (confirm('Are you sure you want to permanently delete this license key? This action cannot be undone.')) {
+      try {
+        const response = await fetch(`/api/admin/keys?id=${keyId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        if (response.ok) {
+          // Invalidate cache and refresh immediately
+          dataCache.invalidate('license-keys');
+          dataCache.invalidate('dashboard-stats');
+          await fetchLicenseKeys();
+          await fetchDashboardStats();
+          setSelectedKey(null);
+        }
+      } catch (error) {
+        console.error('Failed to delete license key:', error);
+      }
+    }
+  };
+
   const deleteAdmin = async (adminId: string) => {
     if (confirm('Are you sure you want to delete this admin user?')) {
       try {
@@ -306,7 +420,11 @@ export function AdminDashboard() {
           method: 'DELETE',
           credentials: 'include'
         });
-        fetchDashboardData();
+        // Invalidate cache and refresh
+        dataCache.invalidate('admin-users');
+        dataCache.invalidate('dashboard-stats');
+        await fetchAdminUsers();
+        await fetchDashboardStats();
       } catch (error) {
         console.error('Failed to delete admin:', error);
       }
@@ -361,7 +479,11 @@ export function AdminDashboard() {
           method: 'DELETE',
           credentials: 'include'
         });
-        fetchDashboardData();
+        // Invalidate cache and refresh
+        dataCache.invalidate('customers');
+        dataCache.invalidate('dashboard-stats');
+        await fetchCustomers();
+        await fetchDashboardStats();
       } catch (error) {
         console.error('Failed to delete customer:', error);
       }
@@ -506,8 +628,41 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Navigation Tabs */}
+      {/* Navigation Tabs with Sync Status */}
       <div className="bg-white rounded-xl shadow-lg border-0 ring-1 ring-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-3 bg-gray-50 border-b border-gray-200">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+              <span className="text-xs text-gray-600">
+                {autoRefresh ? 'Live sync enabled' : 'Auto-sync paused'}
+              </span>
+            </div>
+            <span className="text-xs text-gray-500">
+              Last updated: {lastSyncTime.toLocaleTimeString()}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                autoRefresh 
+                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {autoRefresh ? 'Pause Sync' : 'Enable Sync'}
+            </button>
+            <button
+              onClick={handleManualRefresh}
+              disabled={isLoading}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00A8B5] text-white text-xs font-medium rounded-lg hover:bg-[#008c97] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh Now
+            </button>
+          </div>
+        </div>
         <nav className="flex flex-wrap">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -754,6 +909,29 @@ export function AdminDashboard() {
             </div>
           </div>
 
+          {/* Premium Features */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            {/* Advanced Analytics Preview */}
+            <div className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] p-6 rounded-xl shadow-lg text-white">
+              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                Advanced Analytics
+              </h3>
+              <p className="text-sm text-white/80 mb-4">View detailed metrics, revenue tracking, and activity timeline</p>
+              <button
+                onClick={() => setActiveTab('analytics')}
+                className="px-4 py-2 bg-white text-[#153B6B] rounded-lg font-medium hover:bg-gray-100 transition-colors"
+              >
+                View Full Analytics →
+              </button>
+            </div>
+
+            {/* Activity Feed Preview */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <ActivityFeed />
+            </div>
+          </div>
+
           {/* Recent Customers & Recent Keys Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Customers */}
@@ -863,6 +1041,9 @@ export function AdminDashboard() {
       {/* License Keys Tab */}
       {activeTab === 'keys' && (
         <div className="space-y-6">
+          {/* Bulk Actions */}
+          <BulkActions type="keys" items={filteredKeys} onRefresh={fetchLicenseKeys} />
+
           {/* Search and Filter Bar */}
           <div className="bg-white p-4 rounded-lg shadow-sm border">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -994,17 +1175,26 @@ export function AdminDashboard() {
                           <button
                             onClick={() => setSelectedKey(key)}
                             className="text-[#00A8B5] hover:text-[#008c97]"
+                            title="View Details"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           {key.status !== 'revoked' && (
                             <button
                               onClick={() => revokeKey(key.key_code)}
-                              className="text-red-600 hover:text-red-800"
+                              className="text-orange-600 hover:text-orange-800"
+                              title="Revoke Key"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <XCircle className="w-4 h-4" />
                             </button>
                           )}
+                          <button
+                            onClick={() => deleteLicenseKey(key.id)}
+                            className="text-red-600 hover:text-red-800"
+                            title="Delete Permanently"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -1019,6 +1209,9 @@ export function AdminDashboard() {
       {/* Customers Tab */}
       {activeTab === 'customers' && (
         <div className="space-y-6">
+          {/* Bulk Actions */}
+          <BulkActions type="customers" items={filteredCustomers} onRefresh={fetchCustomers} />
+
           {/* Header */}
           <div className="bg-gradient-to-r from-[#153B6B] to-[#1e4a7f] p-6 rounded-xl">
             <div className="flex items-center justify-between">
@@ -1299,7 +1492,10 @@ export function AdminDashboard() {
 
       {/* Analytics Tab */}
       {activeTab === 'analytics' && (
-        <AdminAnalytics />
+        <div className="space-y-8">
+          <AdvancedAnalytics />
+          <AdminAnalytics />
+        </div>
       )}
 
       {/* Settings Tab */}
@@ -1582,24 +1778,34 @@ export function AdminDashboard() {
                 )}
               </div>
               
-              <div className="flex justify-end gap-3 pt-4 border-t">
+              <div className="flex justify-between items-center pt-4 border-t">
                 <button
-                  onClick={() => setSelectedKey(null)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  onClick={() => deleteLicenseKey(selectedKey.id)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2"
                 >
-                  Close
+                  <Trash2 className="w-4 h-4" />
+                  Delete Permanently
                 </button>
-                {selectedKey.status !== 'revoked' && (
+                <div className="flex gap-3">
                   <button
-                    onClick={() => {
-                      revokeKey(selectedKey.key_code);
-                      setSelectedKey(null);
-                    }}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    onClick={() => setSelectedKey(null)}
+                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
-                    Revoke Key
+                    Close
                   </button>
-                )}
+                  {selectedKey.status !== 'revoked' && (
+                    <button
+                      onClick={() => {
+                        revokeKey(selectedKey.key_code);
+                        setSelectedKey(null);
+                      }}
+                      className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center gap-2"
+                    >
+                      <XCircle className="w-4 h-4" />
+                      Revoke Key
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

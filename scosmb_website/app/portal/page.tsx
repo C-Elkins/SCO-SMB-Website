@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Download, Book, Wrench, GitBranch, Shield, LogIn, Globe, Check, ExternalLink } from 'lucide-react';
+import { dataSyncManager } from '@/lib/dataSync';
 
 interface ReleaseAsset {
   name: string;
@@ -28,15 +29,28 @@ export default function PortalPage() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchLatestRelease();
+      
+      // Auto-refresh release data every 5 minutes
+      dataSyncManager.register('portal-releases', fetchLatestRelease, {
+        interval: 300000, // 5 minutes
+        enabled: true
+      });
     }
+
+    return () => {
+      dataSyncManager.unregister('portal-releases');
+    };
   }, [isAuthenticated]);
 
   const fetchLatestRelease = async () => {
     try {
-      const response = await fetch('/api/releases/latest');
+      const response = await fetch('/api/releases/latest', {
+        cache: 'no-store' // Always fetch fresh data
+      });
       if (response.ok) {
         const data = await response.json();
         setRelease(data);
+        console.log('[Portal] Release data updated:', data.tag_name);
       }
     } catch (error) {
       console.error('Error fetching release:', error);

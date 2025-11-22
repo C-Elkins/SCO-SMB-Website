@@ -5,19 +5,24 @@ export async function POST(request: NextRequest) {
   try {
     const { licenseKey, platform, version } = await request.json();
     
+    console.log('[License Validation] Checking key:', licenseKey?.substring(0, 8) + '...');
+    
     // Validate format
     if (!licenseKey || !/^SCO-.+-.+-.+$/.test(licenseKey)) {
+      console.log('[License Validation] Invalid format');
       return NextResponse.json({ 
         valid: false, 
         error: 'Invalid license key format. Expected format: SCO-XXXX-XXXX-XXXX' 
       }, { status: 400 });
     }
     
-    // Check database
+    // Check database - always fetch fresh data from DB (no caching)
     const result = await query(
       'SELECT * FROM license_keys WHERE key_code = $1',
       [licenseKey]
     );
+    
+    console.log('[License Validation] Database query completed, rows found:', result.rows.length);
     
     if (result.rows.length === 0) {
       return NextResponse.json({ 
@@ -63,18 +68,20 @@ export async function POST(request: NextRequest) {
       }, { status: 403 });
     }
     
-    // Valid! Update database
+    // Valid! Update database with current timestamp
     if (key.status === 'unused') {
       await query(
-        'UPDATE license_keys SET status = $1, activated_at = NOW() WHERE id = $2',
+        'UPDATE license_keys SET status = $1, activated_at = NOW(), updated_at = NOW() WHERE id = $2',
         ['active', key.id]
       );
+      console.log('[License Validation] Key activated:', key.key_code?.substring(0, 8) + '...');
     }
     
     await query(
-      'UPDATE license_keys SET download_count = download_count + 1 WHERE id = $1',
+      'UPDATE license_keys SET download_count = download_count + 1, last_used = NOW(), updated_at = NOW() WHERE id = $1',
       [key.id]
     );
+    console.log('[License Validation] Download count incremented for key:', key.key_code?.substring(0, 8) + '...');
     
     // Log download
     const ip = request.headers.get('x-forwarded-for') || 

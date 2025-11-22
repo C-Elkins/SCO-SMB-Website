@@ -154,3 +154,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+// DELETE license key
+export async function DELETE(request: NextRequest) {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'License key ID is required' }, { status: 400 });
+    }
+
+    const db = getDb();
+    await db.delete(license_keys).where(eq(license_keys.id, id));
+
+    return NextResponse.json({ success: true, message: 'License key deleted successfully' });
+  } catch (error: any) {
+    console.error('Failed to delete license key:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
