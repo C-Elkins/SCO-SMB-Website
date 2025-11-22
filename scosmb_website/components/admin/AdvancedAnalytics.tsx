@@ -54,13 +54,52 @@ export function AdvancedAnalytics() {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch(`/api/admin/analytics?timeframe=${timeframe}`, {
+      const response = await fetch(`/api/admin/analytics?range=${timeframe}`, {
         credentials: 'include'
       });
       const data = await response.json();
-      setAnalytics(data);
+      
+      // Transform API response to match expected format
+      const transformedData: AnalyticsData = {
+        revenue: {
+          total: 0, // TODO: Calculate from customer monthly_rate * months
+          monthly: 0,
+          growth: 0
+        },
+        keys: {
+          total: data.keyStats?.totalKeys || 0,
+          active: data.keyStats?.activeKeys || 0,
+          growth: 0
+        },
+        customers: {
+          total: data.topCustomers?.length || 0,
+          active: data.topCustomers?.length || 0,
+          growth: 0
+        },
+        downloads: {
+          total: data.downloadStats?.total || 0,
+          today: data.downloadStats?.thisMonth || 0,
+          growth: data.downloadStats?.growth || 0
+        },
+        timeline: data.monthlyTrends?.map((trend: any) => ({
+          date: trend.month || new Date().toISOString(),
+          keys: trend.keysGenerated || 0,
+          downloads: trend.downloads || 0,
+          revenue: 0
+        })) || []
+      };
+      
+      setAnalytics(transformedData);
     } catch (error) {
       console.error('Failed to fetch analytics:', error);
+      // Set default empty data on error
+      setAnalytics({
+        revenue: { total: 0, monthly: 0, growth: 0 },
+        keys: { total: 0, active: 0, growth: 0 },
+        customers: { total: 0, active: 0, growth: 0 },
+        downloads: { total: 0, today: 0, growth: 0 },
+        timeline: []
+      });
     } finally {
       setLoading(false);
     }
@@ -136,33 +175,33 @@ export function AdvancedAnalytics() {
         <MetricCard
           icon={DollarSign}
           title="Total Revenue"
-          value={`$${analytics.revenue.total.toLocaleString()}`}
-          subtitle={`$${analytics.revenue.monthly.toLocaleString()}/month`}
-          growth={analytics.revenue.growth}
+          value={`$${(analytics.revenue?.total || 0).toLocaleString()}`}
+          subtitle={`$${(analytics.revenue?.monthly || 0).toLocaleString()}/month`}
+          growth={analytics.revenue?.growth || 0}
           color="from-green-500 to-emerald-600"
         />
         <MetricCard
           icon={Key}
           title="License Keys"
-          value={analytics.keys.total}
-          subtitle={`${analytics.keys.active} active`}
-          growth={analytics.keys.growth}
+          value={analytics.keys?.total || 0}
+          subtitle={`${analytics.keys?.active || 0} active`}
+          growth={analytics.keys?.growth || 0}
           color="from-blue-500 to-indigo-600"
         />
         <MetricCard
           icon={Users}
           title="Customers"
-          value={analytics.customers.total}
-          subtitle={`${analytics.customers.active} active`}
-          growth={analytics.customers.growth}
+          value={analytics.customers?.total || 0}
+          subtitle={`${analytics.customers?.active || 0} active`}
+          growth={analytics.customers?.growth || 0}
           color="from-purple-500 to-pink-600"
         />
         <MetricCard
           icon={Download}
           title="Downloads"
-          value={analytics.downloads.total}
-          subtitle={`${analytics.downloads.today} today`}
-          growth={analytics.downloads.growth}
+          value={analytics.downloads?.total || 0}
+          subtitle={`${analytics.downloads?.today || 0} today`}
+          growth={analytics.downloads?.growth || 0}
           color="from-orange-500 to-red-600"
         />
       </div>
@@ -174,9 +213,9 @@ export function AdvancedAnalytics() {
           Activity Timeline
         </h3>
         <div className="space-y-3">
-          {analytics.timeline.slice(0, 10).map((day, index) => {
-            const maxValue = Math.max(...analytics.timeline.map(d => d.keys + d.downloads));
-            const percentage = ((day.keys + day.downloads) / maxValue) * 100;
+          {(analytics.timeline || []).slice(0, 10).map((day, index) => {
+            const maxValue = Math.max(...(analytics.timeline || []).map(d => (d.keys || 0) + (d.downloads || 0)), 1);
+            const percentage = (((day.keys || 0) + (day.downloads || 0)) / maxValue) * 100;
             
             return (
               <div key={index} className="flex items-center gap-4">
@@ -190,7 +229,7 @@ export function AdvancedAnalytics() {
                       style={{ width: `${percentage}%` }}
                     />
                     <div className="absolute inset-0 flex items-center px-3 text-xs font-medium text-gray-700">
-                      {day.keys} keys • {day.downloads} downloads • ${day.revenue}
+                      {day.keys || 0} keys • {day.downloads || 0} downloads • ${day.revenue || 0}
                     </div>
                   </div>
                 </div>
