@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { AdminAnalytics } from './AdminAnalytics';
 import { EnterpriseSettingsPanel } from './EnterpriseSettingsPanel';
+import { AppHealthStatus } from './AppHealthStatus';
 
 interface DashboardStats {
   totalKeys: number;
@@ -648,8 +649,14 @@ export function AdminDashboard() {
               </div>
             </div>
 
-            {/* System Status */}
+            {/* App Health & System Status */}
             <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <h3 className="text-lg font-semibold text-[#153B6B] mb-4">App Health & Crash Analytics</h3>
+              <AppHealthStatus />
+            </div>
+
+            {/* System Status */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border mt-6">
               <h3 className="text-lg font-semibold text-[#153B6B] mb-4">System Status</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
