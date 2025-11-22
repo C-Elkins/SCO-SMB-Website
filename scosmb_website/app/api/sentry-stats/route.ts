@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
-  const SENTRY_ORG = process.env.SENTRY_ORG || 'your-org-slug'; // Set this in Vercel
-  const SENTRY_PROJECT = process.env.SENTRY_PROJECT || 'sco-smb'; // Set this in Vercel
+  const SENTRY_ORG = process.env.SENTRY_ORG || 'south-coast-office-smb';
+  const SENTRY_PROJECT = process.env.SENTRY_PROJECT || 'electron';
 
   // Better error messages for debugging
   if (!SENTRY_AUTH_TOKEN) {

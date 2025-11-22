@@ -29,9 +29,9 @@ your-org-slug
 
 ### 3. SENTRY_PROJECT
 ```
-sco-smb
+electron
 ```
-*(Your Sentry project slug - usually `sco-smb`)*
+*(Your Sentry project slug from project settings)*
 
 **Environments**: Production ✅ | Preview ✅ | Development ✅
 

@@ -46,9 +46,9 @@ sntryu_YOUR_TOKEN_HERE
 
 1. Go to your Sentry project dashboard
 2. Look at the URL: `https://sentry.io/organizations/YOUR-ORG-SLUG/issues/?project=PROJECT-ID`
-3. Note down:
-   - **Organization slug**: The part after `/organizations/`
-   - **Project slug**: Usually `sco-smb` (check in project settings)
+3. Your values:
+   - **Organization slug**: `south-coast-office-smb`
+   - **Project slug**: `electron` (Platform: Electron)
 
 ---
 
@@ -71,7 +71,7 @@ sntryu_YOUR_TOKEN_HERE
 
 #### Variable 3: SENTRY_PROJECT
 - **Name**: `SENTRY_PROJECT`
-- **Value**: `sco-smb` (or your project slug from Step 2)
+- **Value**: `electron`
 - **Environments**: ✅ Production, ✅ Preview, ✅ Development
 
 5. Click **"Save"** for each variable
@@ -100,8 +100,8 @@ Vercel will automatically deploy with the new environment variables.
 1. Add environment variables to `.env.local`:
 ```bash
 SENTRY_AUTH_TOKEN=sntryu_YOUR_TOKEN_HERE
-SENTRY_ORG=your-org-slug
-SENTRY_PROJECT=sco-smb
+SENTRY_ORG=south-coast-office-smb
+SENTRY_PROJECT=electron
 ```
 
 2. Start the development server:
