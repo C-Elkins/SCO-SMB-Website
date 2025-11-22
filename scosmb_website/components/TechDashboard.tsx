@@ -148,35 +148,35 @@ export default function TechDashboard({ user }: { user: TechUser }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 overflow-x-hidden">
       {/* Top Navigation */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
-        <div className="container-wide">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-4">
             {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-xl flex items-center justify-center">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-xl flex items-center justify-center flex-shrink-0">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-[#153B6B]">Tech Portal</h1>
-                <p className="text-xs text-gray-500">SCO SMB Dashboard</p>
+              <div className="hidden sm:block min-w-0">
+                <h1 className="text-lg font-bold text-[#153B6B] truncate">Tech Portal</h1>
+                <p className="text-xs text-gray-500 truncate">SCO SMB Dashboard</p>
               </div>
             </div>
 
             {/* User Menu */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative">
                 <Bell className="w-5 h-5 text-gray-600" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
 
-              <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">{user.full_name}</p>
+              <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-gray-200">
+                <div className="text-right hidden md:block">
+                  <p className="text-sm font-semibold text-gray-900 truncate max-w-[150px]">{user.full_name}</p>
                   <p className="text-xs text-gray-500 capitalize">{user.role}</p>
                 </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-full flex items-center justify-center text-white font-semibold">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
                   {user.full_name.charAt(0)}
                 </div>
               </div>
@@ -194,17 +194,17 @@ export default function TechDashboard({ user }: { user: TechUser }) {
       </nav>
 
       {/* Main Content */}
-      <main className="container-wide py-8">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h2 className="text-3xl font-bold text-[#153B6B] mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#153B6B] mb-2 break-words">
             Welcome back, {user.full_name.split(' ')[0]}! 👋
           </h2>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Here's what's happening in the field today
           </p>
         </motion.div>
@@ -279,9 +279,9 @@ export default function TechDashboard({ user }: { user: TechUser }) {
         </div>
 
         {/* Main Grid */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Posts */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 min-w-0">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-lg overflow-hidden">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
@@ -320,8 +320,8 @@ export default function TechDashboard({ user }: { user: TechUser }) {
                         <div className="shrink-0 w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-gray-700 font-semibold">
                           {post.author.full_name.charAt(0)}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
+                        <div className="flex-1 min-w-0 overflow-hidden">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${getCategoryColor(post.category)}`}>
                               {getCategoryIcon(post.category)}
                               {post.category}
@@ -330,10 +330,10 @@ export default function TechDashboard({ user }: { user: TechUser }) {
                               <span className="text-xs text-yellow-600">📌 Pinned</span>
                             )}
                           </div>
-                          <h4 className="font-semibold text-gray-900 mb-1 truncate">
+                          <h4 className="font-semibold text-gray-900 mb-1 truncate break-words">
                             {post.title}
                           </h4>
-                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          <p className="text-sm text-gray-600 mb-2 line-clamp-2 break-words">
                             {post.content}
                           </p>
                           <div className="flex items-center gap-4 text-xs text-gray-500">
@@ -360,9 +360,9 @@ export default function TechDashboard({ user }: { user: TechUser }) {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0">
             {/* User Profile Card */}
-            <div className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl p-6 text-white shadow-lg overflow-hidden">
               <div className="text-center mb-4">
                 <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
                   {user.full_name.charAt(0)}
