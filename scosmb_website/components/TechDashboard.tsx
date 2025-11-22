@@ -363,24 +363,24 @@ export default function TechDashboard({ user }: { user: TechUser }) {
             </h3>
             <div className="space-y-3">
               <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
-                <BookOpen className="w-5 h-5" />
+                <BookOpen className="w-5 h-5 text-white" />
                 <div>
-                  <p className="font-medium text-sm">Installation Guides</p>
-                  <p className="text-xs text-white/70">Step-by-step setup instructions</p>
+                  <p className="font-medium text-sm !text-white">Installation Guides</p>
+                  <p className="text-xs !text-white/90">Step-by-step setup instructions</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
-                <AlertTriangle className="w-5 h-5" />
+                <AlertTriangle className="w-5 h-5 text-white" />
                 <div>
-                  <p className="font-medium text-sm">Troubleshooting</p>
-                  <p className="text-xs text-white/70">Common issues and solutions</p>
+                  <p className="font-medium text-sm !text-white">Troubleshooting</p>
+                  <p className="text-xs !text-white/90">Common issues and solutions</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
-                <Users className="w-5 h-5" />
+                <Users className="w-5 h-5 text-white" />
                 <div>
-                  <p className="font-medium text-sm">Contact Support</p>
-                  <p className="text-xs text-white/70">Get help from the team</p>
+                  <p className="font-medium text-sm !text-white">Contact Support</p>
+                  <p className="text-xs !text-white/90">Get help from the team</p>
                 </div>
               </div>
             </div>

@@ -39,14 +39,22 @@ export default function PortalPage() {
 
   const checkSession = async () => {
     try {
-      const response = await fetch('/api/tech/auth/session');
+      const response = await fetch('/api/tech/auth/session', {
+        credentials: 'include',
+        cache: 'no-cache'
+      });
       const data = await response.json();
+      
+      console.log('Session check response:', data); // Debug log
       
       if (data.authenticated && data.user) {
         setUser(data.user);
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error('Session check error:', error);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -57,21 +65,26 @@ export default function PortalPage() {
     setError('');
     setIsSubmitting(true);
 
+    console.log('Attempting login with:', formData.username); // Debug log
+
     try {
       const response = await fetch('/api/tech/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username: formData.username, password: formData.password }),
       });
 
       const data = await response.json();
+      console.log('Login response:', data); // Debug log
 
-      if (data.success) {
+      if (data.success && data.user) {
         setUser(data.user);
       } else {
-        setError(data.error || 'An error occurred');
+        setError(data.error || 'Invalid credentials');
       }
     } catch (error) {
+      console.error('Login error:', error);
       setError('Network error. Please try again.');
     } finally {
       setIsSubmitting(false);
