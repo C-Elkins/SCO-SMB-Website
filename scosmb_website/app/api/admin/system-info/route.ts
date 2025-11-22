@@ -19,7 +19,7 @@ export async function GET() {
     const [totalAdmins] = await db.select({ count: count() }).from(admin_users);
     const [totalDownloads] = await db.select({ count: count() }).from(download_logs);
 
-    // Fetch latest version from GitHub or use package.json version
+    // Fetch latest version from GitHub releases
     let latestVersion = '1.0.0';
     try {
       const githubResponse = await fetch(
@@ -27,16 +27,25 @@ export async function GET() {
         {
           headers: {
             'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'SCO-SMB-Admin'
+            'User-Agent': 'SCO-SMB-Admin',
+            ...(process.env.GITHUB_TOKEN && { 
+              'Authorization': `Bearer ${process.env.GITHUB_TOKEN}` 
+            })
           },
           next: { revalidate: 300 } // Cache for 5 minutes
         }
       );
+      
       if (githubResponse.ok) {
         const releaseData = await githubResponse.json();
-        latestVersion = releaseData.tag_name || '1.0.0';
+        latestVersion = releaseData.tag_name || releaseData.name || '1.0.0';
+        console.log('GitHub release version:', latestVersion);
+      } else {
+        console.warn('GitHub API response:', githubResponse.status, await githubResponse.text());
+        latestVersion = process.env.SCOSMB_VERSION || '1.0.0';
       }
-    } catch {
+    } catch (error) {
+      console.error('Failed to fetch GitHub release:', error);
       // Fallback to environment variable or package.json version
       latestVersion = process.env.SCOSMB_VERSION || '1.0.0';
     }
