@@ -65,9 +65,21 @@ export function AppHealthStatus() {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-        <div className="flex items-center gap-3 text-red-800">
-          <AlertCircle className="w-5 h-5" />
-          <span className="font-medium">Error loading status: {error}</span>
+        <div className="flex items-start gap-3 text-red-800">
+          <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium mb-2">Error loading Sentry data</p>
+            <p className="text-sm text-red-700 mb-3">{error}</p>
+            <div className="text-xs text-red-600 bg-red-100 p-3 rounded">
+              <p className="font-semibold mb-1">Setup Required:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Add <code className="bg-red-200 px-1 rounded">SENTRY_AUTH_TOKEN</code> to Vercel</li>
+                <li>Add <code className="bg-red-200 px-1 rounded">SENTRY_ORG</code> (your org slug)</li>
+                <li>Add <code className="bg-red-200 px-1 rounded">SENTRY_PROJECT</code> (e.g., sco-smb)</li>
+              </ol>
+              <p className="mt-2">See VERCEL_SENTRY_SETUP.md for detailed instructions.</p>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -5,9 +5,28 @@ export async function GET(request: NextRequest) {
   const SENTRY_ORG = process.env.SENTRY_ORG || 'your-org-slug'; // Set this in Vercel
   const SENTRY_PROJECT = process.env.SENTRY_PROJECT || 'sco-smb'; // Set this in Vercel
 
+  // Better error messages for debugging
   if (!SENTRY_AUTH_TOKEN) {
     return NextResponse.json(
-      { error: 'Sentry token not configured' }, 
+      { 
+        error: 'Sentry token not configured',
+        message: 'SENTRY_AUTH_TOKEN environment variable is missing. Add it to Vercel environment variables.',
+        configured: {
+          token: false,
+          org: !!SENTRY_ORG && SENTRY_ORG !== 'your-org-slug',
+          project: !!SENTRY_PROJECT
+        }
+      }, 
+      { status: 500 }
+    );
+  }
+
+  if (SENTRY_ORG === 'your-org-slug') {
+    return NextResponse.json(
+      { 
+        error: 'Sentry organization not configured',
+        message: 'SENTRY_ORG environment variable needs to be set to your actual Sentry organization slug.'
+      }, 
       { status: 500 }
     );
   }
@@ -42,11 +61,29 @@ export async function GET(request: NextRequest) {
     ]);
 
     if (!statsResponse.ok || !issuesResponse.ok) {
+      const statsError = !statsResponse.ok ? await statsResponse.text() : null;
+      const issuesError = !issuesResponse.ok ? await issuesResponse.text() : null;
+      
       console.error('Sentry API error:', {
-        stats: statsResponse.status,
-        issues: issuesResponse.status
+        stats: { status: statsResponse.status, error: statsError },
+        issues: { status: issuesResponse.status, error: issuesError },
+        org: SENTRY_ORG,
+        project: SENTRY_PROJECT
       });
-      throw new Error('Failed to fetch from Sentry');
+      
+      return NextResponse.json(
+        { 
+          error: 'Failed to fetch from Sentry API',
+          message: `HTTP ${!statsResponse.ok ? statsResponse.status : issuesResponse.status}. Check that SENTRY_ORG and SENTRY_PROJECT are correct and your token has the required permissions.`,
+          details: {
+            statsStatus: statsResponse.status,
+            issuesStatus: issuesResponse.status,
+            org: SENTRY_ORG,
+            project: SENTRY_PROJECT
+          }
+        }, 
+        { status: 500 }
+      );
     }
 
     const stats = await statsResponse.json();
@@ -91,7 +128,11 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Sentry API error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch Sentry data' }, 
+      { 
+        error: 'Failed to fetch Sentry data',
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        help: 'Ensure SENTRY_AUTH_TOKEN, SENTRY_ORG, and SENTRY_PROJECT are correctly set in Vercel environment variables.'
+      }, 
       { status: 500 }
     );
   }
