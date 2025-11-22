@@ -558,28 +558,32 @@ export function EnterpriseSettingsPanel() {
       {/* Portal Configuration Section */}
       {activeSection === 'portal' && settings && (
         <div className="space-y-6">
+          {/* Tech User Management Integrated */}
+          <div className="bg-gradient-to-br from-[#153B6B] to-blue-700 p-6 rounded-xl text-white mb-6">
+            <div className="flex items-center gap-3 mb-2">
+              <Users className="w-6 h-6" />
+              <h2 className="text-xl font-bold">Tech Portal Management</h2>
+            </div>
+            <p className="text-blue-100 text-sm">Manage technician accounts, portal settings, and access controls</p>
+          </div>
+
+          {/* Tech User Management Component */}
+          <TechUserManagement />
+
+          {/* Portal Settings */}
           <div className="bg-white p-8 rounded-xl shadow-lg border-0 ring-1 ring-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-[#00A8B5] rounded-lg">
                 <Globe className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#153B6B]">Portal Configuration</h2>
-                <p className="text-sm text-gray-600">Manage technician portal and download settings</p>
+                <h2 className="text-xl font-bold text-[#153B6B]">Portal Settings</h2>
+                <p className="text-sm text-gray-600">Configure download portal behavior and limits</p>
               </div>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Portal Password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Enter new portal password"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Password for technicians to access the download portal</p>
-                </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Max Daily Downloads</label>

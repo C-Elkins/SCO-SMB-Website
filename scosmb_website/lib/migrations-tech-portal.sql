@@ -93,7 +93,7 @@ INSERT INTO tech_users (username, email, password_hash, full_name, company, role
 VALUES (
   'tech_demo',
   'tech@scosmb.com',
-  '$2a$10$rOBYvFQlJfN8YxUqXk5QXOqVxMZV8w3LQGBYqhXZYvKZQxYQx4ZYe',
+  '$2b$10$wA2NDGPymQF2eLGJ5qKZc.ZK4g7QoRtmJmCs8P2YSsKrKSKYIZBvW',
   'Demo Technician',
   'SCO SMB',
   'technician',
