@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 // Lazy load heavy components
-const Hero = lazy(() => import('../components/HeroNew'));
+const Hero = lazy(() => import('../components/HeroOptimizedNew'));
 const DynamicFeatureCard = lazy(() => import('@/components/DynamicComponents').then(module => ({ default: module.DynamicFeatureCard })));
 
 // Loading components
@@ -177,14 +177,14 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link href="/download" className="btn btn-primary btn-lg group">
                   <span>Download Free</span>
-                  <motion.svg
-                    className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                  <svg
+                    className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12" />
-                  </motion.svg>
+                  </svg>
                 </Link>
                 <Link href="/docs" className="btn btn-secondary btn-lg">
                   View Documentation
@@ -213,6 +213,9 @@ export default function Home() {
                   className="rounded-xl w-full"
                   style={{ width: '100%', height: 'auto' }}
                   priority
+                  fetchPriority="high"
+                  loading="eager"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 
                 {/* Floating UI elements */}
@@ -353,19 +356,19 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link
+                <Link
                 href="/trial"
-                className="btn btn-primary btn-lg group shadow-2xl shadow-blue-500/25"
+                className="btn btn-primary btn-lg group shadow-xl"
               >
                 <span>Start Free Trial</span>
-                <motion.svg
-                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12" />
-                </motion.svg>
+                </svg>
               </Link>
               <Link
                 href="/contact"

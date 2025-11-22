@@ -114,6 +114,9 @@ export default function RootLayout({
         
         {/* Performance hints */}
         <meta name="format-detection" content="telephone=no" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preload" href="/screenshots/sco-smb-hero-dashboard.png" as="image" fetchPriority="high" />
+        <link rel="dns-prefetch" href="//vercel-insights.com" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         
         {/* Security headers are now set in next.config.js HTTP headers */}

@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     // Send email using Resend
     const { error } = await resend.emails.send({
-      from: 'SCO SMB Website <noreply@southcoastoffice.com>',
+      from: 'SCO SMB Website <no-reply@sco-smb.com>',
       to: ['support@southcoastoffice.com'],
       replyTo: email,
       subject: `Free Trial Request - ${company}`,
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     // Also send confirmation email to the user
     const confirmationError = await resend.emails.send({
-      from: 'SCO SMB Team <noreply@southcoastoffice.com>',
+      from: 'SCO SMB Team <no-reply@sco-smb.com>',
       to: [email],
       subject: 'Your SCO SMB Free Trial Request - Confirmation',
       html: `

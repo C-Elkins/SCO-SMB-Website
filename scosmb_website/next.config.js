@@ -11,6 +11,9 @@ const nextConfig = {
   },
   outputFileTracingRoot: __dirname,
   
+  // Fix cross-origin warning for development
+  allowedDevOrigins: ['192.168.1.70'],
+  
   // Performance optimizations
   experimental: {
     scrollRestoration: true,

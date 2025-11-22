@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // Send email using Resend
     const { error } = await resend.emails.send({
-      from: 'SCO SMB Website <noreply@southcoastoffice.com>',
+      from: 'SCO SMB Website <no-reply@sco-smb.com>',
       to: ['support@southcoastoffice.com'],
       replyTo: email,
       subject: `Contact Form: ${subject}`,

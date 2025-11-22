@@ -536,7 +536,7 @@ export function Hero() {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <Link
-              href="/download"
+              href="/trial"
               className="inline-flex items-center gap-3 px-12 py-6 rounded-xl font-bold text-2xl transition-all duration-300"
               style={{ 
                 background: 'linear-gradient(135deg, #2196F3 0%, #00A8B5 100%)',
