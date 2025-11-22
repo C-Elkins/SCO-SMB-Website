@@ -7,6 +7,12 @@
 sntryu_YOUR_TOKEN_HERE
 ```
 *(Paste your actual token from Sentry - see Step 1 in full guide)*
+
+**⚠️ IMPORTANT: Token must have these scopes:**
+- `project:read` ✅
+- `event:read` ✅  
+- `org:read` ✅
+
 **Environments**: Production ✅ | Preview ✅ | Development ✅
 
 ---
@@ -69,5 +75,30 @@ Should see JSON response like:
   "recentIssues": [...]
 }
 ```
+
+---
+
+## 🐛 Troubleshooting
+
+### Error 403: Forbidden
+**Problem**: Token doesn't have required permissions  
+**Solution**: 
+1. Go to [Sentry Auth Tokens](https://sentry.io/settings/account/api/auth-tokens/)
+2. Delete the old token
+3. Create a NEW token with these scopes:
+   - ✅ `project:read`
+   - ✅ `event:read`
+   - ✅ `org:read`
+4. Update `SENTRY_AUTH_TOKEN` in Vercel
+5. Redeploy
+
+### Wrong org/project slug
+**Problem**: HTTP 404 or "project not found"  
+**Solution**:
+- Check your Sentry URL: `https://sentry.io/organizations/YOUR-ORG-SLUG/issues/?project=PROJECT-ID`
+- Update `SENTRY_ORG` in Vercel to match the org slug from URL
+- Verify `SENTRY_PROJECT` matches your project slug (check project settings)
+
+---
 
 ✅ **Done!** Your admin dashboard now shows Sentry crash analytics.

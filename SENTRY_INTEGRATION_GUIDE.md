@@ -26,10 +26,11 @@ This guide walks you through integrating Sentry crash analytics with your SCO SM
 2. Click **"Create New Token"**
 3. Configure the token:
    - **Name**: `SCO-SMB-Vercel-Integration`
-   - **Scopes** (required):
+   - **Scopes** (required - MUST CHECK ALL THREE):
      - ✅ `project:read` - Read project data
      - ✅ `event:read` - Read error events
      - ✅ `org:read` - Read organization info
+   - ⚠️ **CRITICAL**: Without all 3 scopes, you'll get 403 Forbidden errors
 4. Click **"Create Token"**
 5. Copy your token (format: `sntryu_...`)
 
