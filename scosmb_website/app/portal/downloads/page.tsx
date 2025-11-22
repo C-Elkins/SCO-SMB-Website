@@ -11,6 +11,7 @@ import {
   ExternalLink,
   TrendingUp,
   Users,
+  BookOpen,
 } from 'lucide-react';
 import Link from 'next/link';
 

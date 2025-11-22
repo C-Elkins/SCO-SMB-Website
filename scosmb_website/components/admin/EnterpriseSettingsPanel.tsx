@@ -13,11 +13,8 @@ import {
   Clock,
   Server,
   Activity,
-
   AlertTriangle,
   CheckCircle,
-
-
   Cpu,
   BarChart3,
   Download,
@@ -26,6 +23,7 @@ import {
   Save,
   RotateCcw
 } from 'lucide-react';
+import { TechUserManagement } from './TechUserManagement';
 
 interface SystemInfo {
   version: string;
@@ -159,6 +157,7 @@ export function EnterpriseSettingsPanel() {
     { id: 'license', label: 'License Management', icon: Key },
     { id: 'security', label: 'Security & Access', icon: Shield },
     { id: 'portal', label: 'Portal Configuration', icon: Globe },
+    { id: 'techusers', label: 'Tech Portal Users', icon: Users },
     { id: 'monitoring', label: 'Monitoring & Alerts', icon: Activity },
     { id: 'maintenance', label: 'System Maintenance', icon: Settings }
   ];
@@ -700,6 +699,11 @@ export function EnterpriseSettingsPanel() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Tech Portal Users Section */}
+      {activeSection === 'techusers' && (
+        <TechUserManagement />
       )}
 
       {/* Monitoring & Alerts Section */}
