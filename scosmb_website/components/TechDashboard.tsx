@@ -76,6 +76,7 @@ export default function TechDashboard({ user }: { user: TechUser }) {
   });
   const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -166,10 +167,69 @@ export default function TechDashboard({ user }: { user: TechUser }) {
 
             {/* User Menu */}
             <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative">
-                <Bell className="w-5 h-5 text-gray-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
+                >
+                  <Bell className="w-5 h-5 text-gray-600" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                
+                {/* Notifications Dropdown */}
+                <AnimatePresence>
+                  {showNotifications && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50"
+                    >
+                      <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-[#153B6B] to-[#00A8B5]">
+                        <h3 className="font-semibold text-white">Notifications</h3>
+                        <p className="text-xs text-white/80">You have 3 unread notifications</p>
+                      </div>
+                      <div className="max-h-96 overflow-y-auto">
+                        <div className="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer">
+                          <div className="flex gap-3">
+                            <div className="w-2 h-2 bg-[#00A8B5] rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">New software release available</p>
+                              <p className="text-xs text-gray-600">SCO SMB v2.5.1 is now available for download</p>
+                              <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer">
+                          <div className="flex gap-3">
+                            <div className="w-2 h-2 bg-[#00A8B5] rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">Your post received 5 likes</p>
+                              <p className="text-xs text-gray-600">"Sharp MFP Setup Guide" is trending</p>
+                              <p className="text-xs text-gray-400 mt-1">5 hours ago</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-3 hover:bg-gray-50 cursor-pointer">
+                          <div className="flex gap-3">
+                            <div className="w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">System maintenance scheduled</p>
+                              <p className="text-xs text-gray-600">Portal will be offline Sunday 2-4 AM</p>
+                              <p className="text-xs text-gray-400 mt-1">1 day ago</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-3 border-t border-gray-200 bg-gray-50">
+                        <button className="text-sm text-[#00A8B5] hover:underline font-medium w-full text-center">
+                          View all notifications
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-gray-200">
                 <div className="text-right hidden md:block">
@@ -194,7 +254,7 @@ export default function TechDashboard({ user }: { user: TechUser }) {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         {/* Welcome Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -275,6 +335,139 @@ export default function TechDashboard({ user }: { user: TechUser }) {
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.activeTechs}</h3>
             <p className="text-sm text-gray-600">Active Technicians</p>
+          </motion.div>
+        </div>
+
+        {/* Quick Access Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Common Tasks */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-lg"
+          >
+            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Wrench className="w-5 h-5 text-[#00A8B5]" />
+              Common Tasks
+            </h3>
+            <div className="space-y-2">
+              <a href="/portal/blog/new" className="flex items-center justify-between p-3 bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-lg hover:shadow-md transition-all group">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="w-5 h-5" />
+                  <span className="font-medium">Report Issue</span>
+                </div>
+                <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+              <a href="/portal/blog" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-5 h-5 text-gray-700" />
+                  <span className="font-medium text-gray-900">Search Knowledge Base</span>
+                </div>
+                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+              <a href="/portal/downloads" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
+                <div className="flex items-center gap-3">
+                  <Download className="w-5 h-5 text-gray-700" />
+                  <span className="font-medium text-gray-900">Download Software</span>
+                </div>
+                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+              <a href="/docs" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-gray-700" />
+                  <span className="font-medium text-gray-900">View Documentation</span>
+                </div>
+                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Quick Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl p-6 text-white shadow-lg"
+          >
+            <h3 className="font-bold mb-4 flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              Quick Resources
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
+                <BookOpen className="w-5 h-5" />
+                <div>
+                  <p className="font-medium text-sm">Installation Guides</p>
+                  <p className="text-xs text-white/70">Step-by-step setup instructions</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
+                <AlertTriangle className="w-5 h-5" />
+                <div>
+                  <p className="font-medium text-sm">Troubleshooting</p>
+                  <p className="text-xs text-white/70">Common issues and solutions</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
+                <Users className="w-5 h-5" />
+                <div>
+                  <p className="font-medium text-sm">Contact Support</p>
+                  <p className="text-xs text-white/70">Get help from the team</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* System Status */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-lg"
+          >
+            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-green-600" />
+              System Status
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Portal Status</span>
+                  <span className="flex items-center gap-1 text-xs font-medium text-green-600">
+                    <CheckCircle className="w-3 h-3" />
+                    Operational
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '100%' }}></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">API Services</span>
+                  <span className="flex items-center gap-1 text-xs font-medium text-green-600">
+                    <CheckCircle className="w-3 h-3" />
+                    Online
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '98%' }}></div>
+                </div>
+              </div>
+              <div className="pt-3 border-t border-gray-200">
+                <div className="text-xs text-gray-600">
+                  <p className="flex justify-between py-1">
+                    <span>Last Update:</span>
+                    <span className="font-medium">{new Date().toLocaleTimeString()}</span>
+                  </p>
+                  <p className="flex justify-between py-1">
+                    <span>Uptime:</span>
+                    <span className="font-medium text-green-600">99.9%</span>
+                  </p>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
 

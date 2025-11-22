@@ -3,17 +3,18 @@ import { getDb } from '@/lib/db';
 import { tech_users } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+import { getAdminSession } from '@/lib/auth';
 
 // GET - Fetch all tech users
 export async function GET(request: Request) {
   try {
-    const db = getDb();
-    
     // Verify admin authentication
-    const cookie = request.headers.get('cookie');
-    if (!cookie?.includes('admin_session')) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    const db = getDb();
 
     const users = await db
       .select()
@@ -30,13 +31,13 @@ export async function GET(request: Request) {
 // POST - Create new tech user
 export async function POST(request: Request) {
   try {
-    const db = getDb();
-    
     // Verify admin authentication
-    const cookie = request.headers.get('cookie');
-    if (!cookie?.includes('admin_session')) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    const db = getDb();
 
     const body = await request.json();
     const { username, email, password, full_name, company, phone, role, specializations, is_active } = body;

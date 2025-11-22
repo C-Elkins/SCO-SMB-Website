@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db';
 import { tech_users } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+import { getAdminSession } from '@/lib/auth';
 
 // PUT - Update tech user
 export async function PUT(
@@ -10,13 +11,13 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const db = getDb();
-    
     // Verify admin authentication
-    const cookie = request.headers.get('cookie');
-    if (!cookie?.includes('admin_session')) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    const db = getDb();
 
     const { id } = await params;
     const body = await request.json();
@@ -65,13 +66,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const db = getDb();
-    
     // Verify admin authentication
-    const cookie = request.headers.get('cookie');
-    if (!cookie?.includes('admin_session')) {
+    const session = await getAdminSession();
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    
+    const db = getDb();
 
     const { id } = await params;
 
