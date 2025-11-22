@@ -173,7 +173,6 @@ export default function TechDashboard({ user }: { user: TechUser }) {
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
                 >
                   <Bell className="w-5 h-5 text-gray-600" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
                 
                 {/* Notifications Dropdown */}
@@ -187,44 +186,12 @@ export default function TechDashboard({ user }: { user: TechUser }) {
                     >
                       <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-[#153B6B] to-[#00A8B5]">
                         <h3 className="font-semibold text-white">Notifications</h3>
-                        <p className="text-xs text-white/80">You have 3 unread notifications</p>
+                        <p className="text-xs text-white/80">Stay updated with your activity</p>
                       </div>
-                      <div className="max-h-96 overflow-y-auto">
-                        <div className="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer">
-                          <div className="flex gap-3">
-                            <div className="w-2 h-2 bg-[#00A8B5] rounded-full mt-2"></div>
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">New software release available</p>
-                              <p className="text-xs text-gray-600">SCO SMB v2.5.1 is now available for download</p>
-                              <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer">
-                          <div className="flex gap-3">
-                            <div className="w-2 h-2 bg-[#00A8B5] rounded-full mt-2"></div>
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">Your post received 5 likes</p>
-                              <p className="text-xs text-gray-600">"Sharp MFP Setup Guide" is trending</p>
-                              <p className="text-xs text-gray-400 mt-1">5 hours ago</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-3 hover:bg-gray-50 cursor-pointer">
-                          <div className="flex gap-3">
-                            <div className="w-2 h-2 bg-gray-300 rounded-full mt-2"></div>
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">System maintenance scheduled</p>
-                              <p className="text-xs text-gray-600">Portal will be offline Sunday 2-4 AM</p>
-                              <p className="text-xs text-gray-400 mt-1">1 day ago</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-3 border-t border-gray-200 bg-gray-50">
-                        <button className="text-sm text-[#00A8B5] hover:underline font-medium w-full text-center">
-                          View all notifications
-                        </button>
+                      <div className="p-8 text-center">
+                        <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                        <p className="text-sm text-gray-500 font-medium">No notifications yet</p>
+                        <p className="text-xs text-gray-400 mt-1">We'll notify you when there's something new</p>
                       </div>
                     </motion.div>
                   )}
@@ -254,7 +221,7 @@ export default function TechDashboard({ user }: { user: TechUser }) {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
         {/* Welcome Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

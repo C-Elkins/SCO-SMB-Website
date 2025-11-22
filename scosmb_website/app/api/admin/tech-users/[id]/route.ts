@@ -31,7 +31,7 @@ export async function PUT(
     if (company !== undefined) updateData.company = company;
     if (phone !== undefined) updateData.phone = phone;
     if (role !== undefined) updateData.role = role;
-    if (specializations !== undefined) updateData.specializations = specializations;
+    if (specializations !== undefined) updateData.specializations = JSON.stringify(specializations);
     if (is_active !== undefined) updateData.is_active = is_active;
 
     // If password is provided, hash it
@@ -50,9 +50,15 @@ export async function PUT(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    // Parse specializations back to array for response
+    const userResponse = {
+      ...updatedUser[0],
+      specializations: updatedUser[0].specializations ? JSON.parse(updatedUser[0].specializations as string) : []
+    };
+
     return NextResponse.json({ 
       success: true, 
-      user: updatedUser[0] 
+      user: userResponse 
     });
   } catch (error) {
     console.error('Error updating tech user:', error);

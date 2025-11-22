@@ -409,7 +409,7 @@ export function TechUserManagement() {
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}>
                         {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                       </span>
-                      {user.specializations && user.specializations.length > 0 && (
+                      {user.specializations && Array.isArray(user.specializations) && user.specializations.length > 0 && (
                         <div className="mt-1 text-xs text-gray-500">
                           {user.specializations.slice(0, 2).join(', ')}
                           {user.specializations.length > 2 && ' +' + (user.specializations.length - 2)}

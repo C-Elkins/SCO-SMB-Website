@@ -21,7 +21,19 @@ export async function GET(request: Request) {
       .from(tech_users)
       .orderBy(tech_users.created_at);
 
-    return NextResponse.json({ users });
+    // Parse specializations from JSON string to array
+    const parsedUsers = users.map(user => ({
+      ...user,
+      specializations: user.specializations ? JSON.parse(user.specializations as string) : []
+    }));
+
+    return NextResponse.json({ 
+      users: parsedUsers 
+    }, {
+      headers: {
+        'Cache-Control': 'private, max-age=60, stale-while-revalidate=120',
+      }
+    });
   } catch (error) {
     console.error('Error fetching tech users:', error);
     return NextResponse.json({ error: 'Failed to fetch tech users' }, { status: 500 });
@@ -83,14 +95,20 @@ export async function POST(request: Request) {
         company: company || null,
         phone: phone || null,
         role: role || 'technician',
-        specializations: specializations || [],
+        specializations: JSON.stringify(specializations || []),
         is_active: is_active !== undefined ? is_active : true,
       })
       .returning();
 
+    // Parse specializations back to array for response
+    const userResponse = {
+      ...newUser[0],
+      specializations: newUser[0].specializations ? JSON.parse(newUser[0].specializations as string) : []
+    };
+
     return NextResponse.json({ 
       success: true, 
-      user: newUser[0] 
+      user: userResponse 
     });
   } catch (error) {
     console.error('Error creating tech user:', error);

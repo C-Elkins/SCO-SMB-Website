@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, LogIn } from 'lucide-react';
-import { AdminDashboard } from '@/components/admin/AdminDashboard';
+import { Lock, LogIn, Loader2 } from 'lucide-react';
+
+// Lazy load the heavy AdminDashboard component
+const AdminDashboard = lazy(() => import('@/components/admin/AdminDashboard').then(mod => ({ default: mod.AdminDashboard })));
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -177,7 +179,16 @@ export default function AdminPage() {
 
       {/* Main Dashboard Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AdminDashboard />
+        <Suspense fallback={
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-[#00A8B5]" />
+              <p className="text-gray-600">Loading dashboard...</p>
+            </div>
+          </div>
+        }>
+          <AdminDashboard />
+        </Suspense>
       </div>
     </div>
   );

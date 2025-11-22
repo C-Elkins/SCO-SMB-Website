@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { LogIn, Wrench, Loader2 } from 'lucide-react';
-import TechDashboard from '@/components/TechDashboard';
+
+// Lazy load TechDashboard for better INP
+const TechDashboard = lazy(() => import('@/components/TechDashboard'));
 
 interface TechUser {
   id: string;
@@ -88,7 +90,18 @@ export default function PortalPage() {
   }
 
   if (user) {
-    return <TechDashboard user={user} />;
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-[#00A8B5]" />
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
+        </div>
+      }>
+        <TechDashboard user={user} />
+      </Suspense>
+    );
   }
 
   return (
