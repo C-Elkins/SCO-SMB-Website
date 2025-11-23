@@ -98,13 +98,13 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 text-gray-600 text-lg">
                 <p>
-                  South Coast Office Supply has been the trusted partner for businesses along the Oregon coast for over 50 years. We specialize in providing comprehensive office solutions, from supplies to cutting-edge technology.
+                  <a href="https://southcoastoffice.com" target="_blank" rel="noopener noreferrer" className="text-[#00A8B5] hover:underline font-semibold">South Coast Office Supply</a> has been the trusted partner for businesses along the Oregon coast for over 50 years. We specialize in providing comprehensive office solutions, from supplies to cutting-edge technology.
                 </p>
                 <p>
                   Our commitment to innovation led us to develop SCO SMB, a professional scanning solution designed specifically for modern offices using Kyocera and Sharp network printers. We saw the need for enterprise-grade document management that actually works in real-world office environments.
                 </p>
                 <p>
-                  Today, we continue to serve businesses throughout Coos Bay and the surrounding areas with personalized service and innovative solutions that make office work more efficient and productive.
+                  Today, we continue to serve businesses throughout Coos Bay and the surrounding areas with personalized service and innovative solutions that make office work more efficient and productive. Visit <a href="https://southcoastoffice.com" target="_blank" rel="noopener noreferrer" className="text-[#00A8B5] hover:underline font-semibold">southcoastoffice.com</a> to learn more about our full range of office products and services.
                 </p>
               </div>
             </motion.div>

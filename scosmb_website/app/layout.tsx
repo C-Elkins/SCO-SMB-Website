@@ -27,12 +27,14 @@ export const metadata: Metadata = {
     default: "SCO SMB - Enterprise Scanning Solution | South Coast Office",
     template: "%s | SCO SMB - Enterprise Scanning Solution"
   },
-  description: "Transform your office productivity with SCO SMB - the leading enterprise document scanning solution for Kyocera & Sharp multifunction printers. Experience seamless scan-to-computer workflows with automatic file organization, bank-grade security, and zero-configuration network discovery. Trusted by businesses worldwide for efficient document management and workflow automation.",
+  description: "Transform your office productivity with SCO SMB by South Coast Office - the leading enterprise document scanning solution for Kyocera & Sharp multifunction printers. Experience seamless scan-to-computer workflows with automatic file organization, bank-grade security, and zero-configuration network discovery. Trusted by businesses worldwide for efficient document management and workflow automation.",
   keywords: [
-    "South Coast Office", "SCO SMB", "document scanning", "Kyocera scanner", "Sharp MFP", "FTP server", 
+    "South Coast Office", "South Coast Office Supply", "SCO SMB", "southcoastoffice.com",
+    "document scanning", "Kyocera scanner", "Sharp MFP", "FTP server", 
     "SMB scanning", "enterprise scanning", "network scanner", "automatic organization",
     "printer discovery", "secure scanning", "document management", "office automation",
-    "scan to folder", "network printer", "document workflow", "enterprise security"
+    "scan to folder", "network printer", "document workflow", "enterprise security",
+    "Coos Bay Oregon", "office equipment supplier"
   ],
   authors: [{ name: "South Coast Office" }],
   creator: "South Coast Office",

@@ -28,6 +28,16 @@ export default function Footer() {
             <p className="text-sm leading-relaxed text-gray-300">
               Enterprise scanning solution for modern offices. Professional document management for Kyocera and Sharp network printers.
             </p>
+            <p className="text-sm mt-3">
+              <a 
+                href="https://southcoastoffice.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#00A8B5] hover:text-[#008A95] transition-colors font-medium"
+              >
+                Visit South Coast Office →
+              </a>
+            </p>
           </div>
 
           {/* Quick Links */}
