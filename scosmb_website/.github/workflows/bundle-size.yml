@@ -35,9 +35,9 @@ jobs:
           echo "- First Load JS: < 200KB"
           echo "- Each chunk: < 244KB"
           
-          # Calculate current sizes
-          TOTAL_JS=$(find .next/static/chunks -name "*.js" -exec stat -f%z {} \; | awk '{sum+=$1} END {print sum}')
-          TOTAL_CSS=$(find .next/static/css -name "*.css" -exec stat -f%z {} \; 2>/dev/null | awk '{sum+=$1} END {print sum ? sum : 0}')
+          # Calculate current sizes (Linux-compatible stat command)
+          TOTAL_JS=$(find .next/static/chunks -name "*.js" -exec stat -c%s {} \; | awk '{sum+=$1} END {print sum}')
+          TOTAL_CSS=$(find .next/static/css -name "*.css" -exec stat -c%s {} \; 2>/dev/null | awk '{sum+=$1} END {print sum ? sum : 0}')
           
           echo ""
           echo "Current sizes:"
@@ -60,6 +60,6 @@ jobs:
       - name: Bundle analysis summary
         run: |
           echo "## Bundle Analysis Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- Total JS: $(find .next/static/chunks -name "*.js" -exec stat -f%z {} \; | awk '{sum+=$1} END {printf "%.1fKB", sum/1024}')" >> $GITHUB_STEP_SUMMARY
-          echo "- Total CSS: $(find .next/static/css -name "*.css" -exec stat -f%z {} \; 2>/dev/null | awk '{sum+=$1} END {printf "%.1fKB", sum ? sum/1024 : 0}')" >> $GITHUB_STEP_SUMMARY
+          echo "- Total JS: $(find .next/static/chunks -name "*.js" -exec stat -c%s {} \; | awk '{sum+=$1} END {printf "%.1fKB", sum/1024}')" >> $GITHUB_STEP_SUMMARY
+          echo "- Total CSS: $(find .next/static/css -name "*.css" -exec stat -c%s {} \; 2>/dev/null | awk '{sum+=$1} END {printf "%.1fKB", sum ? sum/1024 : 0}')" >> $GITHUB_STEP_SUMMARY
           echo "- Chunk count: $(find .next/static/chunks -name "*.js" | wc -l)" >> $GITHUB_STEP_SUMMARY
