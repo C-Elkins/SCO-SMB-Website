@@ -31,14 +31,26 @@ export default function AMPHomePage() {
                         "description": "Professional document scanning solution for Kyocera & Sharp printers with automatic network discovery, enterprise security, and automatic file organization.",
                         "url": "https://sco-smb.com",
                         "downloadUrl": "https://sco-smb.com/download",
+                        "softwareVersion": "4.0",
+                        "releaseNotes": "Enhanced network discovery, improved security features, and better multi-protocol support",
                         "author": {
                             "@type": "Organization",
-                            "name": "South Coast Office"
+                            "name": "South Coast Office",
+                            "url": "https://sco-smb.com"
                         },
                         "offers": {
                             "@type": "Offer",
                             "price": "0",
-                            "priceCurrency": "USD"
+                            "priceCurrency": "USD",
+                            "availability": "https://schema.org/InStock",
+                            "priceValidUntil": "2025-12-31"
+                        },
+                        "aggregateRating": {
+                            "@type": "AggregateRating",
+                            "ratingValue": "4.8",
+                            "ratingCount": "127",
+                            "bestRating": "5",
+                            "worstRating": "1"
                         }
                     })
                 }} />
