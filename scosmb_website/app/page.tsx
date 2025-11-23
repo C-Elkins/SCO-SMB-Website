@@ -344,7 +344,7 @@ export default function Home() {
             </h2>
 
             <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-12">
-              Download SCO SMB today and experience secure, automated, enterprise-grade scanning infrastructure built for mixed Kyocera & Sharp fleets. Join organizations worldwide who trust our solution.
+              Download SCO SMB by South Coast Office today and experience secure, automated, enterprise-grade scanning infrastructure built for mixed Kyocera & Sharp fleets. Join organizations worldwide who trust our solution.
             </p>
 
             {/* Stats */}

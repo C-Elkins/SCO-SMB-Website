@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   description: "Transform your office productivity with SCO SMB - the leading enterprise document scanning solution for Kyocera & Sharp multifunction printers. Experience seamless scan-to-computer workflows with automatic file organization, bank-grade security, and zero-configuration network discovery. Trusted by businesses worldwide for efficient document management and workflow automation.",
   keywords: [
-    "document scanning", "Kyocera scanner", "Sharp MFP", "FTP server", 
+    "South Coast Office", "SCO SMB", "document scanning", "Kyocera scanner", "Sharp MFP", "FTP server", 
     "SMB scanning", "enterprise scanning", "network scanner", "automatic organization",
     "printer discovery", "secure scanning", "document management", "office automation",
     "scan to folder", "network printer", "document workflow", "enterprise security"
