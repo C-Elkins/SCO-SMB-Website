@@ -11,6 +11,17 @@ export async function POST(request: NextRequest) {
     if (!username || !password) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
     }
+    
+    // Check DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('[Admin Login] DATABASE_URL environment variable is not configured');
+      return NextResponse.json(
+        { error: 'Database configuration error. Please contact support.' },
+        { status: 500 }
+      );
+    }
+    
+    console.log('[Admin Login] Attempting login for username:', username);
     const db = getDb();
     const rows = await db.select().from(admin_users).where(eq(admin_users.username, username));
     const user = rows[0];
@@ -26,7 +37,15 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ success: true, username: user.username });
     return setAdminSession(response, { userId: user.id, username: user.username });
   } catch (error) {
-    console.error('Admin login error:', error);
-    return NextResponse.json({ error: 'An error occurred during login' }, { status: 500 });
+    console.error('[Admin Login] Error:', error);
+    console.error('[Admin Login] Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      DATABASE_URL_exists: !!process.env.DATABASE_URL
+    });
+    return NextResponse.json({ 
+      error: 'An error occurred during login',
+      details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
+    }, { status: 500 });
   }
 }
