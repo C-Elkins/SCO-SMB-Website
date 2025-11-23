@@ -13,6 +13,7 @@
       "memory": 256
     }
   },
+  "regions": ["iad1"],
   "rewrites": [
     {
       "source": "/amp",
