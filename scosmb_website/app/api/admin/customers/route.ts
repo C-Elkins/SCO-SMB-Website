@@ -79,8 +79,8 @@ export async function POST(request: NextRequest) {
     const [newCustomer] = await db
       .insert(customers)
       .values({
-        company,
-        email,
+        company: company,
+        email: email,
         phone: phone || null,
         point_of_contact: point_of_contact || null,
         address: address || null,
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         monthly_rate: monthly_rate || 0,
         num_computers: num_computers || 0,
         num_keys_needed: num_keys_needed || 0,
-      })
+      } as any)
       .returning();
 
     return NextResponse.json({ customer: newCustomer });
@@ -120,19 +120,19 @@ export async function PUT(request: NextRequest) {
     const [updatedCustomer] = await db
       .update(customers)
       .set({
-        company,
-        email,
-        phone,
-        point_of_contact,
-        address,
-        notes,
-        status,
-        total_spent,
-        monthly_rate,
-        num_computers,
-        num_keys_needed,
+        company: company,
+        email: email,
+        phone: phone,
+        point_of_contact: point_of_contact,
+        address: address,
+        notes: notes,
+        status: status,
+        total_spent: total_spent,
+        monthly_rate: monthly_rate,
+        num_computers: num_computers,
+        num_keys_needed: num_keys_needed,
         last_activity: sql`CURRENT_TIMESTAMP`,
-      })
+      } as any)
       .where(eq(customers.id, id))
       .returning();
 

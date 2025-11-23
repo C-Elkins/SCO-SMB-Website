@@ -92,14 +92,14 @@ export async function POST(request: NextRequest) {
           value: settingsJson,
           updated_by: session.username,
           updated_at: new Date()
-        })
+        } as any)
         .where(eq(system_settings.key, 'enterprise_settings'));
     } else {
       await db.insert(system_settings).values({
         key: 'enterprise_settings',
         value: settingsJson,
         updated_by: session.username
-      });
+      } as any);
     }
     
     // Handle portal password update if provided

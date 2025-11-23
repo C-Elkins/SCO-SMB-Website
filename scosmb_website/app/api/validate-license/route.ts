@@ -22,9 +22,9 @@ export async function POST(request: NextRequest) {
       [licenseKey]
     );
     
-    console.log('[License Validation] Database query completed, rows found:', result.rows.length);
+    console.log('[License Validation] Database query completed, rows found:', (result as any).rows.length);
     
-    if (result.rows.length === 0) {
+    if ((result as any).rows.length === 0) {
       return NextResponse.json({ 
         valid: false, 
         error: 'License key not found. Please check the key and try again.' 

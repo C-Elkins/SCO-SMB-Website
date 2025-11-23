@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import getPool from '@/lib/db';
+import { getSql } from '@/lib/db';
 
 
 export async function POST() {
   try {
-    const pool = getPool();
-    const client = await pool.connect();
+    const sql = getSql();
     
     // Create test license keys
     const testKeys = [
@@ -32,16 +31,11 @@ export async function POST() {
     const insertedKeys = [];
     
     for (const testKey of testKeys) {
-      const result = await client.query(
-        `INSERT INTO license_keys (key_code, customer_email, status, expires_at, created_at) 
-         VALUES ($1, $2, $3, $4, NOW()) 
-         RETURNING *`,
-        [testKey.key, testKey.email, testKey.is_active ? 'active' : 'inactive', testKey.expires_at]
-      );
-      insertedKeys.push(result.rows[0]);
+      const result = await sql`INSERT INTO license_keys (key_code, customer_email, status, expires_at, created_at) 
+         VALUES (${testKey.key}, ${testKey.email}, ${testKey.is_active ? 'active' : 'inactive'}, ${testKey.expires_at}, NOW()) 
+         RETURNING *`;
+      insertedKeys.push((result as any[])[0]);
     }
-
-    client.release();
 
     return NextResponse.json({
       success: true,
@@ -60,18 +54,13 @@ export async function POST() {
 
 export async function GET() {
   try {
-    const pool = getPool();
-    const client = await pool.connect();
+    const sql = getSql();
     
-    const result = await client.query(
-      'SELECT * FROM license_keys ORDER BY created_at DESC'
-    );
-
-    client.release();
+    const result = await sql`SELECT * FROM license_keys ORDER BY created_at DESC`;
 
     return NextResponse.json({
       success: true,
-      keys: result.rows
+      keys: result
     });
 
   } catch (error) {

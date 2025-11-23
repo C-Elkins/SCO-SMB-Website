@@ -60,14 +60,14 @@ export async function POST(request: Request) {
     const newUsers = await db
       .insert(tech_users)
       .values({
-        username,
-        email,
-        password_hash,
-        full_name,
+        username: username,
+        email: email,
+        password_hash: password_hash,
+        full_name: full_name,
         company: company || null,
         phone: phone || null,
         role: 'technician',
-      })
+      } as any)
       .returning();
 
     const newUser = newUsers[0];
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
         timestamp: new Date().toISOString(),
       }),
       ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-    });
+    } as any);
 
     return NextResponse.json({
       success: true,

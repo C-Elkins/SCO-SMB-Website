@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getDb } from '@/lib/db';
-import { tech_blog_posts, tech_users, tech_sessions, tech_activity_logs } from '@/lib/schema';
-
-const db = getDb();
-import { eq, and, gt, desc } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 
 // Helper to get authenticated tech user
 async function getAuthenticatedUser() {
@@ -15,19 +11,16 @@ async function getAuthenticatedUser() {
     return null;
   }
 
-  const sessions = await db
-    .select({ user: tech_users })
-    .from(tech_sessions)
-    .innerJoin(tech_users, eq(tech_sessions.user_id, tech_users.id))
-    .where(
-      and(
-        eq(tech_sessions.session_token, sessionToken),
-        gt(tech_sessions.expires_at, new Date())
-      )
-    )
-    .limit(1);
+  const sql = getSql();
+  const sessions = await sql`
+    SELECT u.id, u.username, u.full_name, u.email, u.role, u.avatar_url
+    FROM tech_sessions s
+    INNER JOIN tech_users u ON s.user_id = u.id
+    WHERE s.session_token = ${sessionToken} AND s.expires_at > CURRENT_TIMESTAMP
+    LIMIT 1
+  `;
 
-  return sessions.length > 0 ? sessions[0].user : null;
+  return (sessions as any[]).length > 0 ? (sessions as any[])[0] : null;
 }
 
 // GET - Fetch all blog posts
@@ -38,31 +31,45 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    let query = db
-      .select({
-        post: tech_blog_posts,
-        author: {
-          id: tech_users.id,
-          username: tech_users.username,
-          full_name: tech_users.full_name,
-          avatar_url: tech_users.avatar_url,
-          role: tech_users.role,
-        },
-      })
-      .from(tech_blog_posts)
-      .innerJoin(tech_users, eq(tech_blog_posts.author_id, tech_users.id))
-      .orderBy(desc(tech_blog_posts.is_pinned), desc(tech_blog_posts.created_at))
-      .limit(limit);
+    const sql = getSql();
+    const posts = await sql`
+      SELECT 
+        p.id, p.title, p.content, p.category, p.tags, p.severity, p.status,
+        p.affected_versions, p.related_printers, p.views, p.likes, p.is_pinned,
+        p.is_solution, p.created_at, p.updated_at, p.resolved_at,
+        u.id as author_id, u.username as author_username, u.full_name as author_full_name,
+        u.avatar_url as author_avatar_url, u.role as author_role
+      FROM tech_blog_posts p
+      INNER JOIN tech_users u ON p.author_id = u.id
+      ORDER BY p.is_pinned DESC, p.created_at DESC
+      LIMIT ${limit}
+    `;
 
-    const posts = await query;
-
-    // Parse JSON fields
-    const formattedPosts = posts.map(({ post, author }) => ({
-      ...post,
-      tags: post.tags ? JSON.parse(post.tags) : [],
-      affected_versions: post.affected_versions ? JSON.parse(post.affected_versions) : [],
-      related_printers: post.related_printers ? JSON.parse(post.related_printers) : [],
-      author,
+    // Parse JSON fields and restructure data
+    const formattedPosts = (posts as any[]).map((row) => ({
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      category: row.category,
+      tags: row.tags ? JSON.parse(row.tags) : [],
+      severity: row.severity,
+      status: row.status,
+      affected_versions: row.affected_versions ? JSON.parse(row.affected_versions) : [],
+      related_printers: row.related_printers ? JSON.parse(row.related_printers) : [],
+      views: row.views,
+      likes: row.likes,
+      is_pinned: row.is_pinned,
+      is_solution: row.is_solution,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      resolved_at: row.resolved_at,
+      author: {
+        id: row.author_id,
+        username: row.author_username,
+        full_name: row.author_full_name,
+        avatar_url: row.author_avatar_url,
+        role: row.author_role
+      }
     }));
 
     // Filter by category and status if provided
@@ -116,48 +123,45 @@ export async function POST(request: Request) {
     }
 
     // Create post
-    const newPosts = await db
-      .insert(tech_blog_posts)
-      .values({
-        author_id: user.id,
-        title,
-        content,
-        category,
-        tags: JSON.stringify(tags),
-        severity: severity || null,
-        status,
-        affected_versions: JSON.stringify(affected_versions),
-        related_printers: JSON.stringify(related_printers),
-      })
-      .returning();
+    const sql = getSql();
+    const newPosts = await sql`
+      INSERT INTO tech_blog_posts (
+        author_id, title, content, category, tags, severity, status,
+        affected_versions, related_printers
+      ) VALUES (
+        ${user.id}, ${title}, ${content}, ${category}, ${JSON.stringify(tags)},
+        ${severity || null}, ${status}, ${JSON.stringify(affected_versions)},
+        ${JSON.stringify(related_printers)}
+      )
+      RETURNING *
+    `;
 
     const newPost = newPosts[0];
 
     // Update user post count
-    await db
-      .update(tech_users)
-      .set({ total_posts: (user.total_posts || 0) + 1 })
-      .where(eq(tech_users.id, user.id));
+    await sql`
+      UPDATE tech_users 
+      SET total_posts = COALESCE(total_posts, 0) + 1 
+      WHERE id = ${user.id}
+    `;
 
     // Log activity
-    await db.insert(tech_activity_logs).values({
-      user_id: user.id,
-      action: 'blog_post_created',
-      details: JSON.stringify({
-        post_id: newPost.id,
-        title,
-        category,
-      }),
-      ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-    });
+    await sql`
+      INSERT INTO tech_activity_logs (user_id, action, details, ip_address)
+      VALUES (
+        ${user.id}, ${'blog_post_created'}, 
+        ${JSON.stringify({ post_id: newPost.id, title, category })},
+        ${request.headers.get('x-forwarded-for') || 'unknown'}
+      )
+    `;
 
     return NextResponse.json({
       success: true,
       post: {
         ...newPost,
-        tags: JSON.parse(newPost.tags || '[]'),
-        affected_versions: JSON.parse(newPost.affected_versions || '[]'),
-        related_printers: JSON.parse(newPost.related_printers || '[]'),
+        tags: newPost.tags ? JSON.parse(newPost.tags) : [],
+        affected_versions: newPost.affected_versions ? JSON.parse(newPost.affected_versions) : [],
+        related_printers: newPost.related_printers ? JSON.parse(newPost.related_printers) : [],
       },
     });
   } catch (error) {

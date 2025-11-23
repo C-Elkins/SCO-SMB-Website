@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { tech_users, tech_sessions, tech_activity_logs } from '@/lib/schema';
-
-const db = getDb();
-import { eq } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 
@@ -19,20 +15,22 @@ export async function POST(request: Request) {
     }
 
     // Find user
-    const users = await db
-      .select()
-      .from(tech_users)
-      .where(eq(tech_users.username, username))
-      .limit(1);
+    const sql = getSql();
+    const userResult = await sql`
+      SELECT id, username, email, password_hash, full_name, role, avatar_url, is_active
+      FROM tech_users 
+      WHERE username = ${username}
+      LIMIT 1
+    `;
 
-    if (users.length === 0) {
+    if ((userResult as any[]).length === 0) {
       return NextResponse.json(
         { success: false, error: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
-    const user = users[0];
+    const user = userResult[0];
 
     if (!user.is_active) {
       return NextResponse.json(
@@ -57,27 +55,23 @@ export async function POST(request: Request) {
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
     // Create session
-    await db.insert(tech_sessions).values({
-      user_id: user.id,
-      session_token: sessionToken,
-      ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-      user_agent: request.headers.get('user-agent') || 'unknown',
-      expires_at: expiresAt,
-    });
+    await sql`
+      INSERT INTO tech_sessions (user_id, session_token, ip_address, user_agent, expires_at)
+      VALUES (${user.id}, ${sessionToken}, ${request.headers.get('x-forwarded-for') || 'unknown'}, ${request.headers.get('user-agent') || 'unknown'}, ${expiresAt})
+    `;
 
     // Update last login
-    await db
-      .update(tech_users)
-      .set({ last_login: new Date() })
-      .where(eq(tech_users.id, user.id));
+    await sql`
+      UPDATE tech_users 
+      SET last_login = CURRENT_TIMESTAMP 
+      WHERE id = ${user.id}
+    `;
 
     // Log activity
-    await db.insert(tech_activity_logs).values({
-      user_id: user.id,
-      action: 'tech_login',
-      details: JSON.stringify({ username, timestamp: new Date().toISOString() }),
-      ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-    });
+    await sql`
+      INSERT INTO tech_activity_logs (user_id, action, details, ip_address)
+      VALUES (${user.id}, ${'tech_login'}, ${JSON.stringify({ username, timestamp: new Date().toISOString() })}, ${request.headers.get('x-forwarded-for') || 'unknown'})
+    `;
 
     // Set cookie
     const cookieStore = await cookies();

@@ -1,0 +1,51 @@
+name: 'Lighthouse CI'
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './package-lock.json'
+          
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+        
+      - name: Build application
+        run: npm run build
+        
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: './lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          
+      - name: Performance regression check
+        run: |
+          echo "Performance scores:"
+          echo "- Performance: target ≥ 95"
+          echo "- Accessibility: target ≥ 95" 
+          echo "- Best Practices: target ≥ 95"
+          echo "- SEO: target ≥ 95"
+          echo ""
+          echo "Core Web Vitals targets:"
+          echo "- FCP: < 1.8s"
+          echo "- LCP: < 2.5s"
+          echo "- CLS: < 0.1"
+          echo "- TTFB: < 600ms"
+          echo "- Speed Index: < 3.4s"

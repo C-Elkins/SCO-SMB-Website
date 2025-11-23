@@ -1,11 +1,44 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 30,
+      "memory": 512
+    },
+    "app/**/*.{js,ts,tsx}": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 10,
+      "memory": 256
+    }
+  },
+  "regions": ["iad1", "sfo1", "lhr1"],
+  "rewrites": [
+    {
+      "source": "/amp",
+      "destination": "/amp"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap"
+    },
+    {
+      "source": "/robots.txt", 
+      "destination": "/robots"
+    }
+  ],
   "headers": [
     {
       "source": "/screenshots/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=2592000, s-maxage=31536000"
+          "value": "public, max-age=31536000, s-maxage=31536000, immutable"
+        },
+        {
+          "key": "Vary",
+          "value": "Accept"
         }
       ]
     },
@@ -14,7 +47,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=2592000, s-maxage=31536000"
+          "value": "public, max-age=31536000, s-maxage=31536000, immutable"
         }
       ]
     },
@@ -24,6 +57,23 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
         }
       ]
     },
@@ -32,9 +82,53 @@
       "headers": [
         {
           "key": "Link",
-          "value": "</screenshots/sco-smb-hero-dashboard.png>; rel=preload; as=image; fetchpriority=high"
+          "value": "</screenshots/sco-smb-hero-dashboard.png>; rel=preload; as=image; fetchpriority=high, </_next/static/css/app/layout.css>; rel=preload; as=style, </_next/static/chunks/webpack.js>; rel=modulepreload"
+        },
+        {
+          "key": "Accept-CH",
+          "value": "DPR, Width, Viewport-Width"
+        },
+        {
+          "key": "Critical-CH",
+          "value": "DPR, Width"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=(), clipboard-read=(), clipboard-write=(), gamepad=(), speaker-selection=(), conversion-measurement=(), focus-without-user-activation=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), sync-script=(), trust-token-redemption=(), unload=(), window-placement=(), vertical-scroll=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/index",
+      "destination": "/docs",
+      "permanent": true
     }
   ]
 }

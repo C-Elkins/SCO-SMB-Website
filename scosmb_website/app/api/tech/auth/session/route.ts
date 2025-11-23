@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getDb } from '@/lib/db';
-import { tech_sessions, tech_users } from '@/lib/schema';
-
-const db = getDb();
-import { eq, and, gt } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 
 export async function GET() {
   try {
@@ -15,27 +11,24 @@ export async function GET() {
       return NextResponse.json({ authenticated: false, user: null });
     }
 
-    // Find valid session
-    const sessions = await db
-      .select({
-        session: tech_sessions,
-        user: tech_users,
-      })
-      .from(tech_sessions)
-      .innerJoin(tech_users, eq(tech_sessions.user_id, tech_users.id))
-      .where(
-        and(
-          eq(tech_sessions.session_token, sessionToken),
-          gt(tech_sessions.expires_at, new Date())
-        )
-      )
-      .limit(1);
+    // Find valid session with user data
+    const sql = getSql();
+    const sessionResult = await sql`
+      SELECT 
+        u.id, u.username, u.email, u.full_name, u.company, u.role, 
+        u.avatar_url, u.bio, u.specializations, u.total_posts, 
+        u.total_solutions, u.created_at, u.last_login
+      FROM tech_sessions s
+      INNER JOIN tech_users u ON s.user_id = u.id
+      WHERE s.session_token = ${sessionToken} AND s.expires_at > CURRENT_TIMESTAMP
+      LIMIT 1
+    `;
 
-    if (sessions.length === 0) {
+    if ((sessionResult as any[]).length === 0) {
       return NextResponse.json({ authenticated: false, user: null });
     }
 
-    const { user } = sessions[0];
+    const user = sessionResult[0];
 
     return NextResponse.json({
       authenticated: true,

@@ -23,13 +23,13 @@ export async function POST(req: NextRequest) {
       keys.push(key_code);
       await db.insert(license_keys).values({
         id: randomUUID(),
-        key_code,
+        key_code: key_code,
         status: 'unused',
-        max_downloads,
-        customer_email,
-        customer_name,
-        customer_company,
-      });
+        max_downloads: max_downloads,
+        customer_email: customer_email,
+        customer_name: customer_name,
+        customer_company: customer_company,
+      } as any);
     }
     return new Response(JSON.stringify({ generated: keys.length, keys }), { status: 201 });
   } catch (e: any) {

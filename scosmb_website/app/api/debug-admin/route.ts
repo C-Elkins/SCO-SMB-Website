@@ -1,19 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { admin_users } from '@/lib/schema';
-import bcrypt from 'bcryptjs';
+import { getSql } from '@/lib/db';
 
 export async function GET() {
   try {
-    const db = getDb();
-    const users = await db.select({
-      id: admin_users.id,
-      username: admin_users.username,
-      email: admin_users.email,
-      is_active: admin_users.is_active,
-      created_at: admin_users.created_at,
-      last_login: admin_users.last_login
-    }).from(admin_users);
+    const sql = getSql();
+    const users = await sql`
+      SELECT id, username, email, is_active, created_at, last_login
+      FROM admin_users
+      ORDER BY created_at ASC
+    ` as Array<{id: string, username: string, email: string, is_active: boolean, created_at: string, last_login: string | null}>;
     
     return NextResponse.json({ 
       success: true,
@@ -33,9 +28,10 @@ export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
     
-    const db = getDb();
-    const users = await db.select().from(admin_users);
+    const sql = getSql();
+    const users = await sql`SELECT * FROM admin_users` as Array<{username: string, email: string, is_active: boolean, password_hash: string}>;
     
+    const bcrypt = require('bcryptjs');
     const results = [];
     for (const user of users) {
       const isMatch = await bcrypt.compare(password, user.password_hash);

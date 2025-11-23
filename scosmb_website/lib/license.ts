@@ -239,7 +239,7 @@ export async function getDownloadStats() {
       revokedKeys: 0,
     };
 
-    keysResult.rows.forEach((row: { status: string; count: string }) => {
+    (keysResult as any).rows.forEach((row: { status: string; count: string }) => {
       const count = parseInt(row.count);
       stats.totalKeys += count;
       if (row.status === 'active') stats.activeKeys = count;

@@ -6,8 +6,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "NODE_ENV=production next build",
+    "build:analyze": "ANALYZE=true npm run build",
+    "build:check": "npm run build && npm run lighthouse",
     "start": "next start",
     "lint": "eslint",
+    "lighthouse": "lhci autorun --config=lighthouserc.js",
+    "perf:audit": "node scripts/performance-audit.mjs",
+    "perf:validate": "node scripts/performance-validator.mjs",
     "db:migrate": "tsx scripts/init-db.ts",
     "drizzle:generate": "drizzle-kit generate:pg",
     "drizzle:migrate": "drizzle-kit migrate:pg"
@@ -33,6 +38,7 @@
     "remark-gfm": "^4.0.1",
     "resend": "^6.4.2",
     "swr": "^2.2.5",
+    "three": "^0.181.2",
     "web-vitals": "^5.1.0",
     "ws": "^8.18.3",
     "zod": "^4.1.12"

@@ -1,12 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "../globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "Tech Portal - SCO SMB",
@@ -22,9 +14,5 @@ export default function PortalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className={`${inter.variable} antialiased portal-container`}>
-      {children}
-    </div>
-  );
+  return children;
 }

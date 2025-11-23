@@ -34,7 +34,12 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Claude-Web',
         disallow: '/',
       },
+      {
+        userAgent: 'Bytespider',
+        disallow: '/',
+      },
     ],
-    sitemap: 'https://sco-smb-website.vercel.app/sitemap.xml',
+    sitemap: 'https://sco-smb.com/sitemap.xml',
+    host: 'https://sco-smb.com',
   }
 }

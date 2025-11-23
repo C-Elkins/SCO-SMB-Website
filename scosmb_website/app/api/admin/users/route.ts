@@ -47,12 +47,12 @@ export async function POST(req: NextRequest) {
   // Hash password and create user
   const password_hash = await bcrypt.hash(password, 12);
   await db.insert(admin_users).values({ 
-    username, 
-    password_hash, 
-    email,
-    role,
+    username: username, 
+    password_hash: password_hash, 
+    email: email,
+    role: role,
     is_active: true
-  });
+  } as any);
   
   return NextResponse.json({ success: true, message: 'Admin user created successfully' });
 }

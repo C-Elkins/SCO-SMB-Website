@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (record.expires_at && new Date(record.expires_at) < new Date()) return new Response(JSON.stringify({ error: 'Expired' }), { status: 403 });
 
     const updatedCount = (record.download_count || 0) + 1;
-    await db.update(license_keys).set({ download_count: updatedCount, status: record.status === 'unused' ? 'active' : record.status }).where(eq(license_keys.id, record.id));
+    await db.update(license_keys).set({ download_count: updatedCount, status: record.status === 'unused' ? 'active' : record.status } as any).where(eq(license_keys.id, record.id));
     await db.insert(download_logs).values({
       license_key_id: record.id,
       platform,

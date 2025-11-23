@@ -35,14 +35,14 @@ async function seedDatabase() {
         email: 'admin@scosmb.com',
         role: 'admin',
         is_active: true,
-      },
+      } as any,
       {
         username: 'tech',
         password_hash: techPassword,
         email: 'tech@scosmb.com',
         role: 'admin',
         is_active: true,
-      },
+      } as any,
     ]).returning();
 
     console.log(`Created ${adminUsers.length} admin users`);
@@ -69,7 +69,7 @@ async function seedDatabase() {
         max_downloads: 3,
         download_count: 0,
         notes: 'Trial license key',
-      },
+      } as any,
       {
         key_code: generateKeyCode(),
         status: 'unused',
@@ -77,7 +77,7 @@ async function seedDatabase() {
         max_downloads: 10,
         download_count: 0,
         notes: 'Enterprise license key',
-      },
+      } as any,
       {
         key_code: generateKeyCode(),
         status: 'unused',
@@ -85,7 +85,7 @@ async function seedDatabase() {
         max_downloads: 5,
         download_count: 0,
         notes: 'Professional license key',
-      },
+      } as any,
     ]).returning();
 
     console.log(`Created ${licenseKeys.length} license keys`);
@@ -96,7 +96,7 @@ async function seedDatabase() {
         key: 'app_version',
         value: '1.0.0',
         updated_by: 'system',
-      },
+      } as any,
     ]).returning();
 
     console.log(`Created ${systemSettings.length} system settings`);

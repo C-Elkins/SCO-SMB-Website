@@ -88,16 +88,16 @@ export async function POST(request: Request) {
     const newUser = await db
       .insert(tech_users)
       .values({
-        username,
-        email,
-        password_hash,
-        full_name,
+        username: username,
+        email: email,
+        password_hash: password_hash,
+        full_name: full_name,
         company: company || null,
         phone: phone || null,
         role: role || 'technician',
         specializations: JSON.stringify(specializations || []),
         is_active: is_active !== undefined ? is_active : true,
-      })
+      } as any)
       .returning();
 
     // Parse specializations back to array for response

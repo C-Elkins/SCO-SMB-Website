@@ -136,15 +136,15 @@ export default function TechDashboard({ user }: { user: TechUser }) {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'issue':
-        return 'bg-red-100 text-red-700 border-red-200';
+        return 'bg-red-100 text-red-800 border-red-200';
       case 'fix':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-green-100 text-green-800 border-green-200';
       case 'guide':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'tip':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
+        return 'bg-purple-100 text-purple-800 border-purple-200';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -321,10 +321,10 @@ export default function TechDashboard({ user }: { user: TechUser }) {
             <div className="space-y-2">
               <a href="/portal/blog/new" className="flex items-center justify-between p-3 bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-lg hover:shadow-md transition-all group">
                 <div className="flex items-center gap-3">
-                  <MessageSquare className="w-5 h-5" />
-                  <span className="font-medium">Report Issue</span>
+                  <MessageSquare className="w-5 h-5 text-white" />
+                  <span className="font-medium text-white">Report Issue</span>
                 </div>
-                <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ExternalLink className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <a href="/portal/blog" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
                 <div className="flex items-center gap-3">
@@ -365,22 +365,22 @@ export default function TechDashboard({ user }: { user: TechUser }) {
               <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
                 <BookOpen className="w-5 h-5 text-white" />
                 <div>
-                  <p className="font-medium text-sm !text-white">Installation Guides</p>
-                  <p className="text-xs !text-white/90">Step-by-step setup instructions</p>
+                  <p className="font-medium text-sm text-white">Installation Guides</p>
+                  <p className="text-xs text-white/90">Step-by-step setup instructions</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
                 <AlertTriangle className="w-5 h-5 text-white" />
                 <div>
-                  <p className="font-medium text-sm !text-white">Troubleshooting</p>
-                  <p className="text-xs !text-white/90">Common issues and solutions</p>
+                  <p className="font-medium text-sm text-white">Troubleshooting</p>
+                  <p className="text-xs text-white/90">Common issues and solutions</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
                 <Users className="w-5 h-5 text-white" />
                 <div>
-                  <p className="font-medium text-sm !text-white">Contact Support</p>
-                  <p className="text-xs !text-white/90">Get help from the team</p>
+                  <p className="font-medium text-sm text-white">Contact Support</p>
+                  <p className="text-xs text-white/90">Get help from the team</p>
                 </div>
               </div>
             </div>

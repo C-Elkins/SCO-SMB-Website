@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const { key } = await req.json();
     if (!key) return new Response(JSON.stringify({ error: 'Missing key' }), { status: 400 });
     const db = getDb();
-    await db.update(license_keys).set({ status: 'revoked' }).where(eq(license_keys.key_code, key));
+    await db.update(license_keys).set({ status: 'revoked' } as any).where(eq(license_keys.key_code, key));
     return new Response(JSON.stringify({ revoked: true }), { status: 200 });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500 });

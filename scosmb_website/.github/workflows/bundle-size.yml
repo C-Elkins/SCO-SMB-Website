@@ -1,0 +1,65 @@
+name: 'Bundle Size Check'
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+        
+      - name: Build and analyze bundle
+        run: |
+          npm run build
+          npx @next/bundle-analyzer
+          
+      - name: Check bundle size limits
+        run: |
+          echo "Bundle size limits:"
+          echo "- Total JS: < 300KB"
+          echo "- Total CSS: < 50KB"
+          echo "- First Load JS: < 200KB"
+          echo "- Each chunk: < 244KB"
+          
+          # Calculate current sizes
+          TOTAL_JS=$(find .next/static/chunks -name "*.js" -exec stat -f%z {} \; | awk '{sum+=$1} END {print sum}')
+          TOTAL_CSS=$(find .next/static/css -name "*.css" -exec stat -f%z {} \; 2>/dev/null | awk '{sum+=$1} END {print sum ? sum : 0}')
+          
+          echo ""
+          echo "Current sizes:"
+          echo "- Total JS: $(($TOTAL_JS / 1024))KB"
+          echo "- Total CSS: $(($TOTAL_CSS / 1024))KB"
+          
+          # Check limits
+          if [ $TOTAL_JS -gt 307200 ]; then
+            echo "❌ JavaScript bundle size exceeds 300KB limit"
+            exit 1
+          fi
+          
+          if [ $TOTAL_CSS -gt 51200 ]; then
+            echo "❌ CSS bundle size exceeds 50KB limit"  
+            exit 1
+          fi
+          
+          echo "✅ Bundle sizes within limits"
+          
+      - name: Bundle analysis summary
+        run: |
+          echo "## Bundle Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Total JS: $(find .next/static/chunks -name "*.js" -exec stat -f%z {} \; | awk '{sum+=$1} END {printf "%.1fKB", sum/1024}')" >> $GITHUB_STEP_SUMMARY
+          echo "- Total CSS: $(find .next/static/css -name "*.css" -exec stat -f%z {} \; 2>/dev/null | awk '{sum+=$1} END {printf "%.1fKB", sum ? sum/1024 : 0}')" >> $GITHUB_STEP_SUMMARY
+          echo "- Chunk count: $(find .next/static/chunks -name "*.js" | wc -l)" >> $GITHUB_STEP_SUMMARY

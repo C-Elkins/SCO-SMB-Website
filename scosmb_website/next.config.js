@@ -16,16 +16,41 @@ const nextConfig = {
   
   // Performance optimizations
   experimental: {
-    scrollRestoration: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion', '@vercel/speed-insights', '@hookform/resolvers', 'react-hook-form'],
-    gzipSize: true,
-    memoryBasedWorkersCount: true,
+    optimizePackageImports: ['lucide-react', '@vercel/speed-insights', '@hookform/resolvers', 'react-hook-form'],
     webpackBuildWorker: true,
     optimizeCss: true,
+    serverMinification: true,
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
   },
+  
+  // ISR and caching configuration
+  async generateBuildId() {
+    return `build-${Date.now()}`;
+  },
+  
+  // Static generation and ISR
+  output: 'standalone',
+  poweredByHeader: false,
+  reactStrictMode: true,
   
   // Webpack optimizations for better bundle splitting
   webpack: (config, { isServer }) => {
+    // Bundle analyzer (only for client-side and when ANALYZE=true)
+    if (!isServer && process.env.ANALYZE === 'true') {
+      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          openAnalyzer: false,
+          reportFilename: '../bundle-analyzer.html'
+        })
+      );
+    }
+    
+    // Split chunks optimization (client-side only)
     if (!isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
@@ -42,16 +67,17 @@ const nextConfig = {
             priority: 10,
             reuseExistingChunk: true,
           },
-          framerMotion: {
-            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
-            name: 'framer-motion',
-            chunks: 'all',
-            enforce: true,
-          },
           lucide: {
             test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
             name: 'lucide-react',
             chunks: 'all',
+            enforce: true,
+          },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            priority: 20,
             enforce: true,
           },
         },
@@ -64,6 +90,7 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+
   
   // Turbopack configuration (moved from experimental.turbo)
   turbopack: {
@@ -130,6 +157,14 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable'
+          },
+          {
+            key: 'Vary',
+            value: 'Accept-Encoding, Accept, X-Requested-With'
+          },
+          {
+            key: 'Accept-CH',
+            value: 'DPR, Viewport-Width, Width'
           },
           {
             key: 'Strict-Transport-Security',

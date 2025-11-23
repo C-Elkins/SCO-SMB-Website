@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getDb } from '@/lib/db';
-import { tech_blog_posts, tech_users, tech_sessions, admin_users } from '@/lib/schema';
-
-const db = getDb();
-import { eq, and, gt } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
 // Helper to get authenticated tech user
@@ -14,19 +10,19 @@ async function getAuthenticatedUser() {
 
   if (!sessionToken) return null;
 
-  const sessions = await db
-    .select({ user: tech_users })
-    .from(tech_sessions)
-    .innerJoin(tech_users, eq(tech_sessions.user_id, tech_users.id))
-    .where(
-      and(
-        eq(tech_sessions.session_token, sessionToken),
-        gt(tech_sessions.expires_at, new Date())
-      )
-    )
-    .limit(1);
+  const sql = getSql();
+  const sessions = await sql`
+    SELECT 
+      u.id, u.username, u.email, u.full_name, u.company, u.role, 
+      u.avatar_url, u.bio, u.specializations, u.total_posts, 
+      u.total_solutions, u.created_at, u.last_login
+    FROM tech_sessions s
+    INNER JOIN tech_users u ON s.user_id = u.id
+    WHERE s.session_token = ${sessionToken} AND s.expires_at > CURRENT_TIMESTAMP
+    LIMIT 1
+  `;
 
-  return sessions.length > 0 ? sessions[0].user : null;
+  return (sessions as any[]).length > 0 ? (sessions as any[])[0] : null;
 }
 
 // DELETE - Remove blog post (requires admin password or post owner)
@@ -40,13 +36,12 @@ export async function DELETE(
     const { admin_password } = data;
 
     // Get the post
-    const posts = await db
-      .select()
-      .from(tech_blog_posts)
-      .where(eq(tech_blog_posts.id, id))
-      .limit(1);
+    const sql = getSql();
+    const posts = await sql`
+      SELECT * FROM tech_blog_posts WHERE id = ${id} LIMIT 1
+    `;
 
-    if (posts.length === 0) {
+    if ((posts as any[]).length === 0) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
         { status: 404 }
@@ -58,9 +53,9 @@ export async function DELETE(
     // Check if admin password provided
     if (admin_password) {
       // Verify admin password
-      const admins = await db.select().from(admin_users).limit(1);
+      const admins = await sql`SELECT * FROM admin_users LIMIT 1`;
 
-      if (admins.length === 0) {
+      if ((admins as any[]).length === 0) {
         return NextResponse.json(
           { success: false, error: 'No admin accounts found' },
           { status: 500 }
@@ -80,7 +75,7 @@ export async function DELETE(
       }
 
       // Admin authenticated - delete the post
-      await db.delete(tech_blog_posts).where(eq(tech_blog_posts.id, id));
+      await sql`DELETE FROM tech_blog_posts WHERE id = ${id}`;
 
       return NextResponse.json({
         success: true,
@@ -99,13 +94,14 @@ export async function DELETE(
     }
 
     // Owner can delete their own post
-    await db.delete(tech_blog_posts).where(eq(tech_blog_posts.id, id));
+    await sql`DELETE FROM tech_blog_posts WHERE id = ${id}`;
 
     // Update user post count
-    await db
-      .update(tech_users)
-      .set({ total_posts: Math.max(0, (user.total_posts || 0) - 1) })
-      .where(eq(tech_users.id, user.id));
+    await sql`
+      UPDATE tech_users 
+      SET total_posts = GREATEST(0, COALESCE(total_posts, 0) - 1)
+      WHERE id = ${user.id}
+    `;
 
     return NextResponse.json({
       success: true,
@@ -137,20 +133,19 @@ export async function PATCH(
     }
 
     // Get the post
-    const posts = await db
-      .select()
-      .from(tech_blog_posts)
-      .where(eq(tech_blog_posts.id, id))
-      .limit(1);
+    const sql = getSql();
+    const posts = await sql`
+      SELECT * FROM tech_blog_posts WHERE id = ${id} LIMIT 1
+    `;
 
-    if (posts.length === 0) {
+    if ((posts as any[]).length === 0) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
         { status: 404 }
       );
     }
 
-    const post = posts[0];
+    const post = (posts as any[])[0];
 
     // Check ownership
     if (post.author_id !== user.id) {
@@ -174,15 +169,21 @@ export async function PATCH(
     if (data.related_printers)
       updates.related_printers = JSON.stringify(data.related_printers);
 
-    const updatedPosts = await db
-      .update(tech_blog_posts)
-      .set(updates)
-      .where(eq(tech_blog_posts.id, id))
-      .returning();
+    // Build update query dynamically
+    const updateFields = Object.keys(updates)
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
+    
+    const values = [id, ...Object.values(updates)];
+    
+    const updatedPosts = await sql.query(
+      `UPDATE tech_blog_posts SET ${updateFields} WHERE id = $1 RETURNING *`,
+      values
+    );
 
     return NextResponse.json({
       success: true,
-      post: updatedPosts[0],
+      post: (updatedPosts as any).rows[0],
     });
   } catch (error) {
     console.error('Error updating blog post:', error);

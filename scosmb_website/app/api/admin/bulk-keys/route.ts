@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         await db
           .update(license_keys)
           .set({ 
-            status: 'revoked'
+            [license_keys.status.name]: 'revoked'
           })
           .where(inArray(license_keys.id, ids));
         
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
           await db
             .update(license_keys)
             .set({ 
-              expires_at: currentExpiry
+              [license_keys.expires_at.name]: currentExpiry
             })
             .where(eq(license_keys.id, key.id));
         }

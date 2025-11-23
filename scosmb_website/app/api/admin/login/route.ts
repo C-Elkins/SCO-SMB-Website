@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
     // Update last login
-    await db.update(admin_users).set({ last_login: new Date() }).where(eq(admin_users.id, user.id));
+    await db.update(admin_users).set({ last_login: new Date() } as any).where(eq(admin_users.id, user.id));
     const response = NextResponse.json({ success: true, username: user.username });
     return setAdminSession(response, { userId: user.id, username: user.username });
   } catch (error) {

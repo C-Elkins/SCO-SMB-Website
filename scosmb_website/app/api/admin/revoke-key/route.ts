@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     // Update the key status to revoked
     const result = await db
       .update(license_keys)
-      .set({ status: 'revoked' })
+      .set({ status: 'revoked' } as any)
       .where(eq(license_keys.key_code, key_code));
 
     return NextResponse.json({ 
