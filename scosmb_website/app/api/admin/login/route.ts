@@ -28,14 +28,14 @@ export async function POST(request: NextRequest) {
       FROM admin_users
       WHERE username = ${username}
       LIMIT 1
-    `;
+    ` as any[];
     
     if (userResult.length === 0) {
       console.log('[Admin Login] User not found:', username);
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
     
-    const user = userResult[0];
+    const user = userResult[0] as any;
     
     if (!user.is_active) {
       console.log('[Admin Login] User is inactive:', username);
