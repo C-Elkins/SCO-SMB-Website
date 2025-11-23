@@ -128,13 +128,10 @@ export default function RootLayout({
         {/* DNS Prefetch - Early DNS resolution for external domains */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="dns-prefetch" href="//vercel-insights.com" />
-        <link rel="dns-prefetch" href="//vitals.vercel-insights.com" />
         
         {/* Preconnect - Establish early connections for critical third parties */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://vercel-insights.com" />
         
         {/* Preload - High priority critical assets */}
         <link rel="preload" href="/screenshots/sco-smb-hero-dashboard.png" as="image" fetchPriority="high" />

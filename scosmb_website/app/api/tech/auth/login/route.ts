@@ -14,6 +14,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not configured');
+      return NextResponse.json(
+        { success: false, error: 'Database configuration error. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
     // Find user
     const sql = getSql();
     const userResult = await sql`
