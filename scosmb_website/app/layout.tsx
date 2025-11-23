@@ -83,6 +83,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://sco-smb.com",
   },
+  icons: {
+    icon: [
+      { url: '/logos/sco-smb-logo-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/logos/sco-smb-logo-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logos/sco-smb-icon.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/logos/sco-smb-logo-180.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/logos/sco-smb-logo-32.png',
+  },
 };
 
 export default function RootLayout({

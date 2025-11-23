@@ -12,13 +12,13 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     orientation: 'portrait-primary',
     icons: [
       {
-        src: '/logos/sco-smb-logo-192.png',
+        src: '/logos/sco-smb-icon.png',
         sizes: '192x192',
         type: 'image/png',
-        purpose: 'maskable'
+        purpose: 'any'
       },
       {
-        src: '/logos/sco-smb-logo-512.png',
+        src: '/logos/sco-smb-icon.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable'
