@@ -40,9 +40,10 @@ export async function GET() {
         'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to fetch customers:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -91,9 +92,10 @@ export async function POST(request: NextRequest) {
     ` as any[];
 
     return NextResponse.json({ customer: newCustomer[0] });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to create customer:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

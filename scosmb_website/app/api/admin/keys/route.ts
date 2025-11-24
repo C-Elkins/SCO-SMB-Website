@@ -28,20 +28,23 @@ export async function GET(request: NextRequest) {
     const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'created_at';
     const sortDirection = sortOrder === 'asc' ? 'ASC' : 'DESC';
     
-    // Build query with proper parameterization
-    let keys: any[];
+    // Build ORDER BY clause - sql.unsafe for dynamic identifiers
+    const orderBy = sql.unsafe(`${sortColumn} ${sortDirection}`);
+    
+    // Build query dynamically with sql tagged template
+    let keys: unknown[];
     
     if (search && status !== 'all') {
       // Both search and status filter
       const searchPattern = `%${search}%`;
       keys = await sql`
         SELECT * FROM license_keys
-        WHERE (key_code ILIKE ${searchPattern} OR customer_email ILIKE ${searchPattern} 
+        WHERE (key_code ILIKE ${searchPattern} OR customer_email ILIKE ${searchPattern}
                OR customer_name ILIKE ${searchPattern} OR customer_company ILIKE ${searchPattern})
           AND status = ${status}
-        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        ORDER BY ${orderBy}
         LIMIT ${limit} OFFSET ${offset}
-      ` as any[];
+      ` as unknown[];
     } else if (search) {
       // Only search filter
       const searchPattern = `%${search}%`;
@@ -49,24 +52,24 @@ export async function GET(request: NextRequest) {
         SELECT * FROM license_keys
         WHERE key_code ILIKE ${searchPattern} OR customer_email ILIKE ${searchPattern}
               OR customer_name ILIKE ${searchPattern} OR customer_company ILIKE ${searchPattern}
-        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        ORDER BY ${orderBy}
         LIMIT ${limit} OFFSET ${offset}
-      ` as any[];
+      ` as unknown[];
     } else if (status !== 'all') {
       // Only status filter
       keys = await sql`
         SELECT * FROM license_keys
         WHERE status = ${status}
-        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        ORDER BY ${orderBy}
         LIMIT ${limit} OFFSET ${offset}
-      ` as any[];
+      ` as unknown[];
     } else {
       // No filters
       keys = await sql`
         SELECT * FROM license_keys
-        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        ORDER BY ${orderBy}
         LIMIT ${limit} OFFSET ${offset}
-      ` as any[];
+      ` as unknown[];
     }
 
     return NextResponse.json({ 
@@ -78,9 +81,10 @@ export async function GET(request: NextRequest) {
         'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Keys fetch error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -142,9 +146,10 @@ export async function POST(request: NextRequest) {
       count: keys.length,
       message: `Generated ${keys.length} license key(s) successfully`
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating keys:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -167,8 +172,9 @@ export async function DELETE(request: NextRequest) {
     await sql`DELETE FROM license_keys WHERE id = ${id}`;
 
     return NextResponse.json({ success: true, message: 'License key deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to delete license key:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -30,7 +30,7 @@ Enterprise-grade web platform for SCO-SMB software distribution, licensing, and 
 ### Prerequisites
 
 - Node.js 18+ and npm
-- Neon Postgres database (free tier available at [neon.tech](https://neon.tech))
+- Neon Postgres database (free tier available at [neon. Tech](https://neon.tech))
 - GitHub Personal Access Token (for private repo releases)
 - Vercel account (for deployment)
 
@@ -73,7 +73,7 @@ Enterprise-grade web platform for SCO-SMB software distribution, licensing, and 
 
 ## Database Setup (Neon)
 
-1. Create a Neon project at [neon.tech](https://neon.tech)
+1. Create a Neon project at [neon. Tech](https://neon.tech)
 2. Copy the connection string from your Neon dashboard
 3. Add it to your `.env.local` as `DATABASE_URL`
 4. Run migrations:
@@ -156,16 +156,16 @@ Check Vercel Function Logs for any runtime errors.
 
 Test SEO implementation after deployment:
 
-1. **Rich Results Test**: https://search.google.com/test/rich-results
+1. **Rich Results Test**: <https://search.google.com/test/rich-results>
    - Test homepage for Organization & Software schemas
-   
-2. **Schema Validator**: https://validator.schema.org/
+
+2. **Schema Validator**: <https://validator.schema.org/>
    - Validate JSON-LD from page source
-   
-3. **PageSpeed Insights**: https://pagespeed.web.dev/
+
+3. **PageSpeed Insights**: <https://pagespeed.web.dev/>
    - Verify LCP <2.5s and 90+ scores
-   
-4. **Mobile-Friendly Test**: https://search.google.com/test/mobile-friendly
+
+4. **Mobile-Friendly Test**: <https://search.google.com/test/mobile-friendly>
 
 5. **Google Search Console**:
    - Submit sitemap: `https://sco-smb.com/sitemap.xml`
@@ -208,6 +208,7 @@ scosmb_website/
 ### Implemented Optimizations
 
 ✅ **Structured Data (JSON-LD)**
+
 - Organization schema (company info, contact points)
 - SoftwareApplication schema (product details, ratings)
 - Breadcrumb navigation for documentation
@@ -215,12 +216,14 @@ scosmb_website/
 - Product schema for pricing pages
 
 ✅ **Performance Optimization**
+
 - LCP optimized hero section (lazy-loaded Canvas animation)
 - Strategic resource hints (preload, dns-prefetch, preconnect, prefetch)
 - Optimized sitemap with priority distribution (1.0 → 0.3)
 - Enhanced metadata with comprehensive OpenGraph & Twitter cards
 
 ✅ **Technical SEO**
+
 - Fixed robots.txt sitemap URL (production domain)
 - Optimized meta descriptions (150-160 chars with CTAs)
 - Canonical URLs on all pages
@@ -286,6 +289,7 @@ export default function Page() {
 ### SEO Documentation
 
 Comprehensive guides available in project root:
+
 - `COMPREHENSIVE_SEO_PLAN.md` - Full 70K+ char strategy
 - `SEO_IMPLEMENTATION_COMPLETE.md` - Technical details
 - `SEO_EXECUTIVE_SUMMARY.md` - High-level overview
@@ -304,6 +308,7 @@ Comprehensive guides available in project root:
 ## Performance Metrics
 
 Current performance targets:
+
 - **LCP**: <2.5s (optimized with lazy-loaded Canvas hero)
 - **CLS**: <0.1 (reserved space for all dynamic content)
 - **INP**: <200ms (debounced interactions)
@@ -313,12 +318,14 @@ Current performance targets:
 ## Learn More
 
 ### Documentation
+
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Neon Serverless Postgres](https://neon.tech/docs)
 - [Vercel Deployment](https://vercel.com/docs)
 - [Tailwind CSS v4](https://tailwindcss.com/docs)
 
 ### SEO Resources
+
 - [Google Search Console](https://search.google.com/search-console)
 - [Schema.org Documentation](https://schema.org/)
 - [Core Web Vitals Guide](https://web.dev/vitals/)

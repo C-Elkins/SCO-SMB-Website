@@ -23,63 +23,36 @@ export async function PUT(
     const body = await request.json();
     const { email, password, full_name, company, phone, role, specializations, is_active } = body;
 
-    // Build update clauses dynamically
-    const updates: string[] = [];
-    const values: any[] = [];
-    let paramIndex = 1;
+    // Build update list
+    const updates: { column: string; value: any }[] = [];
 
-    if (email !== undefined) {
-      updates.push(`email = $${paramIndex++}`);
-      values.push(email);
-    }
-    if (full_name !== undefined) {
-      updates.push(`full_name = $${paramIndex++}`);
-      values.push(full_name);
-    }
-    if (company !== undefined) {
-      updates.push(`company = $${paramIndex++}`);
-      values.push(company);
-    }
-    if (phone !== undefined) {
-      updates.push(`phone = $${paramIndex++}`);
-      values.push(phone);
-    }
-    if (role !== undefined) {
-      updates.push(`role = $${paramIndex++}`);
-      values.push(role);
-    }
-    if (specializations !== undefined) {
-      updates.push(`specializations = $${paramIndex++}`);
-      values.push(JSON.stringify(specializations));
-    }
-    if (is_active !== undefined) {
-      updates.push(`is_active = $${paramIndex++}`);
-      values.push(is_active);
-    }
+    if (email !== undefined) updates.push({ column: 'email', value: email });
+    if (full_name !== undefined) updates.push({ column: 'full_name', value: full_name });
+    if (company !== undefined) updates.push({ column: 'company', value: company });
+    if (phone !== undefined) updates.push({ column: 'phone', value: phone });
+    if (role !== undefined) updates.push({ column: 'role', value: role });
+    if (specializations !== undefined) updates.push({ column: 'specializations', value: JSON.stringify(specializations) });
+    if (is_active !== undefined) updates.push({ column: 'is_active', value: is_active });
 
     // If password is provided, hash it
     if (password && password.length >= 8) {
       const password_hash = await bcrypt.hash(password, 10);
-      updates.push(`password_hash = $${paramIndex++}`);
-      values.push(password_hash);
+      updates.push({ column: 'password_hash', value: password_hash });
     }
 
     if (updates.length === 0) {
       return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
     }
 
-    // Add ID to values array
-    values.push(id);
+    // Execute individual updates
+    for (const { column, value } of updates) {
+      await sql`UPDATE tech_users SET ${sql.unsafe(column)} = ${value} WHERE id = ${id}`;
+    }
 
-    // Build and execute query
-    const query = `
-      UPDATE tech_users 
-      SET ${updates.join(', ')}
-      WHERE id = $${paramIndex}
-      RETURNING *
-    `;
-
-    const updatedUser = await sql.unsafe(query, values);
+    // Fetch the updated user
+    const updatedUser = await sql`
+      SELECT * FROM tech_users WHERE id = ${id}
+    ` as unknown[];
 
     if (updatedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -122,7 +95,7 @@ export async function DELETE(
       DELETE FROM tech_users
       WHERE id = ${id}
       RETURNING id
-    `;
+    ` as unknown[];
 
     if (deletedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     const sql = getSql();
     
     // Check if username already exists
-    const existing = await sql`SELECT id FROM admin_users WHERE username = ${username}`;
+    const existing = await sql`SELECT id FROM admin_users WHERE username = ${username}` as unknown[];
     if (existing.length > 0) {
       return NextResponse.json({ error: 'Username already exists' }, { status: 409 });
     }
