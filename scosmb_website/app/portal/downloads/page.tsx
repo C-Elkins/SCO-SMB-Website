@@ -139,9 +139,7 @@ export default function DownloadsPage() {
                   </div>
                 </div>
                 <a
-                  href="https://github.com/C-Elkins/SCO-SMB/releases"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/download"
                   className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-colors flex items-center gap-2"
                 >
                   All Releases
@@ -201,7 +199,7 @@ export default function DownloadsPage() {
 
                     <a
                       href={asset.browser_download_url}
-                      className="w-full px-4 py-3 bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-2 font-medium"
+                      className="w-full px-4 py-3 bg-linear-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-2 font-medium"
                     >
                       <Download className="w-4 h-4" />
                       Download
@@ -239,9 +237,7 @@ export default function DownloadsPage() {
                   Need an older version for compatibility testing or rollback?
                 </p>
                 <a
-                  href="https://github.com/C-Elkins/SCO-SMB/releases"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/download"
                   className="inline-flex items-center gap-2 text-[#00A8B5] hover:underline font-medium"
                 >
                   View All Releases

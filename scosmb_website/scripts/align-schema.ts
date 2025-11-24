@@ -40,7 +40,9 @@ async function align() {
       { name: 'activated_at', sql: 'TIMESTAMP NULL' },
       { name: 'notes', sql: 'TEXT' },
       { name: 'customer_name', sql: 'VARCHAR(255)' },
-      { name: 'customer_company', sql: 'VARCHAR(255)' }
+      { name: 'customer_company', sql: 'VARCHAR(255)' },
+      { name: 'last_used', sql: 'TIMESTAMP NULL' },
+      { name: 'updated_at', sql: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' }
     ];
     
     for (const col of requiredCols) {
@@ -74,6 +76,9 @@ async function align() {
     // Add missing columns
     if (!dlColNames.includes('version')) {
       await pool.query(`ALTER TABLE download_logs ADD COLUMN version VARCHAR(50);`);
+    }
+    if (!dlColNames.includes('asset_name')) {
+      await pool.query(`ALTER TABLE download_logs ADD COLUMN asset_name VARCHAR(255);`);
     }
     if (!dlColNames.includes('ip_address')) {
       await pool.query(`ALTER TABLE download_logs ADD COLUMN ip_address VARCHAR(45);`);

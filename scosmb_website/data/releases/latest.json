@@ -1,0 +1,26 @@
+{
+  "tag_name": "v1.1.1",
+  "name": "SCO SMB v1.1.1",
+  "published_at": "2025-11-15T00:00:00.000Z",
+  "body": "### Highlights\n- Native Apple Silicon build\n- Updated Windows installer\n- Critical bug fixes and telemetry hardening\n\n### Notes\nReplace the placeholder installers under `public/downloads` with the production builds before deploying.",
+  "assets": [
+    {
+      "name": "SCO-SMB-mac-arm64.pkg",
+      "file": "SCO-SMB-mac-arm64.pkg",
+      "checksum": "placeholder-sha256-arm64",
+      "download_count": 0
+    },
+    {
+      "name": "SCO-SMB-mac-x64.pkg",
+      "file": "SCO-SMB-mac-x64.pkg",
+      "checksum": "placeholder-sha256-x64",
+      "download_count": 0
+    },
+    {
+      "name": "SCO-SMB-win-x64.exe",
+      "file": "SCO-SMB-win-x64.exe",
+      "checksum": "placeholder-sha256-win",
+      "download_count": 0
+    }
+  ]
+}
