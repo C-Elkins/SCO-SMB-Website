@@ -261,10 +261,10 @@ export default function TechDashboard({ user }: { user: TechUser }) {
             className="bg-white rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-xl transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-amber-600" />
               </div>
-              <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded-full">
+              <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
                 Active
               </span>
             </div>
@@ -305,92 +305,84 @@ export default function TechDashboard({ user }: { user: TechUser }) {
           </motion.div>
         </div>
 
-        {/* Quick Access Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Common Tasks */}
-          <motion.div
+        {/* Quick Actions Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <motion.a
+            href="/portal/blog/new"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-lg"
+            className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-xl hover:shadow-lg transition-all group"
           >
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Wrench className="w-5 h-5 text-[#00A8B5]" />
-              Common Tasks
-            </h3>
-            <div className="space-y-2">
-              <a href="/portal/blog/new" className="flex items-center justify-between p-3 bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-lg hover:shadow-md transition-all group">
-                <div className="flex items-center gap-3">
-                  <MessageSquare className="w-5 h-5 text-white" />
-                  <span className="font-medium text-white">Report Issue</span>
-                </div>
-                <ExternalLink className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a href="/portal/blog" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
-                <div className="flex items-center gap-3">
-                  <BookOpen className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">Search Knowledge Base</span>
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a href="/portal/downloads" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
-                <div className="flex items-center gap-3">
-                  <Download className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">Download Software</span>
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a href="/docs" className="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">View Documentation</span>
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <MessageSquare className="w-6 h-6 text-white" />
             </div>
-          </motion.div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-white truncate">Report Issue</p>
+              <p className="text-xs text-white/80">Create new post</p>
+            </div>
+            <ExternalLink className="w-4 h-4 text-white/60 group-hover:text-white transition-colors flex-shrink-0" />
+          </motion.a>
 
-          {/* Quick Links */}
-          <motion.div
+          <motion.a
+            href="/portal/blog"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl p-6 text-white shadow-lg"
+            className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-lg hover:border-[#00A8B5] transition-all group"
           >
-            <h3 className="font-bold mb-4 flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Quick Resources
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
-                <BookOpen className="w-5 h-5 text-white" />
-                <div>
-                  <p className="font-medium text-sm text-white">Installation Guides</p>
-                  <p className="text-xs text-white/90">Step-by-step setup instructions</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
-                <AlertTriangle className="w-5 h-5 text-white" />
-                <div>
-                  <p className="font-medium text-sm text-white">Troubleshooting</p>
-                  <p className="text-xs text-white/90">Common issues and solutions</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors cursor-pointer">
-                <Users className="w-5 h-5 text-white" />
-                <div>
-                  <p className="font-medium text-sm text-white">Contact Support</p>
-                  <p className="text-xs text-white/90">Get help from the team</p>
-                </div>
-              </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-6 h-6 text-blue-600" />
             </div>
-          </motion.div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 truncate">Knowledge Base</p>
+              <p className="text-xs text-gray-600">Browse articles</p>
+            </div>
+            <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          </motion.a>
 
+          <motion.a
+            href="/portal/downloads"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-lg hover:border-[#00A8B5] transition-all group"
+          >
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Download className="w-6 h-6 text-green-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 truncate">Downloads</p>
+              <p className="text-xs text-gray-600">Get software</p>
+            </div>
+            <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          </motion.a>
+
+          <motion.a
+            href="/docs"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-lg hover:border-[#00A8B5] transition-all group"
+          >
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FileText className="w-6 h-6 text-purple-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 truncate">Documentation</p>
+              <p className="text-xs text-gray-600">View guides</p>
+            </div>
+            <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          </motion.a>
+        </div>
+
+        {/* System Status & Resources */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* System Status */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.9 }}
             className="bg-white rounded-2xl p-6 border border-gray-100 shadow-lg"
           >
             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -423,17 +415,59 @@ export default function TechDashboard({ user }: { user: TechUser }) {
                 </div>
               </div>
               <div className="pt-3 border-t border-gray-200">
-                <div className="text-xs text-gray-600">
-                  <p className="flex justify-between py-1">
+                <div className="text-xs text-gray-600 space-y-1">
+                  <p className="flex justify-between">
                     <span>Last Update:</span>
                     <span className="font-medium">{new Date().toLocaleTimeString()}</span>
                   </p>
-                  <p className="flex justify-between py-1">
+                  <p className="flex justify-between">
                     <span>Uptime:</span>
                     <span className="font-medium text-green-600">99.9%</span>
                   </p>
                 </div>
               </div>
+            </div>
+          </motion.div>
+
+          {/* Quick Resources */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0 }}
+            className="bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-2xl p-6 text-white shadow-lg"
+          >
+            <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-white" />
+              Quick Resources
+            </h3>
+            <div className="space-y-3">
+              <a href="/docs" className="block p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-5 h-5 text-white flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm text-white truncate">Installation Guides</p>
+                    <p className="text-xs text-white/90">Step-by-step setup instructions</p>
+                  </div>
+                </div>
+              </a>
+              <a href="/portal/blog?category=issue" className="block p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="w-5 h-5 text-white flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm text-white truncate">Troubleshooting</p>
+                    <p className="text-xs text-white/90">Common issues and solutions</p>
+                  </div>
+                </div>
+              </a>
+              <a href="/contact" className="block p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors">
+                <div className="flex items-center gap-3">
+                  <Users className="w-5 h-5 text-white flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm text-white truncate">Contact Support</p>
+                    <p className="text-xs text-white/90">Get help from the team</p>
+                  </div>
+                </div>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -542,47 +576,32 @@ export default function TechDashboard({ user }: { user: TechUser }) {
               </div>
             </div>
 
-            {/* Quick Actions */}
+            {/* Support Links */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-lg p-6">
               <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Wrench className="w-5 h-5 text-[#00A8B5]" />
-                Quick Actions
+                Need Help?
               </h3>
-              <div className="space-y-2">
-                <a
-                  href="/portal/blog/new"
-                  className="flex items-center gap-3 p-3 bg-gradient-to-r from-[#153B6B] to-[#00A8B5] text-white rounded-lg hover:shadow-md transition-shadow"
-                >
-                  <MessageSquare className="w-5 h-5" />
-                  <span className="font-medium">New Post</span>
-                </a>
-                <a
-                  href="/portal/blog"
-                  className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <BookOpen className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">Knowledge Base</span>
-                </a>
-                <a
-                  href="/portal/downloads"
-                  className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <Download className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">Downloads</span>
-                </a>
+              <div className="space-y-3">
                 <a
                   href="/portal/errors"
-                  className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center gap-3 p-3 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors border border-amber-200"
                 >
-                  <AlertTriangle className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">Error Logs</span>
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">Error Logs</p>
+                    <p className="text-xs text-gray-600">View system errors</p>
+                  </div>
                 </a>
                 <a
-                  href="/docs"
-                  className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  href="/contact"
+                  className="flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors border border-blue-200"
                 >
-                  <FileText className="w-5 h-5 text-gray-700" />
-                  <span className="font-medium text-gray-900">Documentation</span>
+                  <Users className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">Contact Support</p>
+                    <p className="text-xs text-gray-600">Get help from our team</p>
+                  </div>
                 </a>
               </div>
             </div>
