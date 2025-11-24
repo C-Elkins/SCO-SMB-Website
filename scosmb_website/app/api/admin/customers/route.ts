@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     // Check if customer with email already exists
     const existing = await sql`
       SELECT id FROM customers WHERE email = ${email}
-    `;
+    ` as any[];
 
     if (existing.length > 0) {
       return NextResponse.json(
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         ${address || null}, ${notes || null}, ${status || 'active'},
         0, ${monthly_rate || 0}, ${num_computers || 0}, ${num_keys_needed || 0}
       ) RETURNING *
-    `;
+    ` as any[];
 
     return NextResponse.json({ customer: newCustomer[0] });
   } catch (error: any) {
@@ -130,7 +130,7 @@ export async function PUT(request: NextRequest) {
         last_activity = CURRENT_TIMESTAMP
       WHERE id = ${id}
       RETURNING *
-    `;
+    ` as any[];
 
     return NextResponse.json({ customer: updatedCustomer[0] });
   } catch (error: any) {
