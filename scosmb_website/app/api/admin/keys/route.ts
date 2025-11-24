@@ -23,37 +23,51 @@ export async function GET(request: NextRequest) {
 
     const sql = getSql();
     
-    // Build WHERE clause dynamically
-    let whereClause = 'WHERE 1=1';
-    const params: any[] = [];
-    
-    // Search filter
-    if (search) {
-      whereClause += ` AND (key_code ILIKE $${params.length + 1} OR customer_email ILIKE $${params.length + 1} OR customer_name ILIKE $${params.length + 1} OR customer_company ILIKE $${params.length + 1})`;
-      params.push(`%${search}%`);
-    }
-
-    // Status filter
-    if (status !== 'all') {
-      whereClause += ` AND status = $${params.length + 1}`;
-      params.push(status);
-    }
-
-    // Validate and build ORDER BY clause
+    // Validate sort column and direction for SQL injection prevention
     const validSortColumns = ['key_code', 'status', 'customer_name', 'customer_email', 'expires_at', 'created_at'];
     const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'created_at';
     const sortDirection = sortOrder === 'asc' ? 'ASC' : 'DESC';
     
-    // Build the query
-    const query = `
-      SELECT * FROM license_keys
-      ${whereClause}
-      ORDER BY ${sortColumn} ${sortDirection}
-      LIMIT $${params.length + 1} OFFSET $${params.length + 2}
-    `;
-    params.push(limit, offset);
-
-    const keys = await sql.unsafe(query, params);
+    // Build query with proper parameterization
+    let keys: any[];
+    
+    if (search && status !== 'all') {
+      // Both search and status filter
+      const searchPattern = `%${search}%`;
+      keys = await sql`
+        SELECT * FROM license_keys
+        WHERE (key_code ILIKE ${searchPattern} OR customer_email ILIKE ${searchPattern} 
+               OR customer_name ILIKE ${searchPattern} OR customer_company ILIKE ${searchPattern})
+          AND status = ${status}
+        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        LIMIT ${limit} OFFSET ${offset}
+      ` as any[];
+    } else if (search) {
+      // Only search filter
+      const searchPattern = `%${search}%`;
+      keys = await sql`
+        SELECT * FROM license_keys
+        WHERE key_code ILIKE ${searchPattern} OR customer_email ILIKE ${searchPattern}
+              OR customer_name ILIKE ${searchPattern} OR customer_company ILIKE ${searchPattern}
+        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        LIMIT ${limit} OFFSET ${offset}
+      ` as any[];
+    } else if (status !== 'all') {
+      // Only status filter
+      keys = await sql`
+        SELECT * FROM license_keys
+        WHERE status = ${status}
+        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        LIMIT ${limit} OFFSET ${offset}
+      ` as any[];
+    } else {
+      // No filters
+      keys = await sql`
+        SELECT * FROM license_keys
+        ORDER BY ${sql(sortColumn)} ${sql.unsafe(sortDirection)}
+        LIMIT ${limit} OFFSET ${offset}
+      ` as any[];
+    }
 
     return NextResponse.json({ 
       keys,
