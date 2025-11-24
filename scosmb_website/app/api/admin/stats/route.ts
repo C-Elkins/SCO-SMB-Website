@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { license_keys, admin_users } from '@/lib/schema';
-import { eq, count, sum, gte } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   // Check admin authentication
@@ -21,14 +18,15 @@ export async function GET(request: Request) {
       }
     );
   }
+  
   try {
-    const db = getDb();
+    const sql = getSql();
     
     // Get current date for monthly stats
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // Fetch all stats in parallel
+    // Query all stats from Neon database using raw SQL
     const [
       totalKeysResult,
       activeKeysResult,
@@ -38,31 +36,22 @@ export async function GET(request: Request) {
       activeAdminsResult
     ] = await Promise.all([
       // Total keys
-      db.select({ count: count() }).from(license_keys),
+      sql`SELECT COUNT(*)::int as count FROM license_keys`,
       
-      // Active keys (unused or active status)
-      db.select({ count: count() })
-        .from(license_keys)
-        .where(eq(license_keys.status, 'active')),
+      // Active keys
+      sql`SELECT COUNT(*)::int as count FROM license_keys WHERE status = 'active'`,
       
       // Revoked keys
-      db.select({ count: count() })
-        .from(license_keys)
-        .where(eq(license_keys.status, 'revoked')),
+      sql`SELECT COUNT(*)::int as count FROM license_keys WHERE status = 'revoked'`,
       
       // Total downloads (sum of all download_count)
-      db.select({ total: sum(license_keys.download_count) }).from(license_keys),
+      sql`SELECT COALESCE(SUM(download_count), 0)::int as total FROM license_keys`,
       
-      // Monthly downloads (this would need download_logs table for accurate monthly data)
-      // For now, we'll use a simple approximation
-      db.select({ count: count() })
-        .from(license_keys)
-        .where(gte(license_keys.created_at, startOfMonth)),
+      // Monthly downloads from download_logs table
+      sql`SELECT COUNT(*)::int as count FROM download_logs WHERE download_date >= ${startOfMonth}`,
       
       // Active admin users
-      db.select({ count: count() })
-        .from(admin_users)
-        .where(eq(admin_users.is_active, true))
+      sql`SELECT COUNT(*)::int as count FROM admin_users WHERE is_active = true`
     ]);
 
     const stats = {

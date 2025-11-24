@@ -14,13 +14,14 @@ function getContentType(fileName: string) {
   return 'application/octet-stream';
 }
 
-export async function GET(request: NextRequest, { params }: { params: { filename: string } }) {
-  const safeName = path.basename(params.filename);
+export async function GET(request: NextRequest, { params }: { params: Promise<{ filename: string }> }) {
+  const { filename } = await params;
+  const safeName = path.basename(filename);
   const filePath = path.join(downloadsDir, safeName);
 
   try {
     const data = await fs.readFile(filePath);
-    const ip = request.headers.get('x-forwarded-for') || request.ip || 'unknown';
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
     // Log technician downloads without tying them to a license
