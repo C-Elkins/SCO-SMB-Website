@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { fetchLatestRelease } from '@/lib/github';
+import { fetchLatestRelease, type GitHubRelease } from '@/lib/github';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    console.log('Fetching latest release from GitHub API...');
+    // Fetch release directly from GitHub API
     const githubRelease = await fetchLatestRelease();
-
+    
     if (!githubRelease) {
       console.error('Failed to fetch release from GitHub API');
       return NextResponse.json({
@@ -15,18 +15,17 @@ export async function GET() {
         name: 'Release unavailable',
         published_at: new Date().toISOString(),
         body: 'Could not fetch the latest release from GitHub. Please check your GITHUB_TOKEN environment variable.',
-        assets: [],
+        assets: []
       }, { status: 500 });
     }
 
-    console.log('Successfully fetched release:', githubRelease.tag_name);
-
+    // Transform GitHub release format to match expected frontend format
     const transformedAssets = githubRelease.assets.map(asset => ({
       name: asset.name,
       browser_download_url: asset.browser_download_url,
       size: asset.size,
       download_count: asset.download_count,
-      file: asset.name,
+      file: asset.name
     }));
 
     const response = {
@@ -34,14 +33,12 @@ export async function GET() {
       name: githubRelease.name,
       published_at: githubRelease.published_at,
       body: githubRelease.body,
-      assets: transformedAssets,
+      assets: transformedAssets
     };
 
     return NextResponse.json(response, {
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-        'Pragma': 'no-cache',
-        'Expires': '0'
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
       }
     });
   } catch (error) {
@@ -51,7 +48,7 @@ export async function GET() {
       name: 'Release unavailable',
       published_at: new Date().toISOString(),
       body: 'An error occurred while fetching the latest release.',
-      assets: [],
+      assets: []
     }, { status: 500 });
   }
 }
