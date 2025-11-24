@@ -14,8 +14,13 @@ function getContentType(fileName: string) {
   return 'application/octet-stream';
 }
 
-export async function GET(request: NextRequest, { params }: { params: { filename: string } }) {
-  const safeName = path.basename(params.filename);
+export async function GET(
+  request: NextRequest, 
+  { params }: { params: Promise<{ filename: string }> }
+) {
+  // Await the params Promise
+  const { filename } = await params;
+  const safeName = path.basename(filename);
   const filePath = path.join(downloadsDir, safeName);
 
   try {
