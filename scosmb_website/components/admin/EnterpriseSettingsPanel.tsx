@@ -818,7 +818,11 @@ export function EnterpriseSettingsPanel() {
           </div>
           <div className="flex gap-3">
             <button 
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                // Reset settings to original values WITHOUT reloading page
+                fetchSettings();
+                fetchSystemInfo();
+              }}
               className="flex items-center gap-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <RotateCcw className="w-4 h-4" />

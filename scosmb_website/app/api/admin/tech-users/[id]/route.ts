@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { tech_users } from '@/lib/schema';
-import { eq } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { getAdminSession } from '@/lib/auth';
+
+export const revalidate = 0;
 
 // PUT - Update tech user
 export async function PUT(
@@ -17,34 +17,69 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const db = getDb();
+    const sql = getSql();
 
     const { id } = await params;
     const body = await request.json();
-    const { username, email, password, full_name, company, phone, role, specializations, is_active } = body;
+    const { email, password, full_name, company, phone, role, specializations, is_active } = body;
 
-    // Build update object
-    const updateData: Record<string, unknown> = {};
+    // Build update clauses dynamically
+    const updates: string[] = [];
+    const values: any[] = [];
+    let paramIndex = 1;
 
-    if (email !== undefined) updateData.email = email;
-    if (full_name !== undefined) updateData.full_name = full_name;
-    if (company !== undefined) updateData.company = company;
-    if (phone !== undefined) updateData.phone = phone;
-    if (role !== undefined) updateData.role = role;
-    if (specializations !== undefined) updateData.specializations = JSON.stringify(specializations);
-    if (is_active !== undefined) updateData.is_active = is_active;
+    if (email !== undefined) {
+      updates.push(`email = $${paramIndex++}`);
+      values.push(email);
+    }
+    if (full_name !== undefined) {
+      updates.push(`full_name = $${paramIndex++}`);
+      values.push(full_name);
+    }
+    if (company !== undefined) {
+      updates.push(`company = $${paramIndex++}`);
+      values.push(company);
+    }
+    if (phone !== undefined) {
+      updates.push(`phone = $${paramIndex++}`);
+      values.push(phone);
+    }
+    if (role !== undefined) {
+      updates.push(`role = $${paramIndex++}`);
+      values.push(role);
+    }
+    if (specializations !== undefined) {
+      updates.push(`specializations = $${paramIndex++}`);
+      values.push(JSON.stringify(specializations));
+    }
+    if (is_active !== undefined) {
+      updates.push(`is_active = $${paramIndex++}`);
+      values.push(is_active);
+    }
 
     // If password is provided, hash it
     if (password && password.length >= 8) {
-      updateData.password_hash = await bcrypt.hash(password, 10);
+      const password_hash = await bcrypt.hash(password, 10);
+      updates.push(`password_hash = $${paramIndex++}`);
+      values.push(password_hash);
     }
 
-    // Update user
-    const updatedUser = await db
-      .update(tech_users)
-      .set(updateData)
-      .where(eq(tech_users.id, id))
-      .returning();
+    if (updates.length === 0) {
+      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
+    }
+
+    // Add ID to values array
+    values.push(id);
+
+    // Build and execute query
+    const query = `
+      UPDATE tech_users 
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING *
+    `;
+
+    const updatedUser = await sql.unsafe(query, values);
 
     if (updatedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -53,7 +88,7 @@ export async function PUT(
     // Parse specializations back to array for response
     const userResponse = {
       ...updatedUser[0],
-      specializations: updatedUser[0].specializations ? JSON.parse(updatedUser[0].specializations as string) : []
+      specializations: updatedUser[0].specializations ? JSON.parse(updatedUser[0].specializations) : []
     };
 
     return NextResponse.json({ 
@@ -78,15 +113,16 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const db = getDb();
+    const sql = getSql();
 
     const { id } = await params;
 
-    // Delete user (cascade will handle related data)
-    const deletedUser = await db
-      .delete(tech_users)
-      .where(eq(tech_users.id, id))
-      .returning();
+    // Delete user (cascade will handle related sessions/data)
+    const deletedUser = await sql`
+      DELETE FROM tech_users
+      WHERE id = ${id}
+      RETURNING id
+    `;
 
     if (deletedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

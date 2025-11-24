@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { license_keys } from '@/lib/schema';
+import { getSql } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
-import { desc, asc, like, eq, or, and } from 'drizzle-orm';
 
-export const runtime = 'nodejs';
+export const revalidate = 0;
 
 // GET all license keys with filtering and sorting
 export async function GET(request: NextRequest) {
@@ -23,65 +21,48 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const db = getDb();
+    const sql = getSql();
     
-    // Build where conditions
-    let whereConditions = [];
-
+    // Build WHERE clause dynamically
+    let whereClause = 'WHERE 1=1';
+    const params: any[] = [];
+    
     // Search filter
     if (search) {
-      whereConditions.push(
-        or(
-          like(license_keys.key_code, `%${search}%`),
-          like(license_keys.customer_email, `%${search}%`),
-          like(license_keys.customer_name, `%${search}%`),
-          like(license_keys.customer_company, `%${search}%`)
-        )
-      );
+      whereClause += ` AND (key_code ILIKE $${params.length + 1} OR customer_email ILIKE $${params.length + 1} OR customer_name ILIKE $${params.length + 1} OR customer_company ILIKE $${params.length + 1})`;
+      params.push(`%${search}%`);
     }
 
     // Status filter
     if (status !== 'all') {
-      whereConditions.push(eq(license_keys.status, status));
+      whereClause += ` AND status = $${params.length + 1}`;
+      params.push(status);
     }
 
-    // Build sorting - explicitly handle sort fields
-    const orderByFn = sortOrder === 'desc' ? desc : asc;
-    let orderByField;
+    // Validate and build ORDER BY clause
+    const validSortColumns = ['key_code', 'status', 'customer_name', 'customer_email', 'expires_at', 'created_at'];
+    const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'created_at';
+    const sortDirection = sortOrder === 'asc' ? 'ASC' : 'DESC';
     
-    switch (sortBy) {
-      case 'key_code':
-        orderByField = orderByFn(license_keys.key_code);
-        break;
-      case 'status':
-        orderByField = orderByFn(license_keys.status);
-        break;
-      case 'customer_name':
-        orderByField = orderByFn(license_keys.customer_name);
-        break;
-      case 'customer_email':
-        orderByField = orderByFn(license_keys.customer_email);
-        break;
-      case 'expires_at':
-        orderByField = orderByFn(license_keys.expires_at);
-        break;
-      default:
-        orderByField = orderByFn(license_keys.created_at);
-    }
+    // Build the query
+    const query = `
+      SELECT * FROM license_keys
+      ${whereClause}
+      ORDER BY ${sortColumn} ${sortDirection}
+      LIMIT $${params.length + 1} OFFSET $${params.length + 2}
+    `;
+    params.push(limit, offset);
 
-    // Execute query with all conditions
-    const keys = await db
-      .select()
-      .from(license_keys)
-      .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-      .orderBy(orderByField)
-      .limit(limit)
-      .offset(offset);
+    const keys = await sql.unsafe(query, params);
 
     return NextResponse.json({ 
       keys,
       total: keys.length,
       hasMore: keys.length === limit 
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+      }
     });
   } catch (error: any) {
     console.error('Keys fetch error:', error);
@@ -108,7 +89,7 @@ export async function POST(request: NextRequest) {
       notes 
     } = body;
 
-    const db = getDb();
+    const sql = getSql();
     const keys = [];
 
     // Generate random key codes in format SCO-XXXX-XXXX-XXXX
@@ -127,20 +108,18 @@ export async function POST(request: NextRequest) {
     for (let i = 0; i < Math.min(count, 100); i++) {
       const key_code = generateKeyCode();
       
-      const keyData = {
-        key_code,
-        status: 'unused',
-        max_downloads,
-        customer_name,
-        customer_email,
-        customer_company,
-        notes,
-        created_by: session.username,
-        expires_at: expires_at ? new Date(expires_at) : null
-      };
-
-      await db.insert(license_keys).values(keyData);
-      keys.push({ ...keyData, id: key_code }); // Mock ID for response
+      const result = await sql`
+        INSERT INTO license_keys (
+          key_code, status, max_downloads, customer_name, customer_email, 
+          customer_company, notes, created_by, expires_at
+        ) VALUES (
+          ${key_code}, 'unused', ${max_downloads}, ${customer_name || null}, 
+          ${customer_email || null}, ${customer_company || null}, ${notes || null}, 
+          ${session.username}, ${expires_at ? new Date(expires_at) : null}
+        ) RETURNING *
+      `;
+      
+      keys.push(result[0]);
     }
 
     return NextResponse.json({ 
@@ -170,8 +149,8 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'License key ID is required' }, { status: 400 });
     }
 
-    const db = getDb();
-    await db.delete(license_keys).where(eq(license_keys.id, id));
+    const sql = getSql();
+    await sql`DELETE FROM license_keys WHERE id = ${id}`;
 
     return NextResponse.json({ success: true, message: 'License key deleted successfully' });
   } catch (error: any) {

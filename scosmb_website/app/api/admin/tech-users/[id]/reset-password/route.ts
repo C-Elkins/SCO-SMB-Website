@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { tech_users } from '@/lib/schema';
-import { eq } from 'drizzle-orm';
+import { getSql } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { getAdminSession } from '@/lib/auth';
+
+export const revalidate = 0;
 
 // POST - Reset tech user password
 export async function POST(
@@ -17,7 +17,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const db = getDb();
+    const sql = getSql();
 
     const { id } = await params;
     const body = await request.json();
@@ -31,22 +31,27 @@ export async function POST(
     // Hash new password
     const password_hash = await bcrypt.hash(password, 10);
 
-    // Update password
-    const updatedUser = await db
-      .update(tech_users)
-      .set({ 
-        password_hash
-      })
-      .where(eq(tech_users.id, id))
-      .returning();
+    // Update ONLY tech_users password - DO NOT touch admin_sessions or cookies
+    const updatedUser = await sql`
+      UPDATE tech_users 
+      SET password_hash = ${password_hash}
+      WHERE id = ${id}
+      RETURNING id, username, email
+    `;
 
     if (updatedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    // Invalidate all tech_sessions for this tech user (force them to re-login)
+    await sql`
+      DELETE FROM tech_sessions 
+      WHERE user_id = ${id}
+    `;
+
     return NextResponse.json({ 
       success: true,
-      message: 'Password reset successfully'
+      message: 'Password reset successfully. User must re-login.'
     });
   } catch (error) {
     console.error('Error resetting password:', error);

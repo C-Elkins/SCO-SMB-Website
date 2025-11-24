@@ -35,13 +35,39 @@ export default function PortalPage() {
 
   useEffect(() => {
     checkSession();
+    
+    // Clear session when user navigates away from portal
+    const handleBeforeUnload = () => {
+      // Only clear if navigating to non-portal pages
+      const currentPath = window.location.pathname;
+      if (!currentPath.startsWith('/portal')) {
+        // Session will be validated on next portal visit
+        fetch('/api/tech/auth/logout', { 
+          method: 'POST',
+          credentials: 'include',
+          keepalive: true // Ensure request completes even if page is closing
+        }).catch(() => {}); // Ignore errors on page unload
+      }
+    };
+
+    // Listen for navigation away from portal
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   const checkSession = async () => {
     try {
       const response = await fetch('/api/tech/auth/session', {
         credentials: 'include',
-        cache: 'no-cache'
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       });
       const data = await response.json();
       

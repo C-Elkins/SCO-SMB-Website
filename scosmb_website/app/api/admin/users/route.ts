@@ -1,58 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { admin_users } from '@/lib/schema';
+import { getSql } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
-import { eq, desc } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+
+export const revalidate = 0;
 
 export async function GET() {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   
-  const db = getDb();
-  const users = await db
-    .select({
-      id: admin_users.id,
-      username: admin_users.username,
-      email: admin_users.email,
-      role: admin_users.role,
-      created_at: admin_users.created_at,
-      last_login: admin_users.last_login,
-      is_active: admin_users.is_active
-    })
-    .from(admin_users)
-    .orderBy(desc(admin_users.created_at))
-    .limit(100);
-  
-  return NextResponse.json({ users });
+  try {
+    const sql = getSql();
+    const users = await sql`
+      SELECT id, username, email, role, created_at, last_login, is_active
+      FROM admin_users
+      ORDER BY created_at DESC
+      LIMIT 100
+    `;
+    
+    return NextResponse.json({ users }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+      }
+    });
+  } catch (error: any) {
+    console.error('Failed to fetch admin users:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   
-  const { username, password, email, role = 'admin' } = await req.json();
-  if (!username || !password) {
-    return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
+  try {
+    const { username, password, email, role = 'admin' } = await req.json();
+    if (!username || !password) {
+      return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
+    }
+    
+    const sql = getSql();
+    
+    // Check if username already exists
+    const existing = await sql`SELECT id FROM admin_users WHERE username = ${username}`;
+    if (existing.length > 0) {
+      return NextResponse.json({ error: 'Username already exists' }, { status: 409 });
+    }
+    
+    // Hash password and create user
+    const password_hash = await bcrypt.hash(password, 12);
+    await sql`
+      INSERT INTO admin_users (username, password_hash, email, role, is_active)
+      VALUES (${username}, ${password_hash}, ${email}, ${role}, true)
+    `;
+    
+    return NextResponse.json({ success: true, message: 'Admin user created successfully' });
+  } catch (error: any) {
+    console.error('Failed to create admin user:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  
-  const db = getDb();
-  
-  // Check if username already exists
-  const existing = await db.select().from(admin_users).where(eq(admin_users.username, username));
-  if (existing.length) {
-    return NextResponse.json({ error: 'Username already exists' }, { status: 409 });
-  }
-  
-  // Hash password and create user
-  const password_hash = await bcrypt.hash(password, 12);
-  await db.insert(admin_users).values({ 
-    username: username, 
-    password_hash: password_hash, 
-    email: email,
-    role: role,
-    is_active: true
-  } as any);
-  
-  return NextResponse.json({ success: true, message: 'Admin user created successfully' });
 }
