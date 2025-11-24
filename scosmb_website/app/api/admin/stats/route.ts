@@ -1,11 +1,26 @@
-
+import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { license_keys, admin_users } from '@/lib/schema';
 import { eq, count, sum, gte } from 'drizzle-orm';
+import { getAdminSession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Check admin authentication
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json(
+      { error: 'Unauthorized - Admin access required' },
+      {
+        status: 401,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+        },
+      }
+    );
+  }
   try {
     const db = getDb();
     
@@ -51,23 +66,29 @@ export async function GET() {
     ]);
 
     const stats = {
-      totalKeys: totalKeysResult[0]?.count || 0,
-      activeKeys: activeKeysResult[0]?.count || 0,
-      revokedKeys: revokedKeysResult[0]?.count || 0,
-      totalDownloads: totalDownloadsResult[0]?.total || 0,
-      monthlyDownloads: monthlyDownloadsResult[0]?.count || 0,
-      activeAdmins: activeAdminsResult[0]?.count || 0
+      totalKeys: Number(totalKeysResult[0]?.count) || 0,
+      activeKeys: Number(activeKeysResult[0]?.count) || 0,
+      revokedKeys: Number(revokedKeysResult[0]?.count) || 0,
+      totalDownloads: Number(totalDownloadsResult[0]?.total) || 0,
+      monthlyDownloads: Number(monthlyDownloadsResult[0]?.count) || 0,
+      activeAdmins: Number(activeAdminsResult[0]?.count) || 0
     };
 
-    return new Response(JSON.stringify(stats), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
+    return NextResponse.json(stats, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+      },
     });
   } catch (error: any) {
     console.error('Stats fetch error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return NextResponse.json(
+      { error: error.message },
+      {
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+        },
+      }
+    );
   }
 }

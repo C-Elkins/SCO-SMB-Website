@@ -2,13 +2,22 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getSql } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get('tech_session')?.value;
 
     if (!sessionToken) {
-      return NextResponse.json({ authenticated: false, user: null });
+      return NextResponse.json(
+        { authenticated: false, user: null },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+          },
+        }
+      );
     }
 
     // Find valid session with user data
@@ -25,31 +34,52 @@ export async function GET() {
     `;
 
     if ((sessionResult as any[]).length === 0) {
-      return NextResponse.json({ authenticated: false, user: null });
+      return NextResponse.json(
+        { authenticated: false, user: null },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+          },
+        }
+      );
     }
 
     const user = sessionResult[0];
 
-    return NextResponse.json({
-      authenticated: true,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        full_name: user.full_name,
-        company: user.company,
-        role: user.role,
-        avatar_url: user.avatar_url,
-        bio: user.bio,
-        specializations: user.specializations ? JSON.parse(user.specializations) : [],
-        total_posts: user.total_posts,
-        total_solutions: user.total_solutions,
-        created_at: user.created_at,
-        last_login: user.last_login,
+    return NextResponse.json(
+      {
+        authenticated: true,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          full_name: user.full_name,
+          company: user.company,
+          role: user.role,
+          avatar_url: user.avatar_url,
+          bio: user.bio,
+          specializations: user.specializations ? JSON.parse(user.specializations) : [],
+          total_posts: user.total_posts,
+          total_solutions: user.total_solutions,
+          created_at: user.created_at,
+          last_login: user.last_login,
+        },
       },
-    });
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+        },
+      }
+    );
   } catch (error) {
     console.error('Tech session check error:', error);
-    return NextResponse.json({ authenticated: false, user: null });
+    return NextResponse.json(
+      { authenticated: false, user: null },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, private, max-age=0',
+        },
+      }
+    );
   }
 }
