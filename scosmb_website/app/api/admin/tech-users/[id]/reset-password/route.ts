@@ -37,7 +37,7 @@ export async function POST(
       SET password_hash = ${password_hash}
       WHERE id = ${id}
       RETURNING id, username, email
-    ` as unknown[];
+    ` as any[];
 
     if (updatedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

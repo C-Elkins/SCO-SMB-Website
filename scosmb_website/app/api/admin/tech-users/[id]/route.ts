@@ -52,7 +52,7 @@ export async function PUT(
     // Fetch the updated user
     const updatedUser = await sql`
       SELECT * FROM tech_users WHERE id = ${id}
-    ` as unknown[];
+    ` as any[];
 
     if (updatedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -95,7 +95,7 @@ export async function DELETE(
       DELETE FROM tech_users
       WHERE id = ${id}
       RETURNING id
-    ` as unknown[];
+    ` as any[];
 
     if (deletedUser.length === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
