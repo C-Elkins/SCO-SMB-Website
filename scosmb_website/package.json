@@ -14,6 +14,7 @@
     "perf:audit": "node scripts/performance-audit.mjs",
     "perf:validate": "node scripts/performance-validator.mjs",
     "db:migrate": "tsx scripts/init-db.ts",
+    "db:migrate:analytics": "tsx scripts/migrate-analytics.ts",
     "drizzle:generate": "drizzle-kit generate:pg",
     "drizzle:migrate": "drizzle-kit migrate:pg"
   },
