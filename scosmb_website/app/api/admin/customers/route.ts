@@ -18,15 +18,15 @@ export async function GET() {
     const customerList = await sql`
       SELECT * FROM customers
       ORDER BY created_at DESC
-    `;
+    ` as any[];
 
     // Get license keys for each customer
     const customersWithKeys = await Promise.all(
-      customerList.map(async (customer) => {
+      customerList.map(async (customer: any) => {
         const keys = await sql`
           SELECT key_code FROM license_keys
           WHERE customer_email = ${customer.email}
-        `;
+        ` as any[];
 
         return {
           ...customer,
