@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSql } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
-import { license_keys, admin_users, download_logs } from '@/lib/schema';
-import { count, sql, eq } from 'drizzle-orm';
 
 export async function GET() {
   const session = await getAdminSession();
@@ -11,13 +9,13 @@ export async function GET() {
   }
 
   try {
-    const db = getDb();
+    const sql = getSql();
 
     // Get system metrics
-    const [totalKeys] = await db.select({ count: count() }).from(license_keys);
-    const [activeKeys] = await db.select({ count: count() }).from(license_keys).where(eq(license_keys.status, 'active'));
-    const [totalAdmins] = await db.select({ count: count() }).from(admin_users);
-    const [totalDownloads] = await db.select({ count: count() }).from(download_logs);
+    const totalKeys = await sql`SELECT COUNT(*) as count FROM license_keys` as any[];
+    const activeKeys = await sql`SELECT COUNT(*) as count FROM license_keys WHERE status = 'active'` as any[];
+    const totalAdmins = await sql`SELECT COUNT(*) as count FROM admin_users` as any[];
+    const totalDownloads = await sql`SELECT COUNT(*) as count FROM download_logs` as any[];
 
     // Fetch latest version from GitHub releases
     let latestVersion = '1.0.0';
@@ -61,15 +59,15 @@ export async function GET() {
     const memoryTotalMB = Math.round(memoryUsage.heapTotal / 1024 / 1024);
     
     // Get recent activity summary
-    const recentKeys = await db
-      .select({ count: count() })
-      .from(license_keys)
-      .where(sql`created_at > NOW() - INTERVAL '24 hours'`);
+    const recentKeys = await sql`
+      SELECT COUNT(*) as count FROM license_keys 
+      WHERE created_at > NOW() - INTERVAL '24 hours'
+    ` as any[];
     
-    const recentDownloads = await db
-      .select({ count: count() })
-      .from(download_logs)
-      .where(sql`download_date > NOW() - INTERVAL '24 hours'`);
+    const recentDownloads = await sql`
+      SELECT COUNT(*) as count FROM download_logs 
+      WHERE download_date > NOW() - INTERVAL '24 hours'
+    ` as any[];
 
     const systemInfo = {
       version: latestVersion,
@@ -87,20 +85,21 @@ export async function GET() {
         platform: process.platform
       },
       statistics: {
-        totalKeys: totalKeys?.count || 0,
-        activeKeys: activeKeys?.count || 0,
-        totalAdmins: totalAdmins?.count || 0,
-        totalDownloads: totalDownloads?.count || 0,
-        keysToday: recentKeys[0]?.count || 0,
-        downloadsToday: recentDownloads[0]?.count || 0
+        totalKeys: parseInt(totalKeys[0]?.count) || 0,
+        activeKeys: parseInt(activeKeys[0]?.count) || 0,
+        totalAdmins: parseInt(totalAdmins[0]?.count) || 0,
+        totalDownloads: parseInt(totalDownloads[0]?.count) || 0,
+        keysToday: parseInt(recentKeys[0]?.count) || 0,
+        downloadsToday: parseInt(recentDownloads[0]?.count) || 0
       },
-      status: 'operational', // This could be enhanced with actual health checks
+      status: 'operational',
       lastUpdated: new Date().toISOString()
     };
 
     return NextResponse.json(systemInfo);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('System info error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

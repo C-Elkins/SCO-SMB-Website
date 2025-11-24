@@ -171,15 +171,6 @@ const nextConfig = {
             value: 'max-age=31536000; includeSubDomains'
           }
         ]
-      },
-      {
-        source: '/manifest.webmanifest',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/manifest+json'
-          }
-        ]
       }
     ]
   },
