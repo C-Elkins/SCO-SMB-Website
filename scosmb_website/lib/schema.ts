@@ -11,6 +11,8 @@ export const license_keys = pgTable('license_keys', {
   expires_at: timestamp('expires_at'),
   download_count: integer('download_count').default(0),
   max_downloads: integer('max_downloads').default(3),
+  last_used: timestamp('last_used'),
+  updated_at: timestamp('updated_at').defaultNow(),
   notes: text('notes'),
   customer_email: varchar('customer_email', { length: 255 }),
   customer_name: varchar('customer_name', { length: 255 }),
