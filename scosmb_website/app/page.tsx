@@ -19,7 +19,6 @@ import Image from 'next/image';
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { FeatureCardOptimized, FeatureGridOptimized } from '@/components/FeatureCardOptimized';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import HeroPipelineUltra from '@/components/HeroPipelineUltra';
 import {
   Network,
   Shield,
@@ -31,38 +30,21 @@ import {
   Zap
 } from 'lucide-react';
 
-// Performance monitoring - non-blocking, idle callback
-if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-  requestIdleCallback(() => {
-    import('web-vitals').then(({ onCLS, onFCP, onLCP, onTTFB, onINP }) => {
-      onCLS(console.log);
-      onFCP(console.log);
-      onLCP(console.log);
-      onTTFB(console.log);
-      onINP(console.log);
-    });
-  }, { timeout: 5000 });
-}
-
-// Lazy load Hero component with performance hint
-const Hero = lazy(() =>
-  import('../components/HeroUltraOptimized' /* webpackChunkName: "hero", webpackPrefetch: true */)
-);
-
-// Loading components
-function HeroSkeleton() {
-  return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900">
-      <div className="animate-pulse text-center">
-        <div className="h-16 bg-slate-600/20 rounded-lg mb-6 mx-auto max-w-md"></div>
-        <div className="h-8 bg-slate-600/20 rounded-lg mb-8 mx-auto max-w-lg"></div>
-        <div className="flex gap-4 justify-center">
-          <div className="h-12 w-32 bg-slate-600/20 rounded-lg"></div>
-          <div className="h-12 w-32 bg-slate-600/20 rounded-lg"></div>
-        </div>
-      </div>
-    </div>
-  );
+// Performance monitoring - deferred to after load
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        import('web-vitals').then(({ onCLS, onFCP, onLCP, onTTFB, onINP }) => {
+          onCLS(console.log);
+          onFCP(console.log);
+          onLCP(console.log);
+          onTTFB(console.log);
+          onINP(console.log);
+        });
+      }, { timeout: 10000 });
+    }
+  });
 }
 
 export default function Home() {
@@ -143,12 +125,76 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Ultra-Premium Animated Pipeline */}
-      <HeroPipelineUltra 
-        brandName="SCO SMB"
-        headline="Enterprise Document Scanning for Kyocera & Sharp Printers"
-        description="Secure, automated document ingestion with zero-configuration network discovery, enterprise-grade security, and intelligent file organization."
-      />
+      {/* Hero Section - Optimized for fast loading */}
+      <section className="relative w-full min-h-screen overflow-hidden bg-linear-to-br from-[#0a1628] via-[#153B6B] to-[#00A8B5] flex items-center justify-center">
+        {/* Static gradient overlay */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+        
+        {/* Hero Content */}
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-6 py-24 text-center">
+          <div className="space-y-8">
+            {/* Brand Badge */}
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-xl border border-[#00A8B5]/30 shadow-2xl">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00A8B5] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00A8B5]"></span>
+              </span>
+              <span className="text-base font-bold text-[#00A8B5] tracking-wide uppercase">SCO SMB</span>
+            </div>
+
+            {/* Main Headline */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-[1.1] tracking-tight max-w-6xl mx-auto">
+              Enterprise Document Scanning for Kyocera & Sharp Printers
+            </h1>
+
+            {/* Description */}
+            <p className="text-xl sm:text-2xl lg:text-3xl text-gray-200 max-w-5xl mx-auto leading-relaxed font-light">
+              Secure, automated document ingestion with zero-configuration network discovery, enterprise-grade security, and intelligent file organization.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+              <Link
+                href="/trial"
+                className="group relative px-10 py-5 bg-linear-to-r from-[#00A8B5] to-[#008c97] text-white text-xl font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  Start Free Trial
+                  <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </Link>
+              
+              <Link
+                href="/features"
+                className="group px-10 py-5 bg-white/10 hover:bg-white/20 backdrop-blur-xl text-white text-xl font-bold rounded-2xl transition-all duration-300 border-2 border-white/20 hover:border-[#00A8B5]/50"
+              >
+                View Features
+              </Link>
+            </div>
+
+            {/* Feature Pills */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              {['✓ Zero Configuration', '✓ Enterprise Security', '✓ Network Discovery'].map((feature, i) => (
+                <span 
+                  key={i}
+                  className="px-5 py-2 text-sm font-medium rounded-full bg-white/10 border border-white/20 text-gray-200 backdrop-blur-sm hover:bg-white/20 transition-all duration-300"
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+          <div className="w-8 h-14 rounded-full border-3 border-white/40 flex items-start justify-center p-2">
+            <div className="w-2 h-4 rounded-full bg-[#00A8B5] animate-pulse" />
+          </div>
+        </div>
+      </section>
 
       {/* Product Preview */}
       <section className="content-section py-24 md:py-32 bg-linear-to-b from-gray-50 to-white">
@@ -235,11 +281,8 @@ export default function Home() {
                   height={400}
                   className="rounded-xl w-full"
                   style={{ width: '100%', height: 'auto' }}
-                  priority={!isLowEndDevice}
-                  loading={isLowEndDevice ? 'lazy' : 'eager'}
-                  quality={isLowEndDevice ? 75 : 90}
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                  loading="lazy"
+                  quality={85}
                 />
 
                 {/* Floating UI element */}

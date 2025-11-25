@@ -144,8 +144,26 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Product Hunt Badge */}
+        <div className="border-t border-gray-700 pt-6 mt-8 mb-6 flex justify-center">
+          <a 
+            href="https://www.producthunt.com/products/sco-smb-modern-scan-to-office-platform?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-sco-smb-modern-scan-to-office-platform" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:opacity-90 transition-opacity"
+          >
+            <img 
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1042060&theme=neutral&t=1764030633149" 
+              alt="SCO SMB – Modern Scan-to-Office Platform - enterprise-ready replacement for outdated scan software. | Product Hunt" 
+              style={{ width: '250px', height: '54px' }} 
+              width={250} 
+              height={54} 
+            />
+          </a>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 pt-6 mt-8">
+        <div className="border-t border-gray-700 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
             <p>© {currentYear} South Coast Office Supply. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">

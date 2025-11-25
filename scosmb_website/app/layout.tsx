@@ -306,7 +306,7 @@ export default function RootLayout({
         <SpeedInsights />
         <PerformanceMonitor />
         {/* Optimized Service Worker Registration */}
-        <Script id="sw-registration" strategy="afterInteractive">{`
+        <Script id="sw-registration" strategy="lazyOnload">{`
           (function() {
             if (!('serviceWorker' in navigator)) return;
             
@@ -322,14 +322,14 @@ export default function RootLayout({
             };
             
             if ('requestIdleCallback' in window) {
-              requestIdleCallback(registerSW, { timeout: 3000 });
+              requestIdleCallback(registerSW, { timeout: 5000 });
             } else {
-              setTimeout(registerSW, 1000);
+              setTimeout(registerSW, 3000);
             }
           })();
         `}</Script>
-        {/* Core Web Vitals Monitoring */}
-        <Script id="web-vitals" strategy="worker">{`
+        {/* Core Web Vitals Monitoring - Deferred */}
+        <Script id="web-vitals" strategy="lazyOnload">{`
           (function() {
             if (!('PerformanceObserver' in window)) return;
             
@@ -350,9 +350,9 @@ export default function RootLayout({
             };
             
             if ('requestIdleCallback' in window) {
-              requestIdleCallback(initVitals, { timeout: 2000 });
+              requestIdleCallback(initVitals, { timeout: 5000 });
             } else {
-              setTimeout(initVitals, 500);
+              setTimeout(initVitals, 2000);
             }
           })();
         `}</Script>
