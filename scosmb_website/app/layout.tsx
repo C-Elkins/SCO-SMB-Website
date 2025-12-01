@@ -147,6 +147,7 @@ export default function RootLayout({
         
         {/* Preload - High priority critical assets */}
         <link rel="preload" href="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Note: Image and CSS preloads removed - causing unused preload warnings */
         
         {/* Prefetch - Low priority next navigation targets */}
         <link rel="prefetch" href="/features" as="document" />
@@ -279,34 +280,47 @@ export default function RootLayout({
         <ConditionalLayout>
           {children}
         </ConditionalLayout>
+        {/* Unregister old service workers */}
+        <Script id="sw-cleanup" strategy="afterInteractive">{`
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+              registrations.forEach(registration => {
+                registration.unregister().then(() => console.log('SW unregistered'));
+              });
+            });
+          }
+        `}</Script>
+        
         {/* Scroll progress bar - GPU-accelerated with passive listener */}
         <div id="scroll-progress" className="fixed top-0 left-0 h-1 bg-accent-teal z-60" style={{transform: 'scaleX(0)', transformOrigin: 'left', willChange: 'transform'}} />
         <Script id="scroll-progress-script" strategy="afterInteractive">{`
           const bar = document.getElementById('scroll-progress');
-          let rafId = null;
+          if (bar) {
+            let rafId = null;
 
-          const updateProgress = () => {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = docHeight > 0 ? (scrollTop / docHeight) : 0;
-            bar.style.transform = 'scaleX(' + progress + ')';
-            rafId = null;
-          };
+            const updateProgress = () => {
+              const scrollTop = window.scrollY;
+              const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+              const progress = docHeight > 0 ? (scrollTop / docHeight) : 0;
+              bar.style.transform = 'scaleX(' + progress + ')';
+              rafId = null;
+            };
 
-          const onScroll = () => {
-            if (rafId === null) {
-              rafId = requestAnimationFrame(updateProgress);
-            }
-          };
+            const onScroll = () => {
+              if (rafId === null) {
+                rafId = requestAnimationFrame(updateProgress);
+              }
+            };
 
-          window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('scroll', onScroll, { passive: true });
+          }
         `}</Script>
         <ClientInitializer />
         {/* Analytics temporarily disabled */}
         <SpeedInsights />
         <PerformanceMonitor />
-        {/* Optimized Service Worker Registration */}
-        <Script id="sw-registration" strategy="lazyOnload">{`
+        {/* Service Worker Disabled - Causing fetch errors */}
+        {/* <Script id="sw-registration" strategy="lazyOnload">{`
           (function() {
             if (!('serviceWorker' in navigator)) return;
             
@@ -316,7 +330,6 @@ export default function RootLayout({
                 updateViaCache: 'none'
               }).then(reg => {
                 console.log('SW registered');
-                // Update check every 24h
                 setInterval(() => reg.update(), 86400000);
               }).catch(err => console.log('SW failed', err));
             };
@@ -327,26 +340,32 @@ export default function RootLayout({
               setTimeout(registerSW, 3000);
             }
           })();
-        `}</Script>
+        `}</Script> */
         {/* Core Web Vitals Monitoring - Deferred */}
         <Script id="web-vitals" strategy="lazyOnload">{`
           (function() {
             if (!('PerformanceObserver' in window)) return;
             
             const initVitals = () => {
-              const observer = new PerformanceObserver((list) => {
-                list.getEntries().forEach(entry => {
-                  const { entryType, startTime, processingStart, value, hadRecentInput } = entry;
-                  if (entryType === 'largest-contentful-paint') {
-                    console.log('LCP:', startTime + 'ms');
-                  } else if (entryType === 'first-input') {
-                    console.log('FID:', (processingStart - startTime) + 'ms');
-                  } else if (entryType === 'layout-shift' && !hadRecentInput) {
-                    console.log('CLS:', value);
-                  }
+              try {
+                // LCP Observer
+                const lcpObserver = new PerformanceObserver((list) => {
+                  list.getEntries().forEach(entry => {
+                    console.log('LCP:', entry.startTime + 'ms');
+                  });
                 });
-              });
-              observer.observe({entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift']});
+                lcpObserver.observe({entryTypes: ['largest-contentful-paint']});
+                
+                // FID Observer
+                const fidObserver = new PerformanceObserver((list) => {
+                  list.getEntries().forEach(entry => {
+                    console.log('FID:', (entry.processingStart - entry.startTime) + 'ms');
+                  });
+                });
+                fidObserver.observe({entryTypes: ['first-input']});
+              } catch (e) {
+                console.log('Vitals monitoring not supported');
+              }
             };
             
             if ('requestIdleCallback' in window) {

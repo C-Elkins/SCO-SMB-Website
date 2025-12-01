@@ -143,7 +143,8 @@ export function DownloadSection({ release: releaseProp = null, className, showNo
           return (
             <a
               key={asset.name}
-              href={asset.browser_download_url}
+              href={`/api/download/${encodeURIComponent(asset.name)}`}
+              download
               className={clsx(
                 "group relative rounded-xl border-2 p-6 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-1",
                 isRecommended 
