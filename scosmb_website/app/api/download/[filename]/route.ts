@@ -4,10 +4,10 @@ import { getSql } from '@/lib/db';
 
 export async function GET(
   request: Request,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const filename = params.filename;
+    const { filename } = await params;
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
     
     // Get the latest release from GitHub (with auth for private repos)

@@ -147,12 +147,8 @@ export default function RootLayout({
         
         {/* Preload - High priority critical assets */}
         <link rel="preload" href="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        {/* Note: Image and CSS preloads removed - causing unused preload warnings */
-        
-        {/* Prefetch - Low priority next navigation targets */}
-        <link rel="prefetch" href="/features" as="document" />
-        <link rel="prefetch" href="/trial" as="document" />
-        <link rel="prefetch" href="/download" as="document" />
+        {/* Note: Image and CSS preloads removed - causing unused preload warnings */}
+        {/* Note: Prefetch links removed - Next.js handles automatic prefetching */}
         
         {/* AMP alternate */}
         <link rel="amphtml" href="https://sco-smb.com/amp" />
@@ -319,28 +315,7 @@ export default function RootLayout({
         {/* Analytics temporarily disabled */}
         <SpeedInsights />
         <PerformanceMonitor />
-        {/* Service Worker Disabled - Causing fetch errors */}
-        {/* <Script id="sw-registration" strategy="lazyOnload">{`
-          (function() {
-            if (!('serviceWorker' in navigator)) return;
-            
-            const registerSW = () => {
-              navigator.serviceWorker.register('/sw-optimized.js', {
-                scope: '/',
-                updateViaCache: 'none'
-              }).then(reg => {
-                console.log('SW registered');
-                setInterval(() => reg.update(), 86400000);
-              }).catch(err => console.log('SW failed', err));
-            };
-            
-            if ('requestIdleCallback' in window) {
-              requestIdleCallback(registerSW, { timeout: 5000 });
-            } else {
-              setTimeout(registerSW, 3000);
-            }
-          })();
-        `}</Script> */
+        {/* Service Worker Disabled - Causing fetch errors - registration code removed */}
         {/* Core Web Vitals Monitoring - Deferred */}
         <Script id="web-vitals" strategy="lazyOnload">{`
           (function() {
