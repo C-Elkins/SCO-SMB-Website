@@ -101,12 +101,13 @@ export default function SupportPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl text-center hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <div className="w-16 h-16 bg-[#00A8B5] rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Phone className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
+              <h3 className="text-xl font-bold text-[#153B6B] mb-2">
                 Phone Support
               </h3>
               <p className="text-gray-600 mb-4">
@@ -114,11 +115,11 @@ export default function SupportPage() {
               </p>
               <a
                 href="tel:+15412675114"
-                className="text-[#00A8B5] font-semibold hover:underline text-lg"
+                className="text-[#00A8B5] font-bold hover:text-[#008c97] text-lg transition-colors"
               >
                 (541) 267-5114
               </a>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-500 mt-3 font-medium">
                 Mon-Fri, 8 AM - 4 PM PST
               </p>
             </motion.div>
@@ -128,12 +129,13 @@ export default function SupportPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl text-center hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <div className="w-16 h-16 bg-[#00A8B5] rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Mail className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
+              <h3 className="text-xl font-bold text-[#153B6B] mb-2">
                 Email Support
               </h3>
               <p className="text-gray-600 mb-4">
@@ -141,11 +143,11 @@ export default function SupportPage() {
               </p>
               <a
                 href="mailto:support@southcoastoffice.com"
-                className="text-[#00A8B5] font-semibold hover:underline break-all"
+                className="text-[#00A8B5] font-bold hover:text-[#008c97] break-all transition-colors"
               >
                 support@southcoastoffice.com
               </a>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-500 mt-3 font-medium">
                 Response within 24 hours
               </p>
             </motion.div>
@@ -155,12 +157,13 @@ export default function SupportPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl transition-shadow"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl text-center hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <div className="w-16 h-16 bg-[#00A8B5] rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-[#153B6B] mb-2">
+              <h3 className="text-xl font-bold text-[#153B6B] mb-2">
                 Contact Form
               </h3>
               <p className="text-gray-600 mb-4">
@@ -168,11 +171,11 @@ export default function SupportPage() {
               </p>
               <Link
                 href="/contact"
-                className="inline-block text-[#00A8B5] font-semibold hover:underline"
+                className="inline-block text-[#00A8B5] font-bold hover:text-[#008c97] transition-colors"
               >
-                Send Message
+                Send Message →
               </Link>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-500 mt-3 font-medium">
                 Detailed inquiries welcome
               </p>
             </motion.div>

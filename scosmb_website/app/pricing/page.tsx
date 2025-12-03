@@ -186,14 +186,14 @@ export default function PricingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => handleContactSubmit('pricing-inquiry')}
-                  className="bg-[#00A8B5] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#008c97] transition-colors shadow-lg flex items-center justify-center gap-2"
+                  className="bg-linear-to-r from-[#00A8B5] to-[#008c97] text-white px-10 py-4 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center gap-2 press-scale"
                 >
                   Get Your Quote
                   <ArrowRight className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => window.location.href = '/trial'}
-                  className="bg-white text-[#153B6B] px-8 py-4 rounded-lg font-semibold border-2 border-[#153B6B] hover:bg-[#153B6B] hover:text-white transition-colors"
+                  className="bg-white text-[#153B6B] px-10 py-4 rounded-full font-bold border-2 border-[#153B6B] hover:bg-[#153B6B] hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl press-scale"
                 >
                   Start Free Trial
                 </button>
@@ -358,7 +358,7 @@ export default function PricingPage() {
             >
               <button
                 onClick={() => handleContactSubmit('general-inquiry')}
-                className="inline-flex items-center gap-2 bg-[#00A8B5] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#008c97] transition-colors shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 bg-linear-to-r from-[#00A8B5] to-[#008c97] text-white px-10 py-4 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl press-scale"
               >
                 Contact Sales Team
                 <ArrowRight className="w-5 h-5" />

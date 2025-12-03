@@ -25,10 +25,54 @@ interface DownloadSectionProps {
 
 function detectPlatform(): string {
   if (typeof navigator === 'undefined') return 'unknown';
+  
   const ua = navigator.userAgent;
+  
+  // Windows detection
   if (/Windows/.test(ua)) return 'windows';
-  if (/Macintosh/.test(ua) && /ARM/.test(ua)) return 'mac-arm';
-  if (/Macintosh/.test(ua)) return 'mac-intel';
+  
+  // Mac detection - check for Apple Silicon
+  if (/Macintosh/.test(ua)) {
+    // Modern approach: Check if running on Apple Silicon
+    // Apple Silicon Macs report higher GPU capabilities
+    try {
+      // Create a canvas to check WebGL capabilities
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      
+      if (gl && gl instanceof WebGLRenderingContext) {
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        if (debugInfo) {
+          const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          // Apple Silicon GPUs contain "Apple" in the renderer string
+          if (renderer && /Apple/.test(renderer)) {
+            return 'mac-arm';
+          }
+        }
+      }
+    } catch (e) {
+      // Fallback if WebGL check fails
+    }
+    
+    // Fallback: Check navigator.userAgentData if available (Chromium-based browsers)
+    if ('userAgentData' in navigator) {
+      const uaData = (navigator as any).userAgentData;
+      if (uaData && uaData.getHighEntropyValues) {
+        // This is async, so we'll use a different approach
+        // For now, default to mac-arm for newer Macs (most are Apple Silicon now)
+        return 'mac-arm';
+      }
+    }
+    
+    // Another fallback: Check maxTouchPoints (Apple Silicon supports more touch points)
+    if (navigator.maxTouchPoints > 2) {
+      return 'mac-arm';
+    }
+    
+    // Default to Intel for older detection methods
+    return 'mac-intel';
+  }
+  
   return 'unknown';
 }
 
@@ -36,7 +80,12 @@ export function DownloadSection({ release: releaseProp = null, className, showNo
   const [release, setRelease] = useState<Release | null>(releaseProp);
   const [loading, setLoading] = useState(!releaseProp);
   const [error, setError] = useState<string | null>(null);
-  const platform = detectPlatform();
+  const [platform, setPlatform] = useState<string>('unknown');
+
+  // Detect platform on mount (client-side only)
+  useEffect(() => {
+    setPlatform(detectPlatform());
+  }, []);
 
   useEffect(() => {
     if (releaseProp) {
@@ -103,6 +152,19 @@ export function DownloadSection({ release: releaseProp = null, className, showNo
     );
   };
 
+  const getPlatformDisplayName = (platform: string): string => {
+    switch (platform) {
+      case 'mac-arm':
+        return 'macOS (Apple Silicon)';
+      case 'mac-intel':
+        return 'macOS (Intel)';
+      case 'windows':
+        return 'Windows';
+      default:
+        return 'Unknown';
+    }
+  };
+
   const isPlatformRecommended = (filename: string) => {
     const lower = filename.toLowerCase();
     // Prefer .pkg files for Mac (both ARM64 and Intel), then .dmg as fallback
@@ -130,7 +192,7 @@ export function DownloadSection({ release: releaseProp = null, className, showNo
           <div>
             <p className="font-medium text-blue-900 text-sm">Platform Detection</p>
             <p className="text-blue-700 text-xs">
-              Detected: <span className="font-semibold">{platform}</span> - Recommended downloads are highlighted
+              Detected: <span className="font-semibold">{getPlatformDisplayName(platform)}</span> - Recommended downloads are highlighted
             </p>
           </div>
         </div>

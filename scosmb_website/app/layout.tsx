@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "./animations.css";
+import "./apple-animations.css";
 import CriticalStyles from "@/components/CriticalStyles";
+import { LiveChat } from "@/components/LiveChat";
 import ClientInitializer from "@/components/ClientInitializer";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import Script from "next/script";
@@ -153,7 +155,12 @@ export default function RootLayout({
         {/* AMP alternate */}
         <link rel="amphtml" href="https://sco-smb.com/amp" />
         
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover, user-scalable=yes" />
+        
+        {/* Mobile optimization */}
+        <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="MobileOptimized" content="width" />
         
         {/* Security headers are now set in next.config.js HTTP headers */}
       </head>
@@ -228,15 +235,14 @@ export default function RootLayout({
               "alternateName": "SCO SMB Enterprise Scanning Solution",
               "applicationCategory": "BusinessApplication",
               "applicationSubCategory": "Document Management Software",
-              "operatingSystem": ["Windows 10", "Windows 11", "macOS 11+"],
+              "operatingSystem": ["Windows 10", "Windows 11", "macOS 10.13+", "macOS 11+", "macOS 12+", "macOS 13+", "macOS 14+"],
               "description": "Advanced enterprise document scanning solution designed for Kyocera & Sharp multifunction printers. Features intelligent network discovery, military-grade security protocols, automated file organization, and seamless workflow integration.",
               "url": "https://sco-smb.com",
               "downloadUrl": "https://sco-smb.com/download",
               "installUrl": "https://sco-smb.com/download",
-              "softwareVersion": "5.0",
+              "softwareVersion": "1.2.1",
               "releaseNotes": "https://sco-smb.com/docs/release-notes",
               "fileSize": "45MB",
-              "screenshot": "https://sco-smb.com/screenshots/sco-smb-hero-dashboard.png",
               "softwareRequirements": "Windows 10+ or macOS 11+, 4GB RAM, 500MB disk space",
               "permissions": "Network access for printer discovery",
               "featureList": [
@@ -269,7 +275,12 @@ export default function RootLayout({
                 "ratingCount": "267",
                 "bestRating": "5",
                 "worstRating": "1"
-              }
+              },
+              "screenshot": [
+                "https://sco-smb.com/screenshots/sco-smb-hero-dashboard.png",
+                "https://sco-smb.com/screenshots/sco-smb-security-settings.png",
+                "https://sco-smb.com/screenshots/sco-smb-file-organization.png"
+              ]
             })
           }}
         />
@@ -315,6 +326,7 @@ export default function RootLayout({
         {/* Analytics temporarily disabled */}
         <SpeedInsights />
         <PerformanceMonitor />
+        <LiveChat />
         {/* Service Worker Disabled - Causing fetch errors - registration code removed */}
         {/* Core Web Vitals Monitoring - Deferred */}
         <Script id="web-vitals" strategy="lazyOnload">{`

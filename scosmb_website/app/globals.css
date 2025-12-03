@@ -554,3 +554,185 @@ section {
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(1px);
 }
+
+/* ========================================
+   MOBILE & TOUCH OPTIMIZATION
+   ======================================== */
+
+/* Optimize touch targets for mobile (minimum 44x44px per Apple/Google guidelines) */
+button,
+a[role="button"],
+input[type="button"],
+input[type="submit"],
+.button {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation; /* Prevent double-tap zoom on buttons */
+}
+
+/* Range Slider Touch Optimization */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px; /* Larger touch area on mobile */
+  outline: none;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  touch-action: pan-x; /* Allow horizontal swiping only */
+  cursor: pointer;
+}
+
+input[type="range"]:hover {
+  opacity: 1;
+}
+
+/* Slider Thumb - Webkit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px; /* Larger for easier touch interaction */
+  border-radius: 50%;
+  background: linear-gradient(135deg, #153B6B, #00A8B5);
+  cursor: pointer;
+  box-shadow: 
+    0 2px 8px rgba(0, 168, 181, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 3px solid white;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 
+    0 4px 12px rgba(0, 168, 181, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.25);
+  box-shadow: 
+    0 6px 16px rgba(0, 168, 181, 0.6),
+    0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Slider Thumb - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #153B6B, #00A8B5);
+  cursor: pointer;
+  box-shadow: 
+    0 2px 8px rgba(0, 168, 181, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 3px solid white;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 
+    0 4px 12px rgba(0, 168, 181, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  transform: scale(1.25);
+  box-shadow: 
+    0 6px 16px rgba(0, 168, 181, 0.6),
+    0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile-specific responsive adjustments */
+@media (max-width: 640px) {
+  /* Increase padding for better touch targets */
+  button,
+  .button {
+    padding: 14px 24px;
+  }
+  
+  /* Larger slider thumbs on mobile */
+  input[type="range"]::-webkit-slider-thumb {
+    width: 32px;
+    height: 32px;
+  }
+  
+  input[type="range"]::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+  }
+  
+  /* Increase slider height for easier interaction */
+  input[type="range"] {
+    height: 14px;
+  }
+  
+  /* Prevent text selection during touch interactions */
+  .calculator-card,
+  .tool-card {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Optimize card padding on mobile */
+  .p-12 {
+    padding: 2rem !important;
+  }
+  
+  .p-10 {
+    padding: 1.75rem !important;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 375px) {
+  /* Further optimize for small screens */
+  .p-12 {
+    padding: 1.5rem !important;
+  }
+  
+  .p-10 {
+    padding: 1.25rem !important;
+  }
+  
+  /* Adjust font sizes for readability */
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Tablet landscape optimization */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* Optimize vertical spacing */
+  .space-y-6 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .space-y-8 > * + * {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* iOS won't zoom if font-size >= 16px */
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  .container-custom {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}

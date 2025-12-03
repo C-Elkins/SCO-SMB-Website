@@ -21,7 +21,18 @@ export async function GET() {
 
     console.log('Successfully fetched release:', githubRelease.tag_name);
 
-    const transformedAssets = githubRelease.assets.map(asset => ({
+    // Filter to only include installer files (.dmg, .pkg, .exe)
+    // Exclude YAML files (.yml, .yaml) and checksum files (.sha256, .sha512, etc.)
+    const installerAssets = githubRelease.assets.filter(asset => {
+      const name = asset.name.toLowerCase();
+      const isInstaller = name.endsWith('.dmg') || name.endsWith('.pkg') || name.endsWith('.exe');
+      const isMetadata = name.endsWith('.yml') || name.endsWith('.yaml') || 
+                        name.includes('.sha256') || name.includes('.sha512') ||
+                        name.endsWith('.blockmap') || name.endsWith('.json');
+      return isInstaller && !isMetadata;
+    });
+
+    const transformedAssets = installerAssets.map(asset => ({
       name: asset.name,
       browser_download_url: asset.browser_download_url,
       size: asset.size,

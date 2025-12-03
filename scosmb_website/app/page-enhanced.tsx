@@ -200,23 +200,19 @@ export default function EnhancedHome() {
             >
               <Link
                 href="/download"
-                className="group relative px-8 py-4 bg-white text-[#0a1628] font-semibold text-lg rounded-full hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl overflow-hidden"
+                className="group btn-apple px-8 py-4 bg-gradient-to-r from-[#00A8B5] to-[#008c97] text-white font-semibold text-lg shadow-2xl hover:shadow-[#00A8B5]/50"
               >
-                <span className="relative z-10 flex items-center gap-3">
+                <span className="flex items-center gap-2">
                   <Download className="w-5 h-5" />
                   Download Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-linear-to-r from-white to-gray-100 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
               <Link
                 href="/trial"
-                className="group px-8 py-4 text-white font-semibold text-lg rounded-full border-2 border-white/30 hover:border-white hover:bg-white/10 backdrop-blur-xl transition-all duration-300 shadow-lg"
+                className="px-8 py-4 glass text-white font-semibold text-lg hover-lift"
               >
-                <span className="flex items-center gap-2">
-                  Start Free Trial
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
+                Start Free Trial
               </Link>
             </motion.div>
 
@@ -228,9 +224,9 @@ export default function EnhancedHome() {
               className="grid grid-cols-3 gap-8 max-w-2xl mx-auto"
             >
               {[
-                { value: 100, suffix: '%', label: 'Trusted Worldwide' },
+                { value: 10000, suffix: '+', label: 'Active Users' },
                 { value: 95, suffix: '%', label: 'Time Saved' },
-                { value: 10, suffix: 'x', label: 'Faster Scanning' }
+                { value: 500, suffix: '+', label: 'Companies' }
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className="text-4xl font-bold text-white mb-2">
@@ -260,7 +256,7 @@ export default function EnhancedHome() {
       </motion.section>
 
       {/* Product Showcase */}
-      <section className="py-32 bg-linear-to-b from-white to-gray-50">
+      <section className="py-32 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -284,14 +280,14 @@ export default function EnhancedHome() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="card-depth hover-lift max-w-5xl mx-auto"
           >
-            <div className="relative aspect-video bg-linear-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden p-8">
+            <div className="relative aspect-video bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden">
               <Image
                 src="/screenshots/v1.2.1-main-dashboard.png"
                 alt="SCO SMB Dashboard"
                 fill
-                className="object-contain"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-8 left-8 text-white">
                 <h3 className="text-2xl font-bold mb-2">Modern Dashboard</h3>
                 <p className="text-gray-300">Real-time monitoring and control</p>
@@ -328,7 +324,7 @@ export default function EnhancedHome() {
                 transition={{ delay: i * 0.1 }}
                 className="group card-depth p-8 hover-lift"
               >
-                <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                   <feature.icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
@@ -340,7 +336,7 @@ export default function EnhancedHome() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-32 bg-linear-to-b from-gray-50 to-white">
+      <section className="py-32 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -384,7 +380,7 @@ export default function EnhancedHome() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-32 bg-linear-to-br from-[#153B6B] to-[#00A8B5] text-white relative overflow-hidden">
+      <section className="py-32 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />

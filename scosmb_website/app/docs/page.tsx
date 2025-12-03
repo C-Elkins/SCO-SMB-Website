@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { 
   Download, Settings, Network, HelpCircle, ChevronDown, ChevronUp,
-  Shield, FileText, Zap, MonitorSpeaker, Users, Database, AlertTriangle
+  MonitorSpeaker, Database
 } from 'lucide-react';
 import { FAQSkeleton } from '@/components/LoadingSkeletons';
 
@@ -55,71 +54,41 @@ const FAQSection = dynamic(() => Promise.resolve(({ faqs, openFaq, setOpenFaq }:
 export default function DocsPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const docSections = [
+  const infoCards = [
     {
-      title: "Installation & Setup",
+      title: "System Requirements",
+      icon: Database,
+      description: "What you need to run SCO SMB",
+      content: [
+        "Windows 10 (1809+) or Windows 11",
+        "macOS 10.13 or later (Intel & Apple Silicon)",
+        "200 MB available disk space",
+        "Network connection to printers",
+        "Administrative privileges for installation"
+      ]
+    },
+    {
+      title: "Supported Printers",
+      icon: MonitorSpeaker,
+      description: "Compatible printer models",
+      content: [
+        "Kyocera MFPs (all models with FTP scanning)",
+        "Sharp MFPs (MX series and newer)",
+        "Any network printer with FTP/SMB scanning",
+        "Automatic discovery for Kyocera & Sharp",
+        "Manual configuration for other brands"
+      ]
+    },
+    {
+      title: "Latest Version",
       icon: Download,
-      description: "Get started with SCO SMB installation and initial configuration",
-      guides: [
-        { title: "Windows Installation Guide", href: "/docs/installation/windows", description: "Step-by-step Windows installation" },
-        { title: "macOS Installation Guide", href: "/docs/installation/macos", description: "Complete macOS setup process" },
-        { title: "First-Time Setup", href: "/docs/installation/first-time", description: "Initial configuration and license activation" },
-        { title: "System Requirements", href: "/docs/installation/requirements", description: "Hardware and software requirements" }
-      ]
-    },
-    {
-      title: "Printer Configuration",
-      icon: Settings,
-      description: "Configure your network printers for seamless scanning",
-      guides: [
-        { title: "Kyocera Setup Guide", href: "/docs/printers/kyocera", description: "Complete Kyocera printer configuration" },
-        { title: "Sharp MFP Configuration", href: "/docs/printers/sharp", description: "Sharp printer setup and optimization" },
-        { title: "Generic Network Printer Setup", href: "/docs/printers/generic", description: "Configuration for other printer brands" },
-        { title: "FTP vs SMB Protocol Guide", href: "/docs/printers/protocols", description: "Choosing the right protocol for your setup" }
-      ]
-    },
-    {
-      title: "Network & Security",
-      icon: Shield,
-      description: "Secure your scanning infrastructure and optimize network performance", 
-      guides: [
-        { title: "Network Configuration", href: "/docs/network/setup", description: "Network setup and firewall configuration" },
-        { title: "Security Best Practices", href: "/docs/network/security", description: "IP whitelisting, authentication, and monitoring" },
-        { title: "Enterprise Network Setup", href: "/docs/network/enterprise", description: "VLAN configuration and domain integration" },
-        { title: "Port Configuration Guide", href: "/docs/network/ports", description: "Firewall and port configuration" }
-      ]
-    },
-    {
-      title: "Advanced Features",
-      icon: Zap,
-      description: "Unlock the full potential of SCO SMB with advanced features",
-      guides: [
-        { title: "Automatic File Organization", href: "/docs/features/organization", description: "Custom naming patterns and folder structure" },
-        { title: "Audit Logging & Compliance", href: "/docs/features/audit", description: "Complete activity monitoring and reporting" },
-        { title: "Backup & Recovery", href: "/docs/features/backup", description: "Data protection and disaster recovery" },
-        { title: "Integration with Business Systems", href: "/docs/features/integration", description: "API access and third-party integrations" }
-      ]
-    },
-    {
-      title: "Troubleshooting",
-      icon: AlertTriangle,
-      description: "Solve common issues and optimize performance",
-      guides: [
-        { title: "Connection Issues", href: "/docs/troubleshooting/connection", description: "Printer discovery and network connectivity" },
-        { title: "Performance Optimization", href: "/docs/troubleshooting/performance", description: "Speed up scanning and file processing" },
-        { title: "Error Code Reference", href: "/docs/troubleshooting/errors", description: "Complete error code documentation" },
-        { title: "Log Analysis", href: "/docs/troubleshooting/logs", description: "Reading and interpreting system logs" }
-      ]
-    },
-    {
-      title: "Industry Solutions",
-      icon: Users,
-      description: "Specialized configurations for different industries",
-      guides: [
-        { title: "Healthcare Document Compliance", href: "/docs/industry/healthcare", description: "HIPAA-compliant scanning setup" },
-        { title: "Legal Firm Configuration", href: "/docs/industry/legal", description: "Secure document handling for legal practices" },
-        { title: "Financial Services Setup", href: "/docs/industry/finance", description: "Banking and finance industry compliance" },
-        { title: "Education Environment", href: "/docs/industry/education", description: "School and university deployment" }
+      description: "Current release information",
+      content: [
+        "Version: 1.2.1",
+        "Released: December 2025",
+        "Auto-update notifications",
+        "SHA-512 verified downloads",
+        "Full release notes on GitHub"
       ]
     }
   ];
@@ -253,17 +222,17 @@ export default function DocsPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-[#153B6B] mb-4">
-              Choose Your Guide
+              Quick Reference
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From basic installation to advanced enterprise configuration, we've got you covered.
+              Essential information about SCO SMB v1.2.1 at a glance
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {docSections.map((section, index) => (
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {infoCards.map((card, index) => (
               <motion.div
-                key={section.title}
+                key={card.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -272,43 +241,26 @@ export default function DocsPage() {
               >
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#153B6B] to-[#00A8B5] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <section.icon className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-linear-to-br from-[#153B6B] to-[#00A8B5] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <card.icon className="w-6 h-6 text-white" />
                     </div>
                     <h3 className="text-xl font-bold text-[#153B6B]">
-                      {section.title}
+                      {card.title}
                     </h3>
                   </div>
                   
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    {section.description}
+                  <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                    {card.description}
                   </p>
                   
-                  <div className="space-y-3">
-                    {section.guides.map((guide, guideIndex) => (
-                      <Link
-                        key={guide.href}
-                        href={guide.href}
-                        className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-[#00A8B5]/20 group/guide"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-[#153B6B] group-hover/guide:text-[#00A8B5] transition-colors text-sm">
-                              {guide.title}
-                            </h4>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {guide.description}
-                            </p>
-                          </div>
-                          <div className="ml-2 opacity-0 group-hover/guide:opacity-100 transition-opacity">
-                            <svg className="w-4 h-4 text-[#00A8B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
-                      </Link>
+                  <ul className="space-y-2">
+                    {card.content.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="text-[#00A8B5] mt-1">✓</span>
+                        <span>{item}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               </motion.div>
             ))}

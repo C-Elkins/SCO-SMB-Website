@@ -103,20 +103,35 @@ export default function SecurityPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <Shield className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-2xl font-semibold text-[#153B6B] mb-4">
+              <div className="w-14 h-14 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <Shield className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#153B6B] mb-4">
                 IP Whitelisting
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 Control exactly which IP addresses can send scans to your system. Prevent unauthorized access from unknown sources.
               </p>
-              <ul className="space-y-2 text-gray-600">
-                <li>• Allow/block specific IPs</li>
-                <li>• CIDR range support</li>
-                <li>• Dynamic blocklist</li>
-                <li>• Rate limiting per IP</li>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A8B5] font-bold">✓</span>
+                  <span>Allow/block specific IPs</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A8B5] font-bold">✓</span>
+                  <span>CIDR range support</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A8B5] font-bold">✓</span>
+                  <span>Dynamic blocklist</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A8B5] font-bold">✓</span>
+                  <span>Rate limiting per IP</span>
+                </li>
               </ul>
             </motion.div>
 
@@ -125,20 +140,23 @@ export default function SecurityPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <FileCheck className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-2xl font-semibold text-[#153B6B] mb-4">
+              <div className="w-14 h-14 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <FileCheck className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#153B6B] mb-4">
                 File Validation
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 Comprehensive file validation and quarantine system to protect against malicious uploads.
               </p>
-              <ul className="space-y-2 text-gray-600">
-                <li>• MIME type validation</li>
-                <li>• File size limits</li>
-                <li>• Extension verification</li>
-                <li>• Quarantine suspicious files</li>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>MIME type validation</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>File size limits</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Extension verification</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Quarantine suspicious files</span></li>
               </ul>
             </motion.div>
 
@@ -147,20 +165,23 @@ export default function SecurityPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <Eye className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-2xl font-semibold text-[#153B6B] mb-4">
+              <div className="w-14 h-14 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <Eye className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#153B6B] mb-4">
                 Audit Logging
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 Tamper-evident audit logs track all system activities for compliance and security monitoring.
               </p>
-              <ul className="space-y-2 text-gray-600">
-                <li>• All events logged</li>
-                <li>• Tamper-evident design</li>
-                <li>• Log rotation & retention</li>
-                <li>• Export for SIEM systems</li>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>All events logged</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Tamper-evident design</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Log rotation & retention</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Export for SIEM systems</span></li>
               </ul>
             </motion.div>
 
@@ -169,20 +190,23 @@ export default function SecurityPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <Lock className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-2xl font-semibold text-[#153B6B] mb-4">
+              <div className="w-14 h-14 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <Lock className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#153B6B] mb-4">
                 Data Privacy
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 EXIF metadata stripping ensures document privacy and prevents information leakage.
               </p>
-              <ul className="space-y-2 text-gray-600">
-                <li>• EXIF metadata removal</li>
-                <li>• GPS data stripping</li>
-                <li>• Timestamp sanitization</li>
-                <li>• Camera info removal</li>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>EXIF metadata removal</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>GPS data stripping</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Timestamp sanitization</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Camera info removal</span></li>
               </ul>
             </motion.div>
 
@@ -191,20 +215,23 @@ export default function SecurityPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <AlertTriangle className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-2xl font-semibold text-[#153B6B] mb-4">
+              <div className="w-14 h-14 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <AlertTriangle className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#153B6B] mb-4">
                 Vulnerability Reporting
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 Responsible disclosure program for security researchers to report vulnerabilities.
               </p>
-              <ul className="space-y-2 text-gray-600">
-                <li>• Secure reporting channel</li>
-                <li>• Rapid response team</li>
-                <li>• Coordinated disclosure</li>
-                <li>• Recognition program</li>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Secure reporting channel</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Rapid response team</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Coordinated disclosure</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Recognition program</span></li>
               </ul>
             </motion.div>
 
@@ -213,20 +240,23 @@ export default function SecurityPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              whileHover={{ y: -8 }}
+              className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 card-depth group"
             >
-              <CheckCircle className="w-12 h-12 text-[#00A8B5] mb-4" />
-              <h3 className="text-2xl font-semibold text-[#153B6B] mb-4">
+              <div className="w-14 h-14 bg-linear-to-br from-[#00A8B5] to-[#008c97] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <CheckCircle className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#153B6B] mb-4">
                 Security Standards
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 Built with security best practices and enterprise-grade controls to support your compliance needs.
               </p>
-              <ul className="space-y-2 text-gray-600">
-                <li>• Privacy-focused architecture</li>
-                <li>• Healthcare-friendly security</li>
-                <li>• Industry standard encryption</li>
-                <li>• Comprehensive audit logging</li>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Privacy-focused architecture</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Healthcare-friendly security</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Industry standard encryption</span></li>
+                <li className="flex items-start gap-2"><span className="text-[#00A8B5] font-bold">✓</span><span>Comprehensive audit logging</span></li>
               </ul>
             </motion.div>
           </div>
@@ -328,7 +358,7 @@ export default function SecurityPage() {
             </p>
             <Link
               href="/contact?subject=security"
-              className="inline-flex items-center justify-center px-8 py-4 bg-[#00A8B5] text-white font-semibold rounded-lg hover:bg-[#008c97] transition-all duration-200 hover:scale-105 shadow-lg"
+              className="inline-flex items-center justify-center px-10 py-4 bg-linear-to-r from-[#00A8B5] to-[#008c97] text-white font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl press-scale"
             >
               Report Vulnerability
             </Link>

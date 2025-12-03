@@ -220,7 +220,7 @@ export default function ContactPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                       Name *
                     </label>
                     <input
@@ -230,12 +230,12 @@ export default function ContactPage() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
+                      className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5] transition-all hover:border-gray-300 bg-gray-50 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                       Email *
                     </label>
                     <input
@@ -245,12 +245,12 @@ export default function ContactPage() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
+                      className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5] transition-all hover:border-gray-300 bg-gray-50 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-2">
                       Company
                     </label>
                     <input
@@ -259,12 +259,12 @@ export default function ContactPage() {
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
+                      className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5] transition-all hover:border-gray-300 bg-gray-50 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
                       Subject *
                     </label>
                     <select
@@ -273,7 +273,7 @@ export default function ContactPage() {
                       required
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
+                      className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5] transition-all hover:border-gray-300 bg-gray-50 focus:bg-white"
                     >
                       <option>General Inquiry</option>
                       <option>Technical Support</option>
@@ -284,7 +284,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
                       Message *
                     </label>
                     <textarea
@@ -295,9 +295,9 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={handleChange}
                       maxLength={500}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A8B5] focus:border-transparent"
+                      className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5] transition-all hover:border-gray-300 bg-gray-50 focus:bg-white resize-none"
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-500 mt-2">
                       {formData.message.length}/500 characters
                     </p>
                   </div>
@@ -332,7 +332,7 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-[#00A8B5] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#008c97] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+                    className="w-full bg-linear-to-r from-[#00A8B5] to-[#008c97] text-white font-bold py-4 px-6 rounded-full hover:scale-105 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-2xl press-scale"
                   >
                     {isSubmitting ? (
                       <>Sending...</>
